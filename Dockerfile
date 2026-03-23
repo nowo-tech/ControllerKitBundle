@@ -1,4 +1,4 @@
-# PHP 8.4 Alpine for development and tests (Symfony 8 requires 8.4+)
+# PHP 8.4 Alpine for development and tests.
 FROM php:8.4-cli-alpine
 
 RUN apk add --no-cache \

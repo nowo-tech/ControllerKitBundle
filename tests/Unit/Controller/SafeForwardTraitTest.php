@@ -24,8 +24,8 @@ class SafeForwardTraitTest extends TestCase
     public function testSafeForwardCallsForwardWhenMethodExists(): void
     {
         $targetController = self::class;
-        $targetMethod = 'existingMethod';
-        $controller = new SafeForwardTestController($targetController, $targetMethod);
+        $targetMethod     = 'existingMethod';
+        $controller       = new SafeForwardTestController($targetController, $targetMethod);
 
         $response = $controller->runSafeForward($targetController, $targetMethod, ['id' => '1'], ['page' => '2']);
 
@@ -50,7 +50,8 @@ class SafeForwardTestController
     public function __construct(
         private readonly ?string $expectedController = null,
         private readonly ?string $expectedMethod = null,
-    ) {}
+    ) {
+    }
 
     public function runSafeForward(
         string $controllerClass,

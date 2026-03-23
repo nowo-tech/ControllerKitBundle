@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\ControllerKitBundle\Tests\Unit\Controller;
 
+use InvalidArgumentException;
 use Nowo\ControllerKitBundle\Controller\RedirectToRefererTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,7 +22,7 @@ class RedirectToRefererTraitTest extends TestCase
     public function testRedirectToRefererWithEmptyRefererUsesDefaultRoute(): void
     {
         $controller = $this->createControllerStub('app_home');
-        $request = Request::create('/');
+        $request    = Request::create('/');
         $request->headers->set('Referer', '');
 
         $response = $controller->runRedirectToReferer($request);
@@ -34,7 +35,18 @@ class RedirectToRefererTraitTest extends TestCase
     public function testRedirectToRefererWithNullRefererUsesDefaultRoute(): void
     {
         $controller = $this->createControllerStub('homepage');
-        $request = Request::create('/');
+        $request    = Request::create('/');
+
+        $response = $controller->runRedirectToReferer($request);
+
+        self::assertSame('/default', $response->getTargetUrl());
+    }
+
+    public function testRedirectToRefererWithZeroRefererUsesDefaultRoute(): void
+    {
+        $controller = $this->createControllerStub('homepage');
+        $request    = Request::create('/');
+        $request->headers->set('Referer', '0');
 
         $response = $controller->runRedirectToReferer($request);
 
@@ -45,7 +57,7 @@ class RedirectToRefererTraitTest extends TestCase
     {
         $controller = $this->createControllerStub('homepage', [
             '_route' => 'product_show',
-            'id' => '42',
+            'id'     => '42',
         ]);
         $request = Request::create('/');
         $request->headers->set('Referer', 'https://example.com/product/42');
@@ -55,10 +67,26 @@ class RedirectToRefererTraitTest extends TestCase
         self::assertSame('/product/42', $response->getTargetUrl());
     }
 
+    public function testRedirectToRefererMergesQueryAndExcludesFrameworkKeys(): void
+    {
+        $controller = $this->createControllerStub('homepage', [
+            '_route'      => 'product_show',
+            '_controller' => 'App\\Controller\\DemoController::show',
+            '_locale'     => 'en',
+            'id'          => '42',
+        ]);
+        $request = Request::create('/');
+        $request->headers->set('Referer', 'https://example.com/product/42?tab=details');
+
+        $response = $controller->runRedirectToReferer($request, ['flash' => 'saved'], 302);
+
+        self::assertSame('/product/42', $response->getTargetUrl());
+    }
+
     public function testRedirectToRefererWithInvalidRefererPathFallsBackToDefaultRoute(): void
     {
         $controller = $this->createControllerStub('fallback', [], true);
-        $request = Request::create('/');
+        $request    = Request::create('/');
         $request->headers->set('Referer', 'https://external.com/unknown');
 
         $response = $controller->runRedirectToReferer($request);
@@ -69,7 +97,7 @@ class RedirectToRefererTraitTest extends TestCase
     public function testRedirectToRefererMergesParamsAndUsesStatus(): void
     {
         $controller = $this->createControllerStub('homepage');
-        $request = Request::create('/');
+        $request    = Request::create('/');
 
         $response = $controller->runRedirectToReferer($request, ['flash' => 'saved'], 303);
 
@@ -83,7 +111,7 @@ class RedirectToRefererTraitTest extends TestCase
     {
         $router = $this->createMock(RouterInterface::class);
         $router->method('match')
-            ->willReturnCallback(function (string $path) use ($matchResult, $matchThrows) {
+            ->willReturnCallback(static function (string $path) use ($matchResult, $matchThrows) {
                 if ($matchThrows) {
                     throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException();
                 }
@@ -92,14 +120,14 @@ class RedirectToRefererTraitTest extends TestCase
             });
 
         $urls = [
-            'app_home' => '/home',
-            'homepage' => '/default',
-            'fallback' => '/fallback-url',
+            'app_home'     => '/home',
+            'homepage'     => '/default',
+            'fallback'     => '/fallback-url',
             'product_show' => '/product/42',
         ];
 
         $router->method('generate')
-            ->willReturnCallback(function (string $name, array $params = []) use ($urls): string {
+            ->willReturnCallback(static function (string $name, array $params = []) use ($urls): string {
                 return $urls[$name] ?? '/' . $name;
             });
 
@@ -119,7 +147,8 @@ class RedirectToRefererTestController
     public function __construct(
         private readonly RouterInterface $router,
         private readonly string $defaultRoute,
-    ) {}
+    ) {
+    }
 
     public function runRedirectToReferer(Request $request, ?array $params = [], ?int $status = 302): RedirectResponse
     {
@@ -140,7 +169,7 @@ class RedirectToRefererTestController
             return $this->defaultRoute;
         }
 
-        throw new \InvalidArgumentException('Unknown parameter: ' . $name);
+        throw new InvalidArgumentException('Unknown parameter: ' . $name);
     }
 
     protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse

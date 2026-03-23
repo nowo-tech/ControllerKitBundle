@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Controller Kit Demo</title>
+</head>
+<body>
+<h1>Controller Kit Demo (Symfony 8)</h1>
+<p><a href="{{ path('demo_forward') }}">Test SafeForwardTrait</a></p>
+<form method="post" action="{{ path('demo_back') }}">
+    <button type="submit">Test RedirectToRefererTrait</button>
+</form>
+</body>
+</html>

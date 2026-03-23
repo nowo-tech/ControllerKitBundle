@@ -19,9 +19,9 @@ class ControllerKitExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $processor = new Processor();
+        $processor     = new Processor();
         $configuration = new Configuration();
-        $config = $processor->processConfiguration($configuration, $configs);
+        $config        = $processor->processConfiguration($configuration, $configs);
 
         $container->setParameter('nowo_controller_kit.default_route', $config['default_route']);
     }

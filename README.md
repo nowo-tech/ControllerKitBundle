@@ -1,8 +1,8 @@
 # Controller Kit Bundle
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-6%20%7C%207%20%7C%208-000000?logo=symfony)](https://symfony.com)
+[![CI](https://github.com/nowo-tech/ControllerKitBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/ControllerKitBundle/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/controller-kit-bundle.svg?style=flat)](https://packagist.org/packages/nowo-tech/controller-kit-bundle) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/controller-kit-bundle.svg)](https://packagist.org/packages/nowo-tech/controller-kit-bundle) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-6.4%20%7C%207%20%7C%208-000000?logo=symfony)](https://symfony.com) [![GitHub stars](https://img.shields.io/github/stars/nowo-tech/controller-kit-bundle.svg?style=social&label=Star)](https://github.com/nowo-tech/ControllerKitBundle)
 
-**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding. For Symfony 6, 7 and 8 · PHP 8.1+.
+**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding. For Symfony 6.4, 7 and 8 · PHP 8.2+.
 
 ## Features
 
@@ -95,6 +95,7 @@ If `OtherController::actionName` does not exist, a `BadMethodCallException` is t
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Usage](docs/USAGE.md)
+- [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
 - [Contributing](docs/CONTRIBUTING.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Upgrading](docs/UPGRADING.md)
@@ -103,8 +104,8 @@ If `OtherController::actionName` does not exist, a `BadMethodCallException` is t
 
 ## Requirements
 
-- PHP 8.1+
-- Symfony 6.0 / 7.0 / 8.0
+- PHP 8.2+
+- Symfony 6.4 / 7.0 / 8.0
 - For traits: `symfony/framework-bundle` in your application (AbstractController)
 
 ## Development
@@ -117,6 +118,12 @@ make cs-check
 make phpstan
 make release-check
 ```
+
+## Demo
+
+- `demo/symfony7` (port `8010`)
+- `demo/symfony8` (port `8011`)
+- Global demo commands: `make -C demo help`
 
 ## License and author
 
