@@ -1,0 +1,5 @@
+# Default configuration for Controller Kit Bundle.
+# In your app: config/packages/nowo_controller_kit.yaml (or use Symfony Flex recipe).
+#
+# nowo_controller_kit:
+#     default_route: homepage   # Route when redirectToReferer has no valid Referer

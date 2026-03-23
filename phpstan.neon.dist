@@ -1,0 +1,13 @@
+# PHPStan configuration for Controller Kit Bundle.
+#
+# Run: make phpstan
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - demo/*
+        - vendor/*
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
