@@ -1,8 +1,14 @@
-
-###> symfony/framework-bundle ###
+# ------------------------------------------------------------------------------
+# Local environment (never commit real secrets)
+# ------------------------------------------------------------------------------
+# Copy from .env.example. Do not commit .env, .env.dev, or machine-specific locals.
+/.env
+/.env.dev
 /.env.local
 /.env.local.php
 /.env.*.local
+
+###> symfony/framework-bundle ###
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -14,8 +20,17 @@
 /.phpunit.cache/
 ###< phpunit/phpunit ###
 
-# Demo local env files
-.env
-.env.dev
-.env.local
-.env.*.local
+# ------------------------------------------------------------------------------
+# Build / cache / IDE (generated or machine-specific)
+# ------------------------------------------------------------------------------
+/.php-cs-fixer.cache
+
+# ------------------------------------------------------------------------------
+# Archives (compressed distributions; do not version binary drops)
+# ------------------------------------------------------------------------------
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z

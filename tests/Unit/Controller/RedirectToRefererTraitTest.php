@@ -150,7 +150,10 @@ class RedirectToRefererTestController
     ) {
     }
 
-    public function runRedirectToReferer(Request $request, ?array $params = [], ?int $status = 302): RedirectResponse
+    /**
+     * @param array<string, mixed>|null $params
+     */
+    public function runRedirectToReferer(Request $request, ?array $params = [], int $status = 302): RedirectResponse
     {
         return $this->redirectToReferer($request, $params, $status);
     }
@@ -172,6 +175,9 @@ class RedirectToRefererTestController
         throw new InvalidArgumentException('Unknown parameter: ' . $name);
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
     {
         $url = $this->router->generate($route, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);

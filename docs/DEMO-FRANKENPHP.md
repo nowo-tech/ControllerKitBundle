@@ -8,8 +8,10 @@ This bundle includes runnable demos with FrankenPHP in:
 Each demo uses:
 
 - Caddy on HTTP `:80` inside the container
-- `Caddyfile` (worker mode) for non-dev usage
-- `Caddyfile.dev` (classic mode, no worker) for development
+- **`Caddyfile`** (production image / `APP_ENV` not `dev`): **worker** mode for throughput
+- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — used when the entrypoint runs with **`APP_ENV=dev`** (default in `docker-compose`)
+
+**Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`** and **`APP_DEBUG=1`**, mounts **`docker/frankenphp/Caddyfile.dev`** and **`docker/php-dev.ini`**. The container entrypoint copies `Caddyfile.dev` over the active Caddyfile so you get **one PHP process per request**, not workers.
 
 ## Quick start
 
@@ -30,9 +32,27 @@ Then open:
 
 Both demos include:
 
-- `symfony/web-profiler-bundle`
-- `APP_DEBUG=1` in `.env.example`
-- `nowo-tech/twig-inspector-bundle`
+- **Symfony Debug** (`symfony/debug-bundle`)
+- **Symfony Web Profiler** (`symfony/web-profiler-bundle`)
+- **`APP_DEBUG=1`** in `.env.example`
+- **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`)
+
+Example `config/bundles.php` (same in **symfony7** and **symfony8** demos):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+return [
+    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class     => ['all' => true],
+    Symfony\Bundle\TwigBundle\TwigBundle::class               => ['all' => true],
+    Symfony\Bundle\DebugBundle\DebugBundle::class             => ['dev' => true, 'test' => true],
+    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    Nowo\TwigInspectorBundle\NowoTwigInspectorBundle::class   => ['dev' => true, 'test' => true],
+    Nowo\ControllerKitBundle\NowoControllerKitBundle::class   => ['all' => true],
+];
+```
 
 ## Troubleshooting
 

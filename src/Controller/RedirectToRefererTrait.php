@@ -30,10 +30,10 @@ trait RedirectToRefererTrait
      * redirects to the default route (config: nowo_controller_kit.default_route).
      *
      * @param Request $request Current request (for Referer header)
-     * @param array|null $params Extra route parameters to merge (e.g. flash or query)
+     * @param array<string, mixed>|null $params Extra route parameters to merge (e.g. flash or query)
      * @param int $status HTTP status for the redirect (default 302)
      */
-    protected function redirectToReferer(Request $request, ?array $params = [], ?int $status = 302): RedirectResponse
+    protected function redirectToReferer(Request $request, ?array $params = [], int $status = 302): RedirectResponse
     {
         $referer = $request->headers->get('Referer');
 

@@ -53,6 +53,10 @@ class SafeForwardTestController
     ) {
     }
 
+    /**
+     * @param array<string, mixed>|null $pathParams
+     * @param array<string, mixed>|null $queryParams
+     */
     public function runSafeForward(
         string $controllerClass,
         string $methodName,
@@ -62,6 +66,10 @@ class SafeForwardTestController
         return $this->safeForward($controllerClass, $methodName, $pathParams, $queryParams);
     }
 
+    /**
+     * @param array<string, mixed> $pathParams
+     * @param array<string, mixed> $queryParams
+     */
     public function forward(string $controller, array $pathParams = [], array $queryParams = []): Response
     {
         if ($this->expectedController !== null

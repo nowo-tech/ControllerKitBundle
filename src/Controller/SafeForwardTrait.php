@@ -26,8 +26,8 @@ trait SafeForwardTrait
      *
      * @param string $controllerClass Fully qualified class name of the target controller
      * @param string $methodName Name of the method to forward to
-     * @param array|null $pathParams Path/request parameters for the forwarded method
-     * @param array|null $queryParams Query parameters for the forwarded method
+     * @param array<string, mixed>|null $pathParams Path/request parameters for the forwarded method
+     * @param array<string, mixed>|null $queryParams Query parameters for the forwarded method
      *
      * @throws BadMethodCallException if the method does not exist in the target class
      *

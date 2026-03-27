@@ -29,7 +29,7 @@ class MyController extends AbstractController
 protected function redirectToReferer(
     Request $request,
     ?array $params = [],
-    ?int $status = 302
+    int $status = 302
 ): RedirectResponse
 ```
 

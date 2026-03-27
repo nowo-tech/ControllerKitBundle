@@ -1,6 +1,6 @@
 DEMOS := symfony7 symfony8
 
-.PHONY: help clean test-all test-coverage-all verify-all release-check release-verify
+.PHONY: help clean test-all test-coverage-all verify-all release-check release-verify update-bundle-all
 .PHONY: $(foreach demo,$(DEMOS),up-$(demo) down-$(demo) restart-$(demo) build-$(demo) install-$(demo) update-bundle-$(demo) shell-$(demo) logs-$(demo) test-$(demo) test-coverage-$(demo) verify-$(demo))
 .PHONY: up down restart build install update-bundle test shell logs test-coverage verify
 
@@ -13,7 +13,7 @@ help:
 	@echo "  up-symfony8 / down-symfony8 / restart-symfony8"
 	@echo "  build-symfonyX, install-symfonyX, update-bundle-symfonyX"
 	@echo "  test-symfonyX, test-coverage-symfonyX"
-	@echo "  release-check    Run test-coverage-all + release-verify"
+	@echo "  release-check    Run update-bundle-all + test-coverage-all + release-verify"
 	@echo "  release-verify   For each demo: up -> healthcheck -> down"
 	@echo ""
 	@echo "Access: Symfony 7 http://localhost:8010 | Symfony 8 http://localhost:8011"
@@ -43,6 +43,9 @@ test-coverage-all:
 
 verify-all:
 	@$(foreach d,$(DEMOS),$(MAKE) verify-$(d);)
+
+update-bundle-all:
+	@$(foreach d,$(DEMOS),$(MAKE) update-bundle-$(d);)
 
 up:
 	@[ -n "$(DEMO)" ] || { echo "Usage: make up DEMO=symfony7|symfony8"; exit 1; }
@@ -99,7 +102,7 @@ release-verify:
 		echo "$$demo OK"; \
 	done
 
-release-check: test-coverage-all release-verify
+release-check: update-bundle-all test-coverage-all release-verify
 
 clean:
 	@rm -rf symfony7/var symfony8/var

@@ -1,6 +1,8 @@
 # Controller Kit Bundle
 
-[![CI](https://github.com/nowo-tech/ControllerKitBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/ControllerKitBundle/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/controller-kit-bundle.svg?style=flat)](https://packagist.org/packages/nowo-tech/controller-kit-bundle) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/controller-kit-bundle.svg)](https://packagist.org/packages/nowo-tech/controller-kit-bundle) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-6.4%20%7C%207%20%7C%208-000000?logo=symfony)](https://symfony.com) [![GitHub stars](https://img.shields.io/github/stars/nowo-tech/controller-kit-bundle.svg?style=social&label=Star)](https://github.com/nowo-tech/ControllerKitBundle)
+[![CI](https://github.com/nowo-tech/ControllerKitBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/ControllerKitBundle/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/controller-kit-bundle.svg?style=flat)](https://packagist.org/packages/nowo-tech/controller-kit-bundle) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/controller-kit-bundle.svg)](https://packagist.org/packages/nowo-tech/controller-kit-bundle) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-6.4%20%7C%207%20%7C%208-000000?logo=symfony)](https://symfony.com) [![GitHub stars](https://img.shields.io/github/stars/nowo-tech/controller-kit-bundle.svg?style=social&label=Star)](https://github.com/nowo-tech/ControllerKitBundle) [![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen)](#tests-and-coverage)
+
+> ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/controller-kit-bundle) · Give it a **star** on [GitHub](https://github.com/nowo-tech/ControllerKitBundle) so more developers can find it.
 
 **Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding. For Symfony 6.4, 7 and 8 · PHP 8.2+.
 
@@ -21,8 +23,8 @@ With **Symfony Flex**, the recipe registers the bundle and adds config. Without 
 
 ```php
 return [
-    // ...
-    Nowo\ControllerKitBundle\NowoControllerKitBundle::class => ['all' => true],
+  // ...
+  Nowo\ControllerKitBundle\NowoControllerKitBundle::class => ['all' => true],
 ];
 ```
 
@@ -32,7 +34,7 @@ In `config/packages/nowo_controller_kit.yaml`:
 
 ```yaml
 nowo_controller_kit:
-    default_route: homepage   # Route used when redirectToReferer has no valid Referer
+  default_route: homepage  # Route used when redirectToReferer has no valid Referer
 ```
 
 Use your own route name (e.g. `app_home`, `dashboard`).
@@ -50,15 +52,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MyController extends AbstractController
 {
-    use RedirectToRefererTrait;
+  use RedirectToRefererTrait;
 
-    public function submit(Request $request): Response
-    {
-        // ... handle form ...
-        return $this->redirectToReferer($request);
-        // Optional: merge params and set status
-        // return $this->redirectToReferer($request, ['success' => 1], 303);
-    }
+  public function submit(Request $request): Response
+  {
+    // ... handle form ...
+    return $this->redirectToReferer($request);
+    // Optional: merge params and set status
+    // return $this->redirectToReferer($request, ['success' => 1], 303);
+  }
 }
 ```
 
@@ -74,17 +76,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ApiController extends AbstractController
 {
-    use SafeForwardTrait;
+  use SafeForwardTrait;
 
-    public function delegate(): Response
-    {
-        return $this->safeForward(
-            OtherController::class,
-            'actionName',
-            ['id' => 123],
-            ['page' => 1]
-        );
-    }
+  public function delegate(): Response
+  {
+    return $this->safeForward(
+      OtherController::class,
+      'actionName',
+      ['id' => 123],
+      ['page' => 1]
+    );
+  }
 }
 ```
 
@@ -95,12 +97,16 @@ If `OtherController::actionName` does not exist, a `BadMethodCallException` is t
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Usage](docs/USAGE.md)
-- [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
 - [Contributing](docs/CONTRIBUTING.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Upgrading](docs/UPGRADING.md)
 - [Release](docs/RELEASE.md)
 - [Security](docs/SECURITY.md)
+- [Engram](docs/ENGRAM.md)
+
+### Additional documentation
+
+- [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
 
 ## Requirements
 
@@ -121,9 +127,17 @@ make release-check
 
 ## Demo
 
-- `demo/symfony7` (port `8010`)
-- `demo/symfony8` (port `8011`)
-- Global demo commands: `make -C demo help`
+- `demo/symfony7` — host port **8010** by default (`PORT` in `.env`)
+- `demo/symfony8` — host port **8011** by default
+
+Each demo runs **FrankenPHP + Caddy** in Docker. **`docker-compose`** sets **`APP_ENV=dev`** and mounts **`Caddyfile.dev`**, so PHP runs **without** long-lived workers (changes visible on refresh). **Worker mode** is the production Caddyfile path — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
+
+Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
+
+## Tests and coverage
+
+- Tests: PHPUnit (PHP)
+- PHP: 100%
 
 ## License and author
 

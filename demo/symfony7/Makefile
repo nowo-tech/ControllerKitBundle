@@ -16,6 +16,8 @@ help:
 up:
 	@if [ ! -f .env ]; then cp .env.example .env; fi
 	docker-compose up -d --build
+	@PORT=$$(grep -E '^PORT=' .env.example | cut -d= -f2) ; \
+		echo "Demo started at: http://localhost:$${PORT}"
 
 ensure-up:
 	@if ! docker-compose exec -T php true 2>/dev/null; then \
