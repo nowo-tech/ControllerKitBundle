@@ -2,8 +2,8 @@
 
 This bundle includes runnable demos with FrankenPHP in:
 
-- `demo/symfony7`
-- `demo/symfony8`
+- `demo/symfony7` — Symfony **7.4**
+- `demo/symfony8` — Symfony **8.1** (PHP **8.4+**)
 
 Each demo uses:
 
@@ -25,8 +25,8 @@ make -C demo up-symfony8
 
 Then open:
 
-- Symfony 7: `http://localhost:8010`
-- Symfony 8: `http://localhost:8011`
+- Symfony 7.4: `http://localhost:8010`
+- Symfony 8.1: `http://localhost:8011`
 
 ## Development stack in demos
 

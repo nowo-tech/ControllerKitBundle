@@ -14,11 +14,15 @@ help:
 	@echo "  make update-bundle  Update nowo-tech/controller-kit-bundle and clear cache"
 
 up:
-	@if [ ! -f .env ]; then cp .env.example .env; fi
-	docker-compose up -d --build
-	@PORT=$$(grep -E '^PORT=' .env.example | cut -d= -f2) ; \
-		echo "Demo started at: http://localhost:$${PORT}"
-
+	@if [ ! -f .env ]; then cp .env.example .env 2>/dev/null || true; fi
+	docker-compose up -d
+	@echo "Waiting for container to be ready..."
+	@sleep 5
+	@echo "Installing dependencies..."
+	@docker-compose exec -T -e COMPOSER_MEMORY_LIMIT=-1 php composer install --no-interaction
+	@PORT=$$(grep "^PORT=" .env 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
+	[ -z "$$PORT" ] && PORT=$$(grep "^PORT=" .env.example 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
+	echo "Demo started at: http://localhost:$$PORT"
 ensure-up:
 	@if ! docker-compose exec -T php true 2>/dev/null; then \
 		echo "Starting demo container..."; \

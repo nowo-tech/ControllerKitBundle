@@ -13,7 +13,7 @@ help:
 	@echo "  up-symfony8 / down-symfony8 / restart-symfony8"
 	@echo "  build-symfonyX, install-symfonyX, update-bundle-symfonyX"
 	@echo "  test-symfonyX, test-coverage-symfonyX"
-	@echo "  release-check    Run update-bundle-all + test-coverage-all + release-verify"
+	@echo "  release-check    Run update-bundle-all + test-all + release-verify"
 	@echo "  release-verify   For each demo: up -> healthcheck -> down"
 	@echo ""
 	@echo "Access: Symfony 7 http://localhost:8010 | Symfony 8 http://localhost:8011"
@@ -102,7 +102,7 @@ release-verify:
 		echo "$$demo OK"; \
 	done
 
-release-check: update-bundle-all test-coverage-all release-verify
+release-check: update-bundle-all test-all release-verify
 
 clean:
 	@rm -rf symfony7/var symfony8/var

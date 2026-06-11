@@ -2,8 +2,8 @@
 
 This directory contains runnable demos for:
 
-- `symfony7` (http://localhost:8010)
-- `symfony8` (http://localhost:8011)
+- `symfony7` — Symfony **7.4** (http://localhost:8010)
+- `symfony8` — Symfony **8.1**, PHP **8.4+** (http://localhost:8011)
 
 ## Quick start
 
@@ -26,4 +26,4 @@ Each demo includes:
 make release-check
 ```
 
-This runs coverage for all demos and verifies startup + HTTP healthcheck.
+This runs PHPUnit in each demo (smoke), updates the path bundle, and verifies startup + HTTP healthcheck.

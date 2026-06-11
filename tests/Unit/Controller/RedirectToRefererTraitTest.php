@@ -111,7 +111,7 @@ class RedirectToRefererTraitTest extends TestCase
     {
         $router = $this->createMock(RouterInterface::class);
         $router->method('match')
-            ->willReturnCallback(static function (string $path) use ($matchResult, $matchThrows) {
+            ->willReturnCallback(static function (string $path) use ($matchResult, $matchThrows): array {
                 if ($matchThrows) {
                     throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException();
                 }
@@ -163,10 +163,7 @@ class RedirectToRefererTestController
         return $this->router;
     }
 
-    /**
-     * @return mixed
-     */
-    protected function getParameter(string $name)
+    protected function getParameter(string $name): string
     {
         if ($name === 'nowo_controller_kit.default_route') {
             return $this->defaultRoute;

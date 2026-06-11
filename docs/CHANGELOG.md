@@ -7,19 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-11
+
+First stable release.
+
+### Added
+
+- **RedirectToRefererTrait** — `redirectToReferer(Request $request, ?array $params = [], int $status = 302)` for controllers extending `AbstractController`. Configurable default route via `nowo_controller_kit.default_route`.
+- **SafeForwardTrait** — `safeForward(string $controllerClass, string $methodName, ?array $pathParams = [], ?array $queryParams = [])` with method-existence check before forwarding.
+- Configuration: `nowo_controller_kit.default_route` (default `homepage`).
+- Symfony Flex recipe (`.symfony/recipe/nowo-tech/controller-kit-bundle/1.0`).
+- FrankenPHP demos: `demo/symfony7` (Symfony **7.4**) and `demo/symfony8` (Symfony **8.1**, PHP **8.4+**).
+- Docs: INSTALLATION, CONFIGURATION, USAGE, CONTRIBUTING, CHANGELOG, UPGRADING, RELEASE, SECURITY, ENGRAM, DEMO-FRANKENPHP, SPEC-DRIVEN-DEVELOPMENT.
+
 ### Changed
 
+- **Symfony compatibility (REQ-SF-001 / REQ-SF-002)** — CI matrix tests Symfony **7.4**, **8.0**, and **8.1**; `composer.json` constraints `^6.0 || ^7.0 || ^8.0` for broader installs.
 - **RedirectToRefererTrait** — `redirectToReferer()` third argument is `int $status` (aligns with `AbstractController::redirectToRoute()` and static analysis).
 
 ### Documentation
 
-- **README** — Demo section: default **`APP_ENV=dev`** + **Caddyfile.dev** (no PHP worker), link to `DEMO-FRANKENPHP.md`, ports **8010** / **8011**, `make -C demo up-symfony8` example.
-- **docs/DEMO-FRANKENPHP.md** — Dev vs prod (worker), entrypoint/mounts; **`bundles.php`** example aligned with demos.
-- **demo/README.md** — Same dev/prod note (Caddyfile.dev).
+- **README** — Requirements, badges, demo ports **8010** / **8011**, FrankenPHP dev vs worker mode.
+- **docs/DEMO-FRANKENPHP.md** — Dev vs prod (worker), entrypoint/mounts; `bundles.php` example with Debug + Web Profiler + Twig Inspector.
+- **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
+- **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
-### Added
-
-- **RedirectToRefererTrait** — `redirectToReferer(Request $request, ?array $params = [], int $status = 302)` for controllers extending AbstractController. Configurable default route via `nowo_controller_kit.default_route`.
-- **SafeForwardTrait** — `safeForward(string $controllerClass, string $methodName, ?array $pathParams = [], ?array $queryParams = [])` with method-existence check before forwarding.
-- Configuration: `nowo_controller_kit.default_route` (default `homepage`).
-- Docs: INSTALLATION, CONFIGURATION, USAGE, CONTRIBUTING, CHANGELOG, UPGRADING, RELEASE, SECURITY.
+[1.0.0]: https://github.com/nowo-tech/controller-kit-bundle/releases/tag/v1.0.0
