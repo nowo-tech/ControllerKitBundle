@@ -1,5 +1,27 @@
 # Upgrading
 
+## To 1.0.1
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^1.0.1
+```
+
+### Notable behavior change
+
+- **`redirectToReferer()`** — A Referer header is accepted only when its **host matches the current request host** (case-insensitive) and its path resolves to a known route. Cross-host Referer values now redirect to `nowo_controller_kit.default_route` instead of an external URL. This is a security hardening; no configuration or signature changes are required.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 1.0.0 (initial release)
 
 This is the first stable release. Install or require the package:
@@ -25,6 +47,4 @@ See [Installation](INSTALLATION.md) and [Configuration](CONFIGURATION.md).
 
 None — there is no prior stable release.
 
-## Future versions
-
-For upgrade instructions between versions, see the [Changelog](CHANGELOG.md).
+For upgrade instructions between other versions, see the [Changelog](CHANGELOG.md).

@@ -64,7 +64,7 @@ class MyController extends AbstractController
 }
 ```
 
-When the request has a valid `Referer` header whose path matches a route in your app, the user is redirected there (with path and query params preserved). Otherwise they are redirected to the configured `default_route`.
+When the request has a valid `Referer` header (same host as the current request, path matches a route in your app), the user is redirected there (with path and query params preserved). Otherwise they are redirected to the configured `default_route`.
 
 ### safeForward
 

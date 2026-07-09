@@ -39,7 +39,7 @@ protected function redirectToReferer(
 
 **Behaviour:**
 
-- If `Referer` is present and its path matches a route in your app, redirects to that route (path + query preserved, then merged with `$params`).
+- If `Referer` is present, its **host matches the current request host** (case-insensitive), and its path matches a route in your app, redirects to that route (path + query preserved, then merged with `$params`).
 - Otherwise redirects to the route configured as `nowo_controller_kit.default_route`.
 
 ---

@@ -43,7 +43,7 @@ trait RedirectToRefererTrait
             return $this->redirectToRoute($defaultRoute, $params ?? [], $status);
         }
 
-        $parseUrl = parse_url($referer);
+        $parseUrl    = parse_url($referer);
         $refererHost = $parseUrl['host'] ?? '';
         if ($refererHost !== '' && strcasecmp($refererHost, $request->getHost()) !== 0) {
             $defaultRoute = $this->getParameter('nowo_controller_kit.default_route');
@@ -51,7 +51,7 @@ trait RedirectToRefererTrait
             return $this->redirectToRoute($defaultRoute, $params ?? [], $status);
         }
 
-        $path     = $parseUrl['path'] ?? '/';
+        $path = $parseUrl['path'] ?? '/';
 
         try {
             $router    = $this->getRouter();

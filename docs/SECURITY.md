@@ -23,6 +23,7 @@ Controller Kit provides reusable controller helpers and conventions for Symfony 
 
 | Threat | Mitigation |
 |--------|------------|
+| Open redirect via forged `Referer` | `RedirectToRefererTrait` accepts Referer URLs only when the host matches the current request host; cross-host values fall back to `nowo_controller_kit.default_route`. |
 | Missing authorization in consuming apps | Applications must enforce `access_control`, voters, and roles on routes. |
 | XSS in responses | Use Twig escaping; validate user-supplied content. |
 

@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-07-09
+
+### Security
+
+- **RedirectToRefererTrait** — Referer URLs whose host differs from the current request host no longer redirect externally; they fall back to `nowo_controller_kit.default_route` (mitigates open redirect via forged Referer).
+
+### Added
+
+- **GitHub Spec Kit** — Baseline spec (`specs/001-baseline/`), `.specify/` templates, Cursor Agent skills, and [`SPEC-KIT.md`](SPEC-KIT.md).
+- **CodeRabbit** — `.coderabbit.yaml` and CI workflow for automated PR review.
+
+### Changed
+
+- **RedirectToRefererTrait** — Referer validation now requires the same host as the current request (case-insensitive), in addition to a resolvable route path.
+- **composer.json** — Corrected GitHub repository URLs in `homepage` and `support`.
+
+### Documentation
+
+- **SPEC-DRIVEN-DEVELOPMENT.md** — Spec Kit layer and maintainer workflow.
+- **README** — Link to SPEC-KIT.md.
+- **USAGE.md** — Document same-host Referer validation.
+
 ## [1.0.0] - 2026-06-11
 
 First stable release.
@@ -32,4 +54,5 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[1.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.1
 [1.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.0
