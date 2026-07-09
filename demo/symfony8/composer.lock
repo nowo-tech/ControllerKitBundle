@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "d9e9b272b7304572b25df7faec01361ed7231eae"
+                "reference": "9fac3a4fb06919d8779af6cf84b6ee35a40a8f1d"
             },
             "require": {
                 "php": ">=8.1 <8.6",
