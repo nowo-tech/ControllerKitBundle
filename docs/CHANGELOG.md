@@ -32,4 +32,4 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
-[1.0.0]: https://github.com/nowo-tech/controller-kit-bundle/releases/tag/v1.0.0
+[1.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.0

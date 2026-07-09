@@ -59,12 +59,26 @@ class RedirectToRefererTraitTest extends TestCase
             '_route' => 'product_show',
             'id'     => '42',
         ]);
-        $request = Request::create('/');
+        $request = Request::create('https://example.com/current');
         $request->headers->set('Referer', 'https://example.com/product/42');
 
         $response = $controller->runRedirectToReferer($request);
 
         self::assertSame('/product/42', $response->getTargetUrl());
+    }
+
+    public function testRedirectToRefererWithForeignHostFallsBackToDefaultRoute(): void
+    {
+        $controller = $this->createControllerStub('fallback', [
+            '_route' => 'product_show',
+            'id'     => '42',
+        ]);
+        $request = Request::create('https://example.com/current');
+        $request->headers->set('Referer', 'https://evil.example/product/42');
+
+        $response = $controller->runRedirectToReferer($request);
+
+        self::assertSame('/fallback-url', $response->getTargetUrl());
     }
 
     public function testRedirectToRefererMergesQueryAndExcludesFrameworkKeys(): void
@@ -75,7 +89,7 @@ class RedirectToRefererTraitTest extends TestCase
             '_locale'     => 'en',
             'id'          => '42',
         ]);
-        $request = Request::create('/');
+        $request = Request::create('https://example.com/current');
         $request->headers->set('Referer', 'https://example.com/product/42?tab=details');
 
         $response = $controller->runRedirectToReferer($request, ['flash' => 'saved'], 302);

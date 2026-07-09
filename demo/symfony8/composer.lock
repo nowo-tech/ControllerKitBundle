@@ -105,7 +105,7 @@
                 }
             ],
             "description": "Controller utilities for Symfony: redirectToReferer (configurable default route) and SafeForwardTrait for safe request forwarding.",
-            "homepage": "https://github.com/nowo-tech/controller-kit-bundle",
+            "homepage": "https://github.com/nowo-tech/ControllerKitBundle",
             "keywords": [
                 "bundle",
                 "controller",
@@ -117,10 +117,10 @@
                 "utilities"
             ],
             "support": {
-                "issues": "https://github.com/nowo-tech/controller-kit-bundle/issues",
-                "source": "https://github.com/nowo-tech/controller-kit-bundle",
-                "docs": "https://github.com/nowo-tech/controller-kit-bundle/tree/main/docs",
-                "changelog": "https://github.com/nowo-tech/controller-kit-bundle/blob/main/docs/CHANGELOG.md"
+                "issues": "https://github.com/nowo-tech/ControllerKitBundle/issues",
+                "source": "https://github.com/nowo-tech/ControllerKitBundle",
+                "docs": "https://github.com/nowo-tech/ControllerKitBundle/tree/main/docs",
+                "changelog": "https://github.com/nowo-tech/ControllerKitBundle/blob/main/docs/CHANGELOG.md"
             },
             "transport-options": {
                 "symlink": true,

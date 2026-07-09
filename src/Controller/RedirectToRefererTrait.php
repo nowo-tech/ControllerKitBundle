@@ -13,7 +13,7 @@ use function in_array;
 /**
  * Trait that provides redirectToReferer for controllers extending AbstractController.
  *
- * Redirects to the request Referer when valid (same app, route exists); otherwise
+ * Redirects to the request Referer when valid (same host, route exists); otherwise
  * redirects to the configurable default route (nowo_controller_kit.default_route).
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
@@ -24,8 +24,8 @@ trait RedirectToRefererTrait
     /**
      * Redirects to the referer URL when valid, or to the configured default route.
      *
-     * The referer is valid when it is present, non-empty, and its path matches a route
-     * in the application. Query string and path parameters are preserved and merged
+     * The referer is valid when it is present, non-empty, its host matches the current
+     * request host, and its path matches a route in the application. Query string and path parameters are preserved and merged
      * with optional $params. If the referer is missing or does not match any route,
      * redirects to the default route (config: nowo_controller_kit.default_route).
      *
@@ -44,6 +44,13 @@ trait RedirectToRefererTrait
         }
 
         $parseUrl = parse_url($referer);
+        $refererHost = $parseUrl['host'] ?? '';
+        if ($refererHost !== '' && strcasecmp($refererHost, $request->getHost()) !== 0) {
+            $defaultRoute = $this->getParameter('nowo_controller_kit.default_route');
+
+            return $this->redirectToRoute($defaultRoute, $params ?? [], $status);
+        }
+
         $path     = $parseUrl['path'] ?? '/';
 
         try {

@@ -66,3 +66,8 @@ verify: ensure-up
 	@code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$${PORT:-8010} 2>/dev/null || echo "000"); \
 	if [ "$$code" != "200" ]; then echo "Healthcheck failed: $$code"; exit 1; fi; \
 	echo "Healthcheck OK ($$code)"
+
+
+# REQ-MAKE-008: update-deps (REQ-MAKE-008)
+BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
+include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-update-deps.mk
