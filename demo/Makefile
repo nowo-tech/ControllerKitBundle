@@ -107,3 +107,8 @@ release-check: update-bundle-all test-all release-verify
 clean:
 	@rm -rf symfony7/var symfony8/var
 	@echo "Demo caches cleaned"
+
+
+# REQ-MAKE-008: update-deps-all (REQ-MAKE-008)
+BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
+include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-aggregate-update-deps.mk
