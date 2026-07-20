@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **CI** — `code-style` / `code-style-check` jobs use PHP **8.4** so `composer install` works with a Symfony **8.1** lockfile (`php >=8.4.1`).
+
 ## [1.0.3] - 2026-07-20
 
 ### Fixed
