@@ -1,5 +1,22 @@
 # Upgrading
 
+## Next release (PHP 8.2 / Symfony 7 minimum)
+
+### Breaking changes
+
+- **PHP** — Minimum is now **8.2** (`>=8.2 <8.6`). PHP **8.1** is no longer supported.
+- **Symfony** — Constraints are `^7.0 || ^8.0`. Symfony **6.x** is no longer supported.
+
+Upgrade PHP and Symfony in your application first, then:
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Mandatory tested minors remain Symfony **7.4**, **8.0**, and **8.1** (Symfony 8.x requires PHP **8.4+**). Symfony 7.0–7.3 still resolve when your app allows them.
+
+---
+
 ## To 1.0.4
 
 ```bash

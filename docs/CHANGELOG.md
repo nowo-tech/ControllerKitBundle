@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Minimum requirements** — PHP `>=8.2` (<8.6); Symfony `^7.0 || ^8.0` (Symfony 6.x and PHP 8.1 no longer supported).
+- **CI matrix** — Dropped Symfony **6.4**; tests Symfony **7.0**, **7.4**, **8.0**, and **8.1** on PHP 8.2–8.5 (Symfony 8.x still only on PHP 8.4+).
+
 ### Removed
 
-- **`demo/symfony7`** — FrankenPHP demo for Symfony 7.4 (port **8010**). Use `demo/symfony8` (Symfony **8.1**, port **8011**). Symfony 7.x remains supported via `composer.json` and the CI matrix.
+- **`demo/symfony7`** — FrankenPHP demo for Symfony 7.4 (port **8010**). Use `demo/symfony8` (Symfony **8.1**, port **8011**).
 
 ## [1.0.4] - 2026-07-20
 

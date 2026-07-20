@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- PHP `>=8.1` (<8.6). Symfony **8.0** and **8.1** require **PHP 8.4+**.
-- Symfony **7.4**, **8.0**, or **8.1** (mandatory minimum minors). The bundle also supports Symfony 6.x and 7.0–7.3 when constraints resolve.
+- PHP `>=8.2` (<8.6). Symfony **8.0** and **8.1** require **PHP 8.4+**.
+- Symfony **7.4**, **8.0**, or **8.1** (mandatory minimum minors). The bundle also supports Symfony 7.0–7.3 when constraints resolve.
 - `symfony/framework-bundle` in your application when using the controller traits with `AbstractController`.
 
 ## Composer
