@@ -1,16 +1,17 @@
 # Release process
 
-## Checklist (v1.0.4)
+## Checklist (v2.0.0)
 
-1. [CHANGELOG.md](CHANGELOG.md) — version **1.0.4** and date set; `[Unreleased]` empty.
-2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **1.0.4** (no consumer API change).
-3. `make release-check` — check-no-cursor-coauthor, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check.
-4. Commit: `Release v1.0.4`
-5. Annotated tag: `git tag -a v1.0.4 -m "Release v1.0.4"`
-6. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
-7. Push: `git push origin main && git push origin v1.0.4`
-8. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
-9. Confirm Packagist auto-update (or trigger manual sync).
+1. [CHANGELOG.md](CHANGELOG.md) — version **2.0.0** and date set; `[Unreleased]` empty.
+2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **2.0.0** (PHP 8.2 / Symfony 7 minimum; stay on `^1.0` if still on PHP 8.1 or Symfony 6).
+3. [INSTALLATION.md](INSTALLATION.md) / README — requirements aligned with `composer.json`.
+4. `make release-check` — check-no-cursor-coauthor, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check.
+5. Commit: `Release v2.0.0`
+6. Annotated tag: `git tag -a v2.0.0 -m "Release v2.0.0"`
+7. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
+8. Push: `git push origin main && git push origin v2.0.0`
+9. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
+10. Confirm Packagist auto-update (or trigger manual sync).
 
 ## Standard workflow (next releases)
 
