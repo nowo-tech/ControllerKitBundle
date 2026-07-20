@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **`demo/symfony7`** — FrankenPHP demo for Symfony 7.4 (port **8010**). Use `demo/symfony8` (Symfony **8.1**, port **8011**). Symfony 7.x remains supported via `composer.json` and the CI matrix.
+
 ## [1.0.4] - 2026-07-20
 
 ### Fixed

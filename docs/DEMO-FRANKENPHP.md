@@ -1,11 +1,10 @@
 # Demo with FrankenPHP
 
-This bundle includes runnable demos with FrankenPHP in:
+This bundle includes a runnable demo with FrankenPHP in:
 
-- `demo/symfony7` — Symfony **7.4**
 - `demo/symfony8` — Symfony **8.1** (PHP **8.4+**)
 
-Each demo uses:
+The demo uses:
 
 - Caddy on HTTP `:80` inside the container
 - **`Caddyfile`** (production image / `APP_ENV` not `dev`): **worker** mode for throughput
@@ -18,26 +17,23 @@ Each demo uses:
 From the bundle root:
 
 ```bash
-make -C demo up-symfony7
-# or
 make -C demo up-symfony8
 ```
 
 Then open:
 
-- Symfony 7.4: `http://localhost:8010`
 - Symfony 8.1: `http://localhost:8011`
 
 ## Development stack in demos
 
-Both demos include:
+The demo includes:
 
 - **Symfony Debug** (`symfony/debug-bundle`)
 - **Symfony Web Profiler** (`symfony/web-profiler-bundle`)
 - **`APP_DEBUG=1`** in `.env.example`
 - **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`)
 
-Example `config/bundles.php` (same in **symfony7** and **symfony8** demos):
+Example `config/bundles.php`:
 
 ```php
 <?php
@@ -56,6 +52,6 @@ return [
 
 ## Troubleshooting
 
-- If app does not respond, run `make -C demo/symfony7 logs` or `make -C demo/symfony8 logs`.
-- If routes/config changed, run `make -C demo/symfony7 cache-clear` (or `symfony8`).
-- If dependencies are outdated, run `make -C demo/symfony7 update-bundle` (or `symfony8`).
+- If app does not respond, run `make -C demo/symfony8 logs`.
+- If routes/config changed, run `make -C demo/symfony8 cache-clear`.
+- If dependencies are outdated, run `make -C demo/symfony8 update-bundle`.
