@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-07-20
+
+### Fixed
+
+- **CI** — Removed `composer config platform.php 8.4` for Symfony 8 jobs. Composer treated `8.4` as `8.4.0`, which failed Symfony **8.1** (`php >=8.4.1`). Matrix already runs Symfony 8 only on PHP 8.4+.
+
+### Changed
+
+- **Dev dependencies** — `friendsofphp/php-cs-fixer` **3.95.15**.
+- **GitHub Actions** — `actions/checkout` **v7**, `actions/github-script` **v9** (CodeRabbit workflow).
+
 ## [1.0.2] - 2026-07-20
 
 ### Added
@@ -68,6 +79,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[1.0.3]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.3
 [1.0.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.2
 [1.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.1
 [1.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.0

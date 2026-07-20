@@ -1,5 +1,27 @@
 # Upgrading
 
+## To 1.0.3
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^1.0.3
+```
+
+### Notable behavior change
+
+None for application code. This release fixes Symfony **8.1** CI installs and bumps maintainer/dev tooling only. Runtime API and configuration are unchanged from **1.0.2**.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 1.0.2
 
 ```bash

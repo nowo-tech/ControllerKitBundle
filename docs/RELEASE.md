@@ -1,17 +1,16 @@
 # Release process
 
-## Checklist (v1.0.2)
+## Checklist (v1.0.3)
 
-1. [CHANGELOG.md](CHANGELOG.md) — version **1.0.2** and date set; `[Unreleased]` empty.
-2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **1.0.2** (no consumer API change).
-3. Contributor docs — [CONTRIBUTING.md](CONTRIBUTING.md), [GITHUB_CI.md](GITHUB_CI.md), [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) linked from README.
-4. `make release-check` — check-no-cursor-coauthor, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check.
-5. Commit: `Release v1.0.2`
-6. Annotated tag: `git tag -a v1.0.2 -m "Release v1.0.2"`
-7. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
-8. Push: `git push origin main && git push origin v1.0.2`
-9. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
-10. Confirm Packagist auto-update (or trigger manual sync).
+1. [CHANGELOG.md](CHANGELOG.md) — version **1.0.3** and date set; `[Unreleased]` empty.
+2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **1.0.3** (no consumer API change).
+3. `make release-check` — check-no-cursor-coauthor, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check.
+4. Commit: `Release v1.0.3`
+5. Annotated tag: `git tag -a v1.0.3 -m "Release v1.0.3"`
+6. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
+7. Push: `git push origin main && git push origin v1.0.3`
+8. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
+9. Confirm Packagist auto-update (or trigger manual sync).
 
 ## Standard workflow (next releases)
 
