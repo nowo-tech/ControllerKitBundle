@@ -108,6 +108,17 @@ class RedirectToRefererTraitTest extends TestCase
         self::assertSame('/fallback-url', $response->getTargetUrl());
     }
 
+    public function testRedirectToRefererWithSameHostButUnmatchedPathFallsBackToDefaultRoute(): void
+    {
+        $controller = $this->createControllerStub('fallback', [], true);
+        $request    = Request::create('https://example.com/current');
+        $request->headers->set('Referer', 'https://example.com/unknown-path');
+
+        $response = $controller->runRedirectToReferer($request);
+
+        self::assertSame('/fallback-url', $response->getTargetUrl());
+    }
+
     public function testRedirectToRefererMergesParamsAndUsesStatus(): void
     {
         $controller = $this->createControllerStub('homepage');

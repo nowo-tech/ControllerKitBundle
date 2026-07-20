@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-07-20
+
+### Added
+
+- **REQ-GIT-001** — Git hygiene: `.githooks/commit-msg`, `make setup-hooks`, `make check-no-cursor-coauthor`, CI job `git-hygiene`, and [`docs/GITHUB_CI.md`](GITHUB_CI.md).
+- **Code of Conduct** — [Contributor Covenant](../CODE_OF_CONDUCT.md).
+- **Tests** — `RedirectToRefererTrait`: same-host Referer with unmatched path falls back to `default_route`.
+
+### Documentation
+
+- **CONTRIBUTING.md** — Code of Conduct and git hooks setup.
+- **RELEASE.md** — Re-run co-author check before push after the release commit.
+- **README** — Links to GITHUB_CI.md and CODE_OF_CONDUCT.md.
+
 ## [1.0.1] - 2026-07-09
 
 ### Security
@@ -54,5 +68,6 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[1.0.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.2
 [1.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.1
 [1.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.0

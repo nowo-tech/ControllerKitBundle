@@ -1,5 +1,27 @@
 # Upgrading
 
+## To 1.0.2
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^1.0.2
+```
+
+### Notable behavior change
+
+None for application code. This release adds maintainer tooling (git hygiene / CI), Code of Conduct, docs, and an extra unit test. Runtime API and configuration are unchanged from **1.0.1**.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 1.0.1
 
 ```bash
