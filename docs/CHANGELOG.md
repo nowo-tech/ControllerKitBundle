@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-07-20
+
 ### Fixed
 
 - **CI** — `code-style` / `code-style-check` jobs use PHP **8.4** so `composer install` works with a Symfony **8.1** lockfile (`php >=8.4.1`).
@@ -83,6 +85,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[1.0.4]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.4
 [1.0.3]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.3
 [1.0.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.2
 [1.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.1

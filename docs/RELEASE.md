@@ -1,14 +1,14 @@
 # Release process
 
-## Checklist (v1.0.3)
+## Checklist (v1.0.4)
 
-1. [CHANGELOG.md](CHANGELOG.md) — version **1.0.3** and date set; `[Unreleased]` empty.
-2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **1.0.3** (no consumer API change).
+1. [CHANGELOG.md](CHANGELOG.md) — version **1.0.4** and date set; `[Unreleased]` empty.
+2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **1.0.4** (no consumer API change).
 3. `make release-check` — check-no-cursor-coauthor, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check.
-4. Commit: `Release v1.0.3`
-5. Annotated tag: `git tag -a v1.0.3 -m "Release v1.0.3"`
+4. Commit: `Release v1.0.4`
+5. Annotated tag: `git tag -a v1.0.4 -m "Release v1.0.4"`
 6. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
-7. Push: `git push origin main && git push origin v1.0.3`
+7. Push: `git push origin main && git push origin v1.0.4`
 8. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
 9. Confirm Packagist auto-update (or trigger manual sync).
 

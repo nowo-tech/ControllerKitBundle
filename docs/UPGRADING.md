@@ -1,5 +1,27 @@
 # Upgrading
 
+## To 1.0.4
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^1.0.4
+```
+
+### Notable behavior change
+
+None for application code. This release only adjusts CI code-style jobs to PHP **8.4**. Runtime API and configuration are unchanged from **1.0.3**.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 1.0.3
 
 ```bash
