@@ -7,10 +7,10 @@ This bundle includes a runnable demo with FrankenPHP in:
 The demo uses:
 
 - Caddy on HTTP `:80` inside the container
-- **`Caddyfile`** (production image / `APP_ENV` not `dev`): **worker** mode for throughput
-- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — used when the entrypoint runs with **`APP_ENV=dev`** (default in `docker-compose`)
+- **`Caddyfile`**: **worker** mode (`php_server { worker ... }`) for throughput
+- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — hot-reload friendly
 
-**Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`** and **`APP_DEBUG=1`**, mounts **`docker/frankenphp/Caddyfile.dev`** and **`docker/php-dev.ini`**. The container entrypoint copies `Caddyfile.dev` over the active Caddyfile so you get **one PHP process per request**, not workers.
+Runtime selection is via **`FRANKENPHP_MODE`** (`classic` | `worker`), not `APP_ENV`. Compose still sets **`APP_ENV=dev`** / **`APP_DEBUG=1`** and mounts **`docker/php-dev.ini`**.
 
 ## Quick start
 
@@ -23,6 +23,15 @@ make -C demo up-symfony8
 Then open:
 
 - Symfony 8.1: `http://localhost:8011`
+
+## Switching classic vs worker (`FRANKENPHP_MODE`)
+
+| Value | Behaviour |
+| --- | --- |
+| **`worker`** (default) | Use the worker Caddyfile |
+| **`classic`** | Entrypoint copies `Caddyfile.dev` (plain `php_server`) |
+
+Set in `.env` / `.env.example`. Compose passes `FRANKENPHP_MODE=${FRANKENPHP_MODE:-worker}` into the PHP service. After changing `.env`, run `docker compose up -d` (or `make up`) so the container is **recreated** — a plain `restart` does not reload env. No image rebuild is required.
 
 ## Development stack in demos
 

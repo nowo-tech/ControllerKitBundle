@@ -12,7 +12,7 @@ make up-symfony8
 
 The demo includes:
 
-- FrankenPHP with Caddy (HTTP on `:80` inside container). Default **`APP_ENV=dev`** uses **Caddyfile.dev** (no PHP worker); see [docs/DEMO-FRANKENPHP.md](../docs/DEMO-FRANKENPHP.md) for production (worker) vs development.
+- FrankenPHP with Caddy (HTTP on `:80` inside container). Mode via **`FRANKENPHP_MODE`** (`worker` default, or `classic`); see [docs/DEMO-FRANKENPHP.md](../docs/DEMO-FRANKENPHP.md).
 - Web Profiler enabled in `dev`
 - Nowo Twig Inspector enabled in `dev`
 - Dedicated `Makefile` (`demo/symfony8/Makefile`)

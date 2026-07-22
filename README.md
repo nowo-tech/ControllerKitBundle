@@ -133,7 +133,7 @@ make release-check
 
 - `demo/symfony8` — Symfony **8.1** (PHP 8.4+), host port **8011** by default
 
-The demo runs **FrankenPHP + Caddy** in Docker. **`docker-compose`** sets **`APP_ENV=dev`** and mounts **`Caddyfile.dev`**, so PHP runs **without** long-lived workers (changes visible on refresh). **Worker mode** is the production Caddyfile path — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
+The demo runs **FrankenPHP + Caddy** in Docker with **`APP_ENV=dev`**. Runtime mode is **`FRANKENPHP_MODE`** (`worker` default, or `classic` for per-request PHP) — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
 
 Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
 

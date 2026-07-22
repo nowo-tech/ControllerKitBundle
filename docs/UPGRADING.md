@@ -1,5 +1,27 @@
 # Upgrading
 
+## To 2.0.1
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.1
+```
+
+### Notable behavior change
+
+None for application code. This release only adjusts the FrankenPHP **demo** (`FRANKENPHP_MODE`). Runtime API and configuration are unchanged from **2.0.0**.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 2.0.0
 
 ```bash

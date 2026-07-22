@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-07-22
+
+### Changed
+
+- **Demo FrankenPHP** — Runtime mode via **`FRANKENPHP_MODE`** (`classic` | `worker`, default `worker`) in `.env` / Compose; dedicated `demo/symfony8/docker/entrypoint.sh`.
+
+### Documentation
+
+- **DEMO-FRANKENPHP.md** / README — Document `FRANKENPHP_MODE` (no longer driven only by `APP_ENV`).
+
 ## [2.0.0] - 2026-07-20
 
 ### Changed
@@ -96,6 +106,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[2.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.1
 [2.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.0
 [1.0.4]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.4
 [1.0.3]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.3
