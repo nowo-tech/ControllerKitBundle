@@ -6,6 +6,10 @@
 
 **Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
 
+![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
+
+This bundle is **FrankenPHP worker mode friendly**.
+
 ## Features
 
 - **RedirectToRefererTrait** — Redirect to the HTTP Referer when valid (same app, route exists), or to a configurable default route. 100% configurable via `nowo_controller_kit.default_route`.
@@ -94,7 +98,6 @@ If `OtherController::actionName` does not exist, a `BadMethodCallException` is t
 
 ## Documentation
 
-- [GitHub Actions CI requirements](docs/GITHUB_CI.md)
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Usage](docs/USAGE.md)
@@ -111,6 +114,7 @@ If `OtherController::actionName` does not exist, a `BadMethodCallException` is t
 ### Additional documentation
 
 - [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
+- [GitHub Actions CI requirements](docs/GITHUB_CI.md)
 
 ## Requirements
 

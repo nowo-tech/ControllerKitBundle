@@ -9,6 +9,7 @@ use Nowo\ControllerKitBundle\Controller\RedirectToRefererTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -138,7 +139,7 @@ class RedirectToRefererTraitTest extends TestCase
         $router->method('match')
             ->willReturnCallback(static function (string $path) use ($matchResult, $matchThrows): array {
                 if ($matchThrows) {
-                    throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException();
+                    throw new ResourceNotFoundException();
                 }
 
                 return $matchResult;

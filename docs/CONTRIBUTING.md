@@ -1,9 +1,9 @@
 # Contributing
 
-
 ## Code of Conduct
 
 This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). By participating, you are expected to uphold it. Please report unacceptable behavior to **hectorfranco@nowo.tech**.
+
 ## Development setup
 
 1. Clone the repository.
@@ -14,6 +14,7 @@ This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDU
 ## Code style
 
 - PHP-CS-Fixer (PSR-12 + Symfony): `make cs-fix` / `make cs-check`.
+- PHPStan (level 8) including **`nowo-tech/phpstan-frankenphp`** rulesets `classic` + `worker` (REQ-CS-005; `require-dev` only — not a runtime dependency for apps).
 - PHPDoc and Markdown docs in **English**.
 - Strict types in all PHP files.
 
@@ -22,6 +23,7 @@ This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDU
 - Target the default branch.
 - Ensure `make release-check` passes.
 - Keep the changelog and docs updated when behaviour or config changes.
+
 ## Git hooks (REQ-GIT-001)
 
 Do **not** add `Co-authored-by: Cursor` or `cursoragent@cursor.com` trailers to commit messages.

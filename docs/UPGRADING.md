@@ -1,5 +1,29 @@
 # Upgrading
 
+## To 2.0.2
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.2
+```
+
+### Notable behavior change
+
+None for application code. This release adds maintainer QA (PHPStan FrankenPHP rules), README worker-mode banner, `make down-dev`, and demo/docs hygiene for bundle standards. Runtime API and configuration are unchanged from **2.0.1**.
+
+`nowo-tech/phpstan-frankenphp` is **`require-dev` only** and is not pulled when applications require this bundle.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 2.0.1
 
 ```bash

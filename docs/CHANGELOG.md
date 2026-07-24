@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-07-24
+
+### Added
+
+- **REQ-CS-005** — `nowo-tech/phpstan-frankenphp` in `require-dev` with `ruleset-classic` + `ruleset-worker` in `phpstan.neon.dist`.
+- **REQ-DOCS-017** — FrankenPHP Friendly Worker Mode banner in README (`docs/images/frankenphp-friendly.png`).
+- **REQ-MAKE-007** — `make down-dev` (root and demo).
+
+### Changed
+
+- **REQ-DEMO-003 / REQ-ENV-001** — Demo `.gitignore` categories aligned; `install` copies `.env.example` → `.env` when missing.
+- **REQ-DOCS-002** — README `## Documentation` link order; CI docs under Additional documentation.
+- **Rector** — Target PHP version set to **8.2** (matches package minimum).
+- **PHP-CS-Fixer** — `fully_qualified_strict_types.import_symbols` enabled.
+
 ## [2.0.1] - 2026-07-22
 
 ### Changed
@@ -106,6 +121,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[2.0.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.1
 [2.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.0
 [1.0.4]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v1.0.4

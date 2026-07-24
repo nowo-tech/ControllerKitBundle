@@ -1,9 +1,10 @@
-.PHONY: help up down build install shell logs test test-coverage cache-clear update-bundle ensure-up restart verify
+.PHONY: help up down down-dev build install shell logs test test-coverage cache-clear update-bundle ensure-up restart verify
 
 help:
 	@echo "Symfony 8 Demo - Controller Kit Bundle"
 	@echo "  make up             Start containers"
 	@echo "  make down           Stop containers"
+	@echo "  make down-dev       Stop containers (keep volumes; REQ-MAKE-007)"
 	@echo "  make restart        Restart containers"
 	@echo "  make build          Build image (no cache)"
 	@echo "  make install        Install dependencies"
@@ -33,6 +34,10 @@ ensure-up:
 down:
 	docker-compose down
 
+# Stop containers without removing volumes (REQ-MAKE-007)
+down-dev:
+	docker-compose down --remove-orphans
+
 restart: ensure-up
 	docker-compose restart
 
@@ -40,6 +45,7 @@ build:
 	docker-compose build --no-cache
 
 install: ensure-up
+	@if [ ! -f .env ]; then cp .env.example .env 2>/dev/null || true; fi
 	docker-compose exec -T php composer install --no-interaction
 	docker-compose exec -T php php bin/console cache:clear
 

@@ -1,32 +1,40 @@
 # ------------------------------------------------------------------------------
-# Local environment (never commit real secrets)
+# Local environment (do not version secrets)
 # ------------------------------------------------------------------------------
-# Copy from .env.example. Do not commit .env, .env.dev, or machine-specific locals.
+# Copy from .env.example via `make up` / `make install`. Do not commit .env,
+# .env.dev, or machine-specific locals (REQ-DEMO-003 / REQ-ENV-001).
 /.env
 /.env.dev
 /.env.local
 /.env.local.php
 /.env.*.local
 
-###> symfony/framework-bundle ###
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
+# ------------------------------------------------------------------------------
+# Dependencies & build artifacts
+# ------------------------------------------------------------------------------
 /vendor/
-###< symfony/framework-bundle ###
+/node_modules/
+/.pnpm-store/
+/public/build/
+/public/bundles/
+/dist/
 
-###> phpunit/phpunit ###
-/phpunit.xml
+# ------------------------------------------------------------------------------
+# Caches, logs, and runtime
+# ------------------------------------------------------------------------------
+/var/
+*.log
 /.phpunit.cache/
-###< phpunit/phpunit ###
-
-# ------------------------------------------------------------------------------
-# Build / cache / IDE (generated or machine-specific)
-# ------------------------------------------------------------------------------
+/phpunit.xml
 /.php-cs-fixer.cache
 
 # ------------------------------------------------------------------------------
-# Archives (compressed distributions; do not version binary drops)
+# Symfony secrets
+# ------------------------------------------------------------------------------
+/config/secrets/prod/prod.decrypt.private.php
+
+# ------------------------------------------------------------------------------
+# Archives / compressed (REQ-GITIGNORE-001)
 # ------------------------------------------------------------------------------
 *.zip
 *.tar
