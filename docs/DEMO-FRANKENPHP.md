@@ -2,7 +2,9 @@
 
 This bundle includes a runnable demo with FrankenPHP in:
 
-- `demo/symfony8` — Symfony **8.1** (PHP **8.4+**)
+- `demo/symfony8` — Symfony **8.1** on FrankenPHP **PHP 8.5** (`dunglas/frankenphp:1-php8.5-alpine`)
+
+**PHP version policy (Symfony 8 demos):** use the newest PHP minor published in official FrankenPHP images when the demo’s `require.php` and Symfony 8 allow it (today: **8.5**). Bump the Dockerfile tag when FrankenPHP adds a newer PHP and constraints still match.
 
 The demo uses:
 
@@ -64,3 +66,14 @@ return [
 - If app does not respond, run `make -C demo/symfony8 logs`.
 - If routes/config changed, run `make -C demo/symfony8 cache-clear`.
 - If dependencies are outdated, run `make -C demo/symfony8 update-bundle`.
+
+## Demo smoke (REQ-TEST-011)
+
+Boot the FrankenPHP demo, expect **HTTP 200** on the published port, then tear down:
+
+```bash
+make demo-smoke
+# or: make -C demo demo-smoke
+```
+
+Smoke URL: `http://127.0.0.1:8011` (Symfony 8.1 demo). This target is also part of `make -C demo release-check` / root `make release-check`.

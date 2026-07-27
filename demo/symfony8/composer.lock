@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e00570e15df071f9af6708bf203d03b",
+    "content-hash": "c5396adb80fe2761747a7dbc31c1d52c",
     "packages": [
         {
             "name": "nowo-tech/controller-kit-bundle",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "8ff4b4c15a8757c9dc0aa5dd60900310c3ea1819"
+                "reference": "3e70d1a8ca53aeef1ba60caf914b5472cd4fb5b6"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -31,6 +31,7 @@
                 "phpunit/phpunit": "^10.0",
                 "rector/rector": "^2.0",
                 "symfony/framework-bundle": "^7.0 || ^8.0",
+                "symfony/phpunit-bridge": "^7.0 || ^8.0",
                 "symfony/yaml": "^7.0 || ^8.0"
             },
             "suggest": {
@@ -5470,7 +5471,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.4",
+        "php": ">=8.5",
         "ext-ctype": "*",
         "ext-iconv": "*"
     },

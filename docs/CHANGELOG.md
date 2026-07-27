@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.3] - 2026-07-27
+
+### Added
+
+- **REQ-TEST-011** — `make demo-smoke` (root + `demo/`) boots the Symfony 8 demo and asserts HTTP **200** on `:8011`; included in demo `release-check`.
+- **REQ-SF-005** — `SYMFONY_DEPRECATIONS_HELPER=max[direct]=0` in `phpunit.xml.dist` and CI; `symfony/phpunit-bridge` in `require-dev`.
+- **REQ-REL-003 / REQ-MAKE-002** — `.scripts/check-open-prs.sh` and `make check-open-prs` wired into `release-check`.
+
+### Changed
+
+- **REQ-DEMO-010** — Symfony 8 demo FrankenPHP image bumped to **PHP 8.5** (`dunglas/frankenphp:1-php8.5-alpine`); demo `require.php` is `>=8.5`.
+- **REQ-PHP-001** — `NowoControllerKitBundle`, `Configuration`, and `ControllerKitExtension` marked `final`.
+- **REQ-DOCS-018** — GitHub About: description, Packagist website, and topics (`php`, `symfony`, `symfony-bundle`, …).
+- **REQ-OBS-001 / REQ-SEC-004** — `docs/SECURITY.md`: logging policy, corrected same-host Referer mitigation, AI audit grade **Low**.
+
 ## [2.0.2] - 2026-07-24
 
 ### Added
@@ -121,6 +136,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[2.0.3]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.3
 [2.0.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.1
 [2.0.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.0

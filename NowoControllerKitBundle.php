@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-class NowoControllerKitBundle extends Bundle
+final class NowoControllerKitBundle extends Bundle
 {
     public function getContainerExtension(): ?ExtensionInterface
     {

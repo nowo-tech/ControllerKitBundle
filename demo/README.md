@@ -2,7 +2,7 @@
 
 This directory contains a runnable demo for:
 
-- `symfony8` — Symfony **8.1**, PHP **8.4+** (http://localhost:8011)
+- `symfony8` — Symfony **8.1**, FrankenPHP PHP **8.5** (http://localhost:8011)
 
 ## Quick start
 
@@ -21,6 +21,7 @@ The demo includes:
 
 ```bash
 make release-check
+# or smoke only: make -C .. demo-smoke
 ```
 
-This runs PHPUnit in the demo (smoke), updates the path bundle, and verifies startup + HTTP healthcheck.
+This updates the path bundle, runs demo PHPUnit, and boots the stack to assert **HTTP 200** on `:8011` (`demo-smoke` / REQ-TEST-011).

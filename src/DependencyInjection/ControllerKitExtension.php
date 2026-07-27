@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-class ControllerKitExtension extends Extension
+final class ControllerKitExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {

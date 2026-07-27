@@ -1,5 +1,29 @@
 # Upgrading
 
+## To 2.0.3
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.3
+```
+
+### Notable behavior change
+
+None for application code that uses the traits and `nowo_controller_kit.default_route` as documented. Runtime redirect/forward behaviour is unchanged from **2.0.2**.
+
+Demo / maintainer-only: FrankenPHP Symfony 8 demo now targets **PHP 8.5**; `make demo-smoke` / `make check-open-prs` support release hygiene.
+
+### Breaking changes
+
+- **`final` classes** — `NowoControllerKitBundle`, `Nowo\ControllerKitBundle\DependencyInjection\Configuration`, and `ControllerKitExtension` are now `final`. Do not subclass them; configure the bundle via YAML/PHP config instead. Trait APIs (`RedirectToRefererTrait`, `SafeForwardTrait`) are unchanged.
+
+---
+
 ## To 2.0.2
 
 ```bash

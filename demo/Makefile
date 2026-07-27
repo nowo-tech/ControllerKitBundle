@@ -1,6 +1,6 @@
 DEMOS := symfony8
 
-.PHONY: help clean test-all test-coverage-all verify-all release-check release-verify update-bundle-all
+.PHONY: help clean test-all test-coverage-all verify-all release-check release-verify demo-smoke update-bundle-all
 .PHONY: $(foreach demo,$(DEMOS),up-$(demo) down-$(demo) restart-$(demo) build-$(demo) install-$(demo) update-bundle-$(demo) shell-$(demo) logs-$(demo) test-$(demo) test-coverage-$(demo) verify-$(demo))
 .PHONY: up down restart build install update-bundle test shell logs test-coverage verify
 
@@ -12,8 +12,9 @@ help:
 	@echo "  up-symfony8 / down-symfony8 / restart-symfony8"
 	@echo "  build-symfony8, install-symfony8, update-bundle-symfony8"
 	@echo "  test-symfony8, test-coverage-symfony8"
-	@echo "  release-check    Run update-bundle-all + test-all + release-verify"
-	@echo "  release-verify   For each demo: up -> healthcheck -> down"
+	@echo "  release-check    Run update-bundle-all + test-all + demo-smoke"
+	@echo "  demo-smoke       REQ-TEST-011: up -> HTTP 200 on :8011 -> down"
+	@echo "  release-verify   Alias of demo-smoke"
 	@echo ""
 	@echo "Access: Symfony 8 http://localhost:8011"
 
@@ -90,18 +91,21 @@ verify:
 	@[ -n "$(DEMO)" ] || { echo "Usage: make verify DEMO=symfony8"; exit 1; }
 	@$(MAKE) verify-$(DEMO)
 
-release-verify:
+# REQ-TEST-011: boot demo stack and expect HTTP 200
+demo-smoke:
 	@for demo in $(DEMOS); do \
 		port=8011; \
-		echo "Release verify: $$demo (port $$port)"; \
+		echo "Demo smoke: $$demo (http://127.0.0.1:$$port)"; \
 		$(MAKE) up-$$demo; sleep 12; \
 		code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
 		$(MAKE) down-$$demo 2>/dev/null || true; \
 		if [ "$$code" != "200" ]; then echo "$$demo failed with HTTP $$code"; exit 1; fi; \
-		echo "$$demo OK"; \
+		echo "$$demo OK (HTTP $$code)"; \
 	done
 
-release-check: update-bundle-all test-all release-verify
+release-verify: demo-smoke
+
+release-check: update-bundle-all test-all demo-smoke
 
 clean:
 	@rm -rf symfony8/var

@@ -49,6 +49,7 @@
         "phpunit/phpunit": "^10.0",
         "rector/rector": "^2.0",
         "symfony/framework-bundle": "^7.0 || ^8.0",
+        "symfony/phpunit-bridge": "^7.0 || ^8.0",
         "symfony/yaml": "^7.0 || ^8.0"
     },
     "autoload": {
