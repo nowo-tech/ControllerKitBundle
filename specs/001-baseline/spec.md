@@ -44,7 +44,7 @@ Minimal Symfony bundle exposing two **traits** for controllers: safe redirect to
 
 ## Success Criteria
 
-- **SC-001**: **5/5** production files under `src/` mapped in inventory.
+- **SC-001**: **6/6** production sources mapped in inventory (incl. root `NowoControllerKitBundle.php`).
 - **SC-002**: PHPUnit reports 100% line coverage on `src/`.
 - **SC-003**: `composer qa` passes.
 

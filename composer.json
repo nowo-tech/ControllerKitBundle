@@ -4,14 +4,17 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
+        "php",
         "symfony",
+        "symfony-bundle",
         "bundle",
         "controller",
         "redirect",
         "referer",
         "forward",
         "traits",
-        "utilities"
+        "utilities",
+        "frankenphp"
     ],
     "homepage": "https://github.com/nowo-tech/ControllerKitBundle",
     "support": {

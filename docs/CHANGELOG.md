@@ -5,7 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Table of contents
+
+- [[Unreleased]](#unreleased)
+- [[2.0.4] - 2026-07-28](#204-2026-07-28)
+  - [Added](#added)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[2.0.3] - 2026-07-27](#203-2026-07-27)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.2] - 2026-07-24](#202-2026-07-24)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.1] - 2026-07-22](#201-2026-07-22)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[2.0.0] - 2026-07-20](#200-2026-07-20)
+  - [Changed](#changed)
+  - [Removed](#removed)
+- [[1.0.4] - 2026-07-20](#104-2026-07-20)
+  - [Fixed](#fixed)
+- [[1.0.3] - 2026-07-20](#103-2026-07-20)
+  - [Fixed](#fixed)
+  - [Changed](#changed)
+- [[1.0.2] - 2026-07-20](#102-2026-07-20)
+  - [Added](#added)
+  - [Documentation](#documentation)
+- [[1.0.1] - 2026-07-09](#101-2026-07-09)
+  - [Security](#security)
+  - [Added](#added)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[1.0.0] - 2026-06-11](#100-2026-06-11)
+  - [Added](#added)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+
 ## [Unreleased]
+
+## [2.0.4] - 2026-07-28
+
+### Added
+
+- **CI** — PHPStan job in `.github/workflows/ci.yml` (REQ-CS-006).
+- **`.github/workflows/demo-smoke.yml`** — scheduled / tag / dispatch smoke (REQ-TEST-011).
+
+### Changed
+
+- PHPStan: explicit `ignoreErrors: []` (REQ-CS-006).
+- Spec Kit inventory maps root `NowoControllerKitBundle.php` (6 production sources).
+- `composer.json` keywords: add `php`, `symfony-bundle`, `frankenphp`.
+- **REQ-REL-003** — `check-open-prs.sh` resolves `--repo` from `origin` when `gh` cannot infer the GitHub host from SSH remotes.
+
+### Documentation
+
+- Table of contents on long docs (REQ-DOCS-005).
+- **REQ-DOCS-018** — GitHub topic `symfony-bundle` present on About topics.
 
 ## [2.0.3] - 2026-07-27
 
@@ -136,6 +192,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[2.0.4]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.3
 [2.0.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.1

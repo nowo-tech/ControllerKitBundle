@@ -1,5 +1,62 @@
 # Upgrading
 
+## Table of contents
+
+- [To 2.0.4](#to-204)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 2.0.3](#to-203)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 2.0.2](#to-202)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 2.0.1](#to-201)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 2.0.0](#to-200)
+  - [Breaking changes](#breaking-changes)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Removed](#removed)
+- [To 1.0.4](#to-104)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 1.0.3](#to-103)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 1.0.2](#to-102)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 1.0.1](#to-101)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
+- [To 1.0.0 (initial release)](#to-100-initial-release)
+  - [Requirements](#requirements)
+  - [Enable and configure](#enable-and-configure)
+  - [Breaking changes](#breaking-changes)
+
+## To 2.0.4
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.4
+```
+
+### Notable behavior change
+
+None for application code. This release adds CI PHPStan and scheduled/tag `demo-smoke` workflows, Packagist/GitHub keyword hygiene, docs TOCs, and Spec Kit inventory accuracy. Runtime API and configuration are unchanged from **2.0.3**.
+
+### Breaking changes
+
+None.
+
+---
+
 ## To 2.0.3
 
 ```bash

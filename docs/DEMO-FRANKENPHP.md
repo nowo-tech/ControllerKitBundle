@@ -14,6 +14,14 @@ The demo uses:
 
 Runtime selection is via **`FRANKENPHP_MODE`** (`classic` | `worker`), not `APP_ENV`. Compose still sets **`APP_ENV=dev`** / **`APP_DEBUG=1`** and mounts **`docker/php-dev.ini`**.
 
+## Table of contents
+
+- [Quick start](#quick-start)
+- [Switching classic vs worker (`FRANKENPHP_MODE`)](#switching-classic-vs-worker-frankenphp_mode)
+- [Development stack in demos](#development-stack-in-demos)
+- [Troubleshooting](#troubleshooting)
+- [Demo smoke (REQ-TEST-011)](#demo-smoke-req-test-011)
+
 ## Quick start
 
 From the bundle root:

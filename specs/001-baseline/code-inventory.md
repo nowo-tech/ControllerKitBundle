@@ -2,7 +2,13 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/controller-kit-bundle`  
-**Last audited**: 2026-07-07
+**Last audited**: 2026-07-28
+
+## Bundle entry (classmap)
+
+| Source file | Spec section | Requirement IDs |
+| --- | --- | --- |
+| `NowoControllerKitBundle.php` (repo root) | Bundle bootstrap | FR-CFG-002 |
 
 ## Symfony config (`src/Resources/config/`)
 
@@ -23,6 +29,8 @@
 
 | Category | Files | Mapped |
 | --- | ---: | ---: |
+| Bundle entry | 1 | 1 |
 | PHP traits | 2 | 2 |
+| DI | 2 | 2 |
 | Symfony config | 1 | 1 |
-| **Total production sources** | **5** | **5** |
+| **Total production sources** | **6** | **6** |

@@ -155,6 +155,26 @@ jobs:
       - name: Check code style
         run: composer cs-check
 
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPStan (REQ-CS-006)
+        run: composer phpstan
+
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest

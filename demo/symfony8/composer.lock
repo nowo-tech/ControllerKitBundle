@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "3e70d1a8ca53aeef1ba60caf914b5472cd4fb5b6"
+                "reference": "10c9293e49de2624324850f266e1cdbac13f975b"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -112,9 +112,12 @@
                 "bundle",
                 "controller",
                 "forward",
+                "frankenphp",
+                "php",
                 "redirect",
                 "referer",
                 "symfony",
+                "symfony-bundle",
                 "traits",
                 "utilities"
             ],
