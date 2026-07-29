@@ -2,6 +2,9 @@
 
 ## Table of contents
 
+- [To 2.0.6](#to-206)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
 - [To 2.0.5](#to-205)
   - [Notable behavior change](#notable-behavior-change)
   - [Breaking changes](#breaking-changes)
@@ -37,6 +40,28 @@
   - [Requirements](#requirements)
   - [Enable and configure](#enable-and-configure)
   - [Breaking changes](#breaking-changes)
+
+## To 2.0.6
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.6
+```
+
+### Notable behavior change
+
+None for application code. Maintainer/CI only: Makefiles detect Compose V2 (`docker compose`) first, with fallback to `docker-compose` V1 (REQ-MAKE-010), and resolve the `docker` binary via `command -v` to avoid a local `docker/` directory shadowing the CLI. Runtime API and configuration are unchanged from **2.0.5**.
+
+### Breaking changes
+
+None.
+
+---
 
 ## To 2.0.5
 

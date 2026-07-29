@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.6] - 2026-07-29](#206-2026-07-29)
+  - [Fixed](#fixed)
 - [[2.0.5] - 2026-07-29](#205-2026-07-29)
   - [Fixed](#fixed)
 - [[2.0.4] - 2026-07-28](#204-2026-07-28)
@@ -45,6 +47,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Documentation](#documentation)
 
 ## [Unreleased]
+
+## [2.0.6] - 2026-07-29
+
+### Fixed
+
+- **REQ-MAKE-010** — Root and `demo/symfony8` Makefiles prefer Compose V2 (`docker compose`) with fallback to `docker-compose` V1, so `make demo-smoke` / `make up` work on GitHub Actions runners that lack the legacy binary. Docker CLI is resolved via `command -v` so a local demo `docker/` directory cannot shadow the binary when `PATH` contains empty segments.
 
 ## [2.0.5] - 2026-07-29
 
@@ -200,6 +208,7 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[2.0.6]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.6
 [2.0.5]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.5
 [2.0.4]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.3

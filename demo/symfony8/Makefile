@@ -16,57 +16,57 @@ help:
 
 up:
 	@if [ ! -f .env ]; then cp .env.example .env 2>/dev/null || true; fi
-	docker-compose up -d
+	$(COMPOSE) up -d
 	@echo "Waiting for container to be ready..."
 	@sleep 5
 	@echo "Installing dependencies..."
-	@docker-compose exec -T -e COMPOSER_MEMORY_LIMIT=-1 php composer install --no-interaction
+	@$(COMPOSE) exec -T -e COMPOSER_MEMORY_LIMIT=-1 php composer install --no-interaction
 	@PORT=$$(grep "^PORT=" .env 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
 	[ -z "$$PORT" ] && PORT=$$(grep "^PORT=" .env.example 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
 	echo "Demo started at: http://localhost:$$PORT"
 ensure-up:
-	@if ! docker-compose exec -T php true 2>/dev/null; then \
+	@if ! $(COMPOSE) exec -T php true 2>/dev/null; then \
 		echo "Starting demo container..."; \
-		docker-compose up -d; \
+		$(COMPOSE) up -d; \
 		sleep 3; \
 	fi
 
 down:
-	docker-compose down
+	$(COMPOSE) down
 
 # Stop containers without removing volumes (REQ-MAKE-007)
 down-dev:
-	docker-compose down --remove-orphans
+	$(COMPOSE) down --remove-orphans
 
 restart: ensure-up
-	docker-compose restart
+	$(COMPOSE) restart
 
 build:
-	docker-compose build --no-cache
+	$(COMPOSE) build --no-cache
 
 install: ensure-up
 	@if [ ! -f .env ]; then cp .env.example .env 2>/dev/null || true; fi
-	docker-compose exec -T php composer install --no-interaction
-	docker-compose exec -T php php bin/console cache:clear
+	$(COMPOSE) exec -T php composer install --no-interaction
+	$(COMPOSE) exec -T php php bin/console cache:clear
 
 shell: ensure-up
-	docker-compose exec php sh
+	$(COMPOSE) exec php sh
 
 logs:
-	docker-compose logs -f
+	$(COMPOSE) logs -f
 
 test: ensure-up
-	docker-compose exec -T -e APP_ENV=test php php bin/phpunit
+	$(COMPOSE) exec -T -e APP_ENV=test php php bin/phpunit
 
 test-coverage: ensure-up
-	docker-compose exec -T -e APP_ENV=test php php bin/phpunit --coverage-text
+	$(COMPOSE) exec -T -e APP_ENV=test php php bin/phpunit --coverage-text
 
 cache-clear: ensure-up
-	docker-compose exec -T php php bin/console cache:clear
+	$(COMPOSE) exec -T php php bin/console cache:clear
 
 update-bundle: ensure-up
-	docker-compose exec -T php composer update nowo-tech/controller-kit-bundle --no-interaction
-	docker-compose exec -T php php bin/console cache:clear --env=dev
+	$(COMPOSE) exec -T php composer update nowo-tech/controller-kit-bundle --no-interaction
+	$(COMPOSE) exec -T php php bin/console cache:clear --env=dev
 
 verify: ensure-up
 	@code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$${PORT:-8011} 2>/dev/null || echo "000"); \
@@ -76,6 +76,9 @@ verify: ensure-up
 
 # REQ-MAKE-008: update-deps (optional: monorepo helper absent on standalone GitHub Actions checkout)
 SERVICE_PHP := php
-COMPOSE := docker-compose
+# Prefer Compose V2 plugin (GitHub Actions / modern Docker Desktop); fall back to docker-compose V1 (REQ-MAKE-010).
+# Resolve `docker` via `command -v` so the local `docker/` directory cannot shadow the CLI when PATH has empty components.
+DOCKER_BIN := $(shell command -v docker 2>/dev/null || echo docker)
+COMPOSE := $(shell $(DOCKER_BIN) compose version >/dev/null 2>&1 && echo "$(DOCKER_BIN) compose" || echo "docker-compose")
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
 -include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-update-deps.mk
