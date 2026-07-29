@@ -112,6 +112,6 @@ clean:
 	@echo "Demo caches cleaned"
 
 
-# REQ-MAKE-008: update-deps-all (REQ-MAKE-008)
+# REQ-MAKE-008: update-deps-all (optional: monorepo helper absent on standalone GitHub Actions checkout)
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
-include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-aggregate-update-deps.mk
+-include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-aggregate-update-deps.mk

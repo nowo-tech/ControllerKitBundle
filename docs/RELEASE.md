@@ -1,14 +1,14 @@
 # Release process
 
-## Checklist (v2.0.4)
+## Checklist (v2.0.5)
 
-1. [CHANGELOG.md](CHANGELOG.md) — version **2.0.4** and date set; `[Unreleased]` empty.
-2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **2.0.4** (CI PHPStan / demo-smoke; no consumer API change).
+1. [CHANGELOG.md](CHANGELOG.md) — version **2.0.5** and date set; `[Unreleased]` empty.
+2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **2.0.5** (Makefile soft-include for CI; no consumer API change).
 3. `make release-check` — check-no-cursor-coauthor, check-open-prs, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check (includes `demo-smoke`).
-4. Commit: `Release v2.0.4`
-5. Annotated tag: `git tag -a v2.0.4 -m "Release v2.0.4"`
+4. Commit: `Release v2.0.5`
+5. Annotated tag: `git tag -a v2.0.5 -m "Release v2.0.5"`
 6. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
-7. Push: `git push origin main && git push origin v2.0.4`
+7. Push: `git push origin main && git push origin v2.0.5`
 8. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
 9. Confirm Packagist auto-update (or trigger manual sync).
 

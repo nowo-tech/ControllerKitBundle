@@ -2,6 +2,9 @@
 
 ## Table of contents
 
+- [To 2.0.5](#to-205)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
 - [To 2.0.4](#to-204)
   - [Notable behavior change](#notable-behavior-change)
   - [Breaking changes](#breaking-changes)
@@ -34,6 +37,28 @@
   - [Requirements](#requirements)
   - [Enable and configure](#enable-and-configure)
   - [Breaking changes](#breaking-changes)
+
+## To 2.0.5
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.5
+```
+
+### Notable behavior change
+
+None for application code. Maintainer/CI only: Makefile soft-includes for optional monorepo `update-deps` helpers so GitHub Actions `demo-smoke` does not fail when those files are missing. Runtime API and configuration are unchanged from **2.0.4**.
+
+### Breaking changes
+
+None.
+
+---
 
 ## To 2.0.4
 

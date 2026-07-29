@@ -74,8 +74,8 @@ verify: ensure-up
 	echo "Healthcheck OK ($$code)"
 
 
-# REQ-MAKE-008: update-deps (REQ-MAKE-008)
+# REQ-MAKE-008: update-deps (optional: monorepo helper absent on standalone GitHub Actions checkout)
 SERVICE_PHP := php
 COMPOSE := docker-compose
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
-include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-update-deps.mk
+-include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-update-deps.mk
