@@ -32,6 +32,12 @@ return [
 ];
 ```
 
+## Requirements
+
+- PHP `>=8.2` (<8.6); **Symfony 8.0** and **8.1** require **PHP 8.4+**
+- Symfony **7.4**, **8.0**, or **8.1** (minimum supported minors; also works on Symfony 7.0–7.3 via `composer.json` constraints)
+- For traits: `symfony/framework-bundle` in your application (AbstractController)
+
 ## Configuration
 
 In `config/packages/nowo_controller_kit.yaml`:
@@ -44,7 +50,6 @@ nowo_controller_kit:
 Use your own route name (e.g. `app_home`, `dashboard`).
 
 ## Usage
-
 ### redirectToReferer
 
 Use the trait in a controller that extends `AbstractController`:
@@ -96,6 +101,25 @@ class ApiController extends AbstractController
 
 If `OtherController::actionName` does not exist, a `BadMethodCallException` is thrown instead of a generic error.
 
+## Demo
+
+- `demo/symfony8` — Symfony **8.1** (FrankenPHP PHP **8.5**), host port **8011** by default
+
+The demo runs **FrankenPHP + Caddy** in Docker with **`APP_ENV=dev`**. Runtime mode is **`FRANKENPHP_MODE`** (`worker` default, or `classic` for per-request PHP) — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
+
+Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
+
+## Development
+
+```bash
+make up
+make install
+make test
+make cs-check
+make phpstan
+make release-check
+```
+
 ## Documentation
 
 - [Installation](docs/INSTALLATION.md)
@@ -115,31 +139,6 @@ If `OtherController::actionName` does not exist, a `BadMethodCallException` is t
 
 - [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
 - [GitHub Actions CI requirements](docs/GITHUB_CI.md)
-
-## Requirements
-
-- PHP `>=8.2` (<8.6); **Symfony 8.0** and **8.1** require **PHP 8.4+**
-- Symfony **7.4**, **8.0**, or **8.1** (minimum supported minors; also works on Symfony 7.0–7.3 via `composer.json` constraints)
-- For traits: `symfony/framework-bundle` in your application (AbstractController)
-
-## Development
-
-```bash
-make up
-make install
-make test
-make cs-check
-make phpstan
-make release-check
-```
-
-## Demo
-
-- `demo/symfony8` — Symfony **8.1** (FrankenPHP PHP **8.5**), host port **8011** by default
-
-The demo runs **FrankenPHP + Caddy** in Docker with **`APP_ENV=dev`**. Runtime mode is **`FRANKENPHP_MODE`** (`worker` default, or `classic` for per-request PHP) — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
-
-Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
 
 ## Tests and coverage
 
