@@ -2,6 +2,7 @@
 
 ## Table of contents
 
+- [To 2.0.7](#to-207)
 - [To 2.0.6](#to-206)
   - [Notable behavior change](#notable-behavior-change)
   - [Breaking changes](#breaking-changes)
@@ -40,6 +41,15 @@
   - [Requirements](#requirements)
   - [Enable and configure](#enable-and-configure)
   - [Breaking changes](#breaking-changes)
+
+## To 2.0.7
+
+No application upgrade steps. **Demos only:** Hot Reload Bundle `^1.4` (FrankenPHP Mercure/`hot_reload`, `dev`/`test`).
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+php bin/console cache:clear
+```
 
 ## To 2.0.6
 

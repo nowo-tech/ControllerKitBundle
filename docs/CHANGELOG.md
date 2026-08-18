@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.7] - 2026-08-18](#207-2026-08-18)
 - [[2.0.6] - 2026-07-29](#206-2026-07-29)
   - [Fixed](#fixed)
 - [[2.0.5] - 2026-07-29](#205-2026-07-29)
@@ -47,6 +48,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Documentation](#documentation)
 
 ## [Unreleased]
+
+## [2.0.7] - 2026-08-18
+
+### Changed
+
+- **Demos:** pin `nowo-tech/hot-reload-bundle` to `^1.4` with FrankenPHP Mercure/`hot_reload` (`dev`/`test` only).
+
+[2.0.7]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.7
 
 ## [2.0.6] - 2026-07-29
 
