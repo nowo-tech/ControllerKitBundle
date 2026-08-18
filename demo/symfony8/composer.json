@@ -4,17 +4,19 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "nowo-tech/controller-kit-bundle": "@dev",
+        "php": ">=8.5",
         "symfony/console": "8.1.*",
         "symfony/dotenv": "8.1.*",
         "symfony/flex": "^2.11",
         "symfony/framework-bundle": "8.1.*",
         "symfony/runtime": "8.1.*",
         "symfony/twig-bundle": "8.1.*",
-        "symfony/yaml": "8.1.*"
+        "symfony/yaml": "8.1.*",
+        "twig/extra-bundle": "^3.12",
+        "twig/string-extra": "^3.12"
     },
     "config": {
         "allow-plugins": {
@@ -77,6 +79,7 @@
         }
     }],
     "require-dev": {
+        "nowo-tech/hot-reload-bundle": "^1.4",
         "nowo-tech/twig-inspector-bundle": "@dev",
         "phpunit/phpunit": "^13.2.4",
         "symfony/browser-kit": "8.1.*",

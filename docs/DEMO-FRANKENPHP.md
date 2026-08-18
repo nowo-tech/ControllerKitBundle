@@ -49,6 +49,7 @@ The demo includes:
 
 - **Symfony Debug** (`symfony/debug-bundle`)
 - **Symfony Web Profiler** (`symfony/web-profiler-bundle`)
+- **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`) and **Nowo Hot Reload** (`nowo-tech/hot-reload-bundle`) — required together on FrankenPHP demos (dev/test only; Caddyfile Mercure + `hot_reload`, plus `worker { watch }` in worker mode). Do not enable Hot Reload in production.
 - **`APP_DEBUG=1`** in `.env.example`
 - **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`)
 
