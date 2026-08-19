@@ -2,6 +2,7 @@
 
 ## Table of contents
 
+- [To 2.0.8](#to-208)
 - [To 2.0.7](#to-207)
 - [To 2.0.6](#to-206)
   - [Notable behavior change](#notable-behavior-change)
@@ -41,6 +42,14 @@
   - [Requirements](#requirements)
   - [Enable and configure](#enable-and-configure)
   - [Breaking changes](#breaking-changes)
+
+## To 2.0.8
+
+No application upgrade steps.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
 
 ## To 2.0.7
 
