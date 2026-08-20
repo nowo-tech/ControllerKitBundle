@@ -96,8 +96,13 @@ demo-smoke:
 	@for demo in $(DEMOS); do \
 		port=8011; \
 		echo "Demo smoke: $$demo (http://127.0.0.1:$$port)"; \
-		$(MAKE) up-$$demo; sleep 12; \
-		code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
+		$(MAKE) up-$$demo || exit 1; \
+		code=000; \
+		for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do \
+			code=$$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
+			if [ "$$code" = "200" ]; then break; fi; \
+			sleep 2; \
+		done; \
 		$(MAKE) down-$$demo 2>/dev/null || true; \
 		if [ "$$code" != "200" ]; then echo "$$demo failed with HTTP $$code"; exit 1; fi; \
 		echo "$$demo OK (HTTP $$code)"; \
