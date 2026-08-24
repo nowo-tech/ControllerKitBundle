@@ -49,6 +49,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [2.0.9] - 2026-08-24
+
+### Changed
+
+- **Docs:** PHP-FIG PSR evaluation (REQ-CS-007).
+
+### Notes
+
+- **No API or configuration changes** for integrators unless noted above.
+
+[2.0.9]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.9
+
 ## [2.0.8] - 2026-08-19
 
 ### Security
