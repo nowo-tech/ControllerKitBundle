@@ -70,6 +70,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md); linked from README, DEMO-FRANKENPHP, SECURITY, and USAGE.
 
+### Tests
+
+- Unit coverage for `getRouter()` / `resolveControllerContainer()` (missing router, wrong type, invalid or absent container).
+
 ## [2.0.9] - 2026-08-24
 
 ### Changed
