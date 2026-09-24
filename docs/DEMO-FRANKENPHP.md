@@ -18,6 +18,7 @@ Runtime selection is via **`FRANKENPHP_MODE`** (`classic` | `worker`), not `APP_
 
 - [Quick start](#quick-start)
 - [Switching classic vs worker (`FRANKENPHP_MODE`)](#switching-classic-vs-worker-frankenphp_mode)
+- [Worker mode and kernel reset](#worker-mode-and-kernel-reset)
 - [Development stack in demos](#development-stack-in-demos)
 - [Troubleshooting](#troubleshooting)
 - [Demo smoke (REQ-TEST-011)](#demo-smoke-req-test-011)
@@ -42,6 +43,10 @@ Then open:
 | **`classic`** | Entrypoint copies `Caddyfile.dev` (plain `php_server`) |
 
 Set in `.env` / `.env.example`. Compose passes `FRANKENPHP_MODE=${FRANKENPHP_MODE:-worker}` into the PHP service. After changing `.env`, run `docker compose up -d` (or `make up`) so the container is **recreated** — a plain `restart` does not reload env. No image rebuild is required.
+
+## Worker mode and kernel reset
+
+This package is audited as safe when FrankenPHP keeps the Symfony kernel warm **without** resetting it between requests (no mutable services or static state in the bundle). Full checklist: [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md). Host controllers that use the traits must remain request-stateless (do not store `Request` / match results on properties).
 
 ## Development stack in demos
 

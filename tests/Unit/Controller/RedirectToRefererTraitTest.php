@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Nowo\ControllerKitBundle\Tests\Unit\Controller;
 
 use InvalidArgumentException;
+use LogicException;
 use Nowo\ControllerKitBundle\Controller\RedirectToRefererTrait;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use stdClass;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -130,6 +133,70 @@ class RedirectToRefererTraitTest extends TestCase
         self::assertSame(303, $response->getStatusCode());
     }
 
+    public function testGetRouterResolvesRouterFromControllerContainer(): void
+    {
+        $router = $this->createMock(RouterInterface::class);
+        $router->method('match')->willReturn(['_route' => 'product_show', 'id' => '1']);
+        $router->method('generate')->willReturn('/product/1');
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('has')->with('router')->willReturn(true);
+        $container->method('get')->with('router')->willReturn($router);
+
+        $controller = new RedirectToRefererContainerController($container, 'homepage');
+        $request    = Request::create('https://example.com/current');
+        $request->headers->set('Referer', 'https://example.com/product/1');
+
+        $response = $controller->runRedirectToReferer($request);
+
+        self::assertSame('/product/1', $response->getTargetUrl());
+    }
+
+    public function testGetRouterThrowsWhenContainerHasNoRouter(): void
+    {
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('has')->with('router')->willReturn(false);
+
+        $controller = new RedirectToRefererContainerController($container, 'homepage');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('must expose the "router" service');
+
+        $controller->exposeGetRouter();
+    }
+
+    public function testGetRouterThrowsWhenRouterServiceIsNotRouterInterface(): void
+    {
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('has')->with('router')->willReturn(true);
+        $container->method('get')->with('router')->willReturn(new stdClass());
+
+        $controller = new RedirectToRefererContainerController($container, 'homepage');
+
+        $this->expectException(LogicException::class);
+
+        $controller->exposeGetRouter();
+    }
+
+    public function testGetRouterThrowsWhenContainerPropertyIsNotContainerInterface(): void
+    {
+        $controller = new RedirectToRefererInvalidContainerController();
+
+        $this->expectException(LogicException::class);
+
+        $controller->exposeGetRouter();
+    }
+
+    public function testGetRouterThrowsWhenControllerHasNoContainerProperty(): void
+    {
+        $controller = new RedirectToRefererNoContainerController();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('must expose the "router" service');
+
+        $controller->exposeGetRouter();
+    }
+
     /**
      * @param array<string, mixed> $matchResult
      */
@@ -206,5 +273,112 @@ class RedirectToRefererTestController
         $url = $this->router->generate($route, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
 
         return new RedirectResponse($url, $status);
+    }
+}
+
+/**
+ * Uses the trait's default getRouter() via a PSR container (AbstractController-like).
+ *
+ * @internal
+ */
+class RedirectToRefererContainerController
+{
+    use RedirectToRefererTrait;
+
+    public function __construct(
+        protected ContainerInterface $container,
+        private readonly string $defaultRoute,
+    ) {
+    }
+
+    /**
+     * @param array<string, mixed>|null $params
+     */
+    public function runRedirectToReferer(Request $request, ?array $params = [], int $status = 302): RedirectResponse
+    {
+        return $this->redirectToReferer($request, $params, $status);
+    }
+
+    public function exposeGetRouter(): RouterInterface
+    {
+        return $this->getRouter();
+    }
+
+    protected function getParameter(string $name): string
+    {
+        if ($name === 'nowo_controller_kit.default_route') {
+            return $this->defaultRoute;
+        }
+
+        throw new InvalidArgumentException('Unknown parameter: ' . $name);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
+    {
+        $router = $this->getRouter();
+        $url    = $router->generate($route, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
+
+        return new RedirectResponse($url, $status);
+    }
+}
+
+/**
+ * Has a `container` property that is not a PSR container.
+ *
+ * @internal
+ */
+class RedirectToRefererInvalidContainerController
+{
+    use RedirectToRefererTrait;
+
+    protected mixed $container = 'not-a-container';
+
+    public function exposeGetRouter(): RouterInterface
+    {
+        return $this->getRouter();
+    }
+
+    protected function getParameter(string $name): string
+    {
+        throw new InvalidArgumentException('Unused in getRouter tests: ' . $name);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
+    {
+        return new RedirectResponse('/' . $route, $status);
+    }
+}
+
+/**
+ * No `container` property — exercises resolveControllerContainer() returning null.
+ *
+ * @internal
+ */
+class RedirectToRefererNoContainerController
+{
+    use RedirectToRefererTrait;
+
+    public function exposeGetRouter(): RouterInterface
+    {
+        return $this->getRouter();
+    }
+
+    protected function getParameter(string $name): string
+    {
+        throw new InvalidArgumentException('Unused in getRouter tests: ' . $name);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
+    {
+        return new RedirectResponse('/' . $route, $status);
     }
 }

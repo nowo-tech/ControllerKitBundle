@@ -1,16 +1,17 @@
 # Release process
 
-## Checklist (v2.0.6)
+## Checklist (v2.0.10)
 
-1. [CHANGELOG.md](CHANGELOG.md) — version **2.0.6** and date set; `[Unreleased]` empty.
-2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **2.0.6** (Compose V2 detection; no consumer API change).
-3. `make release-check` — check-no-cursor-coauthor, check-open-prs, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check (includes `demo-smoke`).
-4. Commit: `Release v2.0.6`
-5. Annotated tag: `git tag -a v2.0.6 -m "Release v2.0.6"`
-6. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
-7. Push: `git push origin main && git push origin v2.0.6`
-8. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
-9. Confirm Packagist auto-update (or trigger manual sync).
+1. [CHANGELOG.md](CHANGELOG.md) — version **2.0.10** and date set; `[Unreleased]` empty.
+2. [UPGRADING.md](UPGRADING.md) — upgrade notes for **2.0.10** (`getRouter()` fix; FrankenPHP worker / no kernel reset).
+3. [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md) — verdict current.
+4. `make release-check` — check-no-cursor-coauthor, check-open-prs, cs-fix, cs-check, rector-dry, phpstan, test-coverage, demo release-check (includes `demo-smoke`).
+5. Commit: `Release v2.0.10`
+6. Annotated tag: `git tag -a v2.0.10 -m "Release v2.0.10"`
+7. `make check-no-cursor-coauthor` again **before** push (REQ-GIT-001).
+8. Push: `git push origin main && git push origin v2.0.10`
+9. GitHub Actions `release.yml` creates the GitHub Release from the tag and changelog.
+10. Confirm Packagist auto-update (or trigger manual sync).
 
 ## Standard workflow (next releases)
 

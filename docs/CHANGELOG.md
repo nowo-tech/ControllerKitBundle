@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.10] - 2026-09-24](#2010-2026-09-24)
+  - [Fixed](#fixed)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[2.0.9] - 2026-08-24](#209-2026-08-24)
+- [[2.0.8] - 2026-08-19](#208-2026-08-19)
 - [[2.0.7] - 2026-08-18](#207-2026-08-18)
 - [[2.0.6] - 2026-07-29](#206-2026-07-29)
   - [Fixed](#fixed)
@@ -49,6 +55,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.10] - 2026-09-24
+
+### Fixed
+
+- **`RedirectToRefererTrait`** — resolve the router from the controller container (`AbstractController`) instead of relying on a missing `getRouter()` host method (which made valid Referers always fall back to `default_route`).
+
+### Changed
+
+- **FrankenPHP worker** — PHPStan includes `ruleset-worker-strict` + `ruleset-hardening`; traits documented as safe when the kernel is **not** reset between requests.
+- **Specs** — `FR-WRK-001` worker / no-kernel-reset requirement in `specs/001-baseline/spec.md`.
+
+### Documentation
+
+- Added [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md); linked from README, DEMO-FRANKENPHP, SECURITY, and USAGE.
 
 ## [2.0.9] - 2026-08-24
 
@@ -59,8 +79,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - **No API or configuration changes** for integrators unless noted above.
-
-[2.0.9]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.9
 
 ## [2.0.8] - 2026-08-19
 
@@ -236,6 +254,10 @@ First stable release.
 - **demo/README.md** — Symfony versions and dev/prod Caddyfile note.
 - **Demo Makefiles** — removed broken `REQ-MAKE-008` includes; `release-check` runs `test-all` (FrankenPHP images have no coverage driver).
 
+[2.0.10]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.10
+[2.0.9]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.9
+[2.0.8]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.8
+[2.0.7]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.7
 [2.0.6]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.6
 [2.0.5]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.5
 [2.0.4]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.4

@@ -42,6 +42,8 @@ protected function redirectToReferer(
 - If `Referer` is present, its **host matches the current request host** (case-insensitive), and its path matches a route in your app, redirects to that route (path + query preserved, then merged with `$params`).
 - Otherwise redirects to the route configured as `nowo_controller_kit.default_route`.
 
+Controllers extending `AbstractController` get the router from the container automatically. Override `getRouter()` only if you do not use `AbstractController`. Do not cache the current `Request` or matched routes on controller properties when running under FrankenPHP worker without kernel reset — see [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+
 ---
 
 ## SafeForwardTrait

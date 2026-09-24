@@ -15,4 +15,6 @@ parameters:
 
 includes:
   - vendor/nowo-tech/phpstan-frankenphp/ruleset-classic.neon
-  - vendor/nowo-tech/phpstan-frankenphp/ruleset-worker.neon
+  # worker-strict includes default worker rules + request-superglobal hygiene (kernel not reset).
+  - vendor/nowo-tech/phpstan-frankenphp/ruleset-worker-strict.neon
+  - vendor/nowo-tech/phpstan-frankenphp/ruleset-hardening.neon

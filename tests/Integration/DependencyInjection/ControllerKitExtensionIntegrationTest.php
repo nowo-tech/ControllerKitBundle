@@ -17,7 +17,7 @@ final class ControllerKitExtensionIntegrationTest extends TestCase
 
         $container->registerExtension($extension);
         $container->loadFromExtension('nowo_controller_kit', ['default_route' => 'integration_home']);
-        $container->compile();
+        $container->compile(true);
 
         self::assertTrue($container->hasParameter('nowo_controller_kit.default_route'));
         self::assertSame('integration_home', $container->getParameter('nowo_controller_kit.default_route'));

@@ -16,6 +16,9 @@ use function sprintf;
  * Forwards the request to another controller method after validating that the
  * target method exists, preventing runtime errors from missing methods.
  *
+ * Stateless and FrankenPHP worker-safe (including when the kernel is not reset between
+ * requests): no properties or statics; arguments are request-local only.
+ *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */

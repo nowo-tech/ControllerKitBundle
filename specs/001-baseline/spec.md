@@ -39,6 +39,7 @@ Minimal Symfony bundle exposing two **traits** for controllers: safe redirect to
 - **FR-CTRL-001**: `RedirectToRefererTrait` validates Referer (same host, resolvable route), merges extra params, supports status code.
 - **FR-CTRL-002**: `SafeForwardTrait` checks `method_exists` before forward.
 - **FR-DI-001**: Packaged default YAML template under `Resources/config/packages/`.
+- **FR-WRK-001**: Package source stays FrankenPHP worker-safe with **kernel not reset** between requests (no services, no mutable trait state, no static/request leakage); documented in `docs/FRANKENPHP-WORKER-AUDIT.md`.
 
 ---
 

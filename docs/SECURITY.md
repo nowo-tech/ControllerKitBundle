@@ -30,6 +30,7 @@ Controller Kit provides reusable controller helpers and conventions for Symfony 
 | Forward to missing controller method | `SafeForwardTrait` validates `method_exists` before `forward()` and throws `BadMethodCallException`. |
 | Missing authorization in consuming apps | Applications must enforce `access_control`, voters, and roles on routes. |
 | XSS in responses | Use Twig escaping; validate user-supplied content. |
+| Request state leak under FrankenPHP worker (kernel not reset) | Traits are stateless; no package services. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md). |
 
 ## Logging and observability
 

@@ -3,6 +3,9 @@
 ## Table of contents
 
 
+- [To 2.0.10](#to-2010)
+  - [Notable behavior change](#notable-behavior-change)
+  - [Breaking changes](#breaking-changes)
 - [From 2.0.8 to 2.0.9](#from-208-to-209)
 - [To 2.0.8](#to-208)
 - [To 2.0.7](#to-207)
@@ -44,6 +47,30 @@
   - [Requirements](#requirements)
   - [Enable and configure](#enable-and-configure)
   - [Breaking changes](#breaking-changes)
+
+## To 2.0.10
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Or require explicitly:
+
+```bash
+composer require nowo-tech/controller-kit-bundle:^2.0.10
+```
+
+### Notable behavior change
+
+- **`redirectToReferer()`** — Controllers extending `AbstractController` now resolve routes from a valid same-host Referer correctly. Previously the trait called a non-existent `getRouter()` and always fell back to `nowo_controller_kit.default_route` when a Referer was present. If you overrode `getRouter()`, that override still wins.
+
+FrankenPHP: package remains worker-safe with **kernel not reset** between requests; see [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+
+### Breaking changes
+
+None.
+
+---
 
 ## To 2.0.8
 

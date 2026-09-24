@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace Nowo\ControllerKitBundle\Controller;
 
+use LogicException;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 use Throwable;
 
 use function in_array;
+use function sprintf;
 
 /**
  * Trait that provides redirectToReferer for controllers extending AbstractController.
  *
  * Redirects to the request Referer when valid (same host, route exists); otherwise
  * redirects to the configurable default route (nowo_controller_kit.default_route).
+ *
+ * Stateless and FrankenPHP worker-safe (including when the kernel is not reset between
+ * requests): no properties, statics, or request data retained on the controller.
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
@@ -79,5 +86,36 @@ trait RedirectToRefererTrait
 
             return $this->redirectToRoute($defaultRoute, $params ?? [], $status);
         }
+    }
+
+    /**
+     * Resolves the router from the controller service container (AbstractController).
+     *
+     * Hosts that do not use AbstractController may override this method. Do not memoize
+     * per-request match results on controller properties (FrankenPHP worker / no kernel reset).
+     */
+    protected function getRouter(): RouterInterface
+    {
+        $container = $this->resolveControllerContainer();
+        if ($container !== null && $container->has('router')) {
+            $router = $container->get('router');
+            if ($router instanceof RouterInterface) {
+                return $router;
+            }
+        }
+
+        throw new LogicException(sprintf('Controller "%s" must expose the "router" service (extend AbstractController) or override getRouter().', static::class));
+    }
+
+    private function resolveControllerContainer(): ?ContainerInterface
+    {
+        if (!property_exists($this, 'container')) {
+            return null;
+        }
+
+        // Host controllers may type `$container` as ContainerInterface (AbstractController) or leave it untyped.
+        $container = $this->container ?? null;
+
+        return $container instanceof ContainerInterface ? $container : null;
     }
 }
