@@ -16,7 +16,7 @@ This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDU
 
 1. Clone the repository.
 2. Start the dev container: `make up` then `make install`.
-3. Run tests: `make test`, `make cs-check`, `make phpstan`.
+3. Run tests: `make test`, `make cs-check`, `make phpstan`, `make igor`.
 4. Pre-release: `make release-check`.
 
 ## Code style
