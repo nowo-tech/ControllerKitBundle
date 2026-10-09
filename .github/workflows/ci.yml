@@ -69,8 +69,8 @@ jobs:
             ${{ runner.os }}-php-${{ matrix.php }}-symfony-${{ matrix.symfony }}-composer-
             ${{ runner.os }}-php-${{ matrix.php }}-composer-
 
-      # Symfony 8.x needs PHP >=8.4.1; do not set platform.php to "8.4" (Composer treats it as 8.4.0).
-      # Matrix already excludes PHP < 8.4 for Symfony 8.0 / 8.1 — use the real runner PHP.
+      - name: Override Composer platform PHP (composer.json pins the minimum PHP for the lock)
+        run: composer config platform.php "${{ matrix.php }}.99"
 
       - name: Install dependencies with Symfony ${{ matrix.symfony }}
         run: |
@@ -108,7 +108,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          # composer.lock tracks Symfony 8.1 (php >=8.4.1); plain composer install cannot run on 8.2.
+          # composer.lock is resolved for the pinned platform (config.platform.php = 8.2.0); installable on any PHP >= 8.2.
           php-version: '8.4'
           tools: composer:v2, cs2pr
 
@@ -148,7 +148,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          # composer.lock tracks Symfony 8.1 (php >=8.4.1); plain composer install cannot run on 8.2.
+          # composer.lock is resolved for the pinned platform (config.platform.php = 8.2.0); installable on any PHP >= 8.2.
           php-version: '8.4'
           tools: composer:v2, cs2pr
 
