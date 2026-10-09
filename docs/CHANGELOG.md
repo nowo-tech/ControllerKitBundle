@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.12] - 2026-10-09](#2012-2026-10-09)
 - [[2.0.11] - 2026-09-27](#2011-2026-09-27)
 - [[2.0.10] - 2026-09-24](#2010-2026-09-24)
   - [Fixed](#fixed)
@@ -55,6 +56,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Documentation](#documentation)
 
 ## [Unreleased]
+
+## [2.0.12] - 2026-10-09
+
+### Dependencies
+
+- Runtime lock: Symfony 8.1 components -> v8.1.8 (framework-bundle, dependency-injection, http-kernel, http-foundation, error-handler; Dependabot #19), polyfills -> v1.43.
+- Dev tooling: `phpstan/phpstan` 2.3.1, `phpstan/phpstan-symfony` 2.1.0, `rector/rector` 2.7.0, `phpunit/phpunit` 10.5.66, `nowo-tech/phpstan-frankenphp` v1.2.3.
+- Demo (Symfony 8): Symfony v8.1.8, `twig/twig` v3.30.0, `twig/extra-bundle` ^3.29, PHPUnit ^13.4.1, `nowo-tech/hot-reload-bundle` ^1.5.4, `nowo-tech/twig-inspector-bundle` v1.1.7.
+
+[2.0.12]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.12
 
 ## [2.0.11] - 2026-09-27
 

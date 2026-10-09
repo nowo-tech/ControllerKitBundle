@@ -3,6 +3,16 @@
 
 ## Unreleased
 
+## To 2.0.12
+
+From **2.0.11** — dependency updates.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+No breaking changes. No application upgrade steps.
+
 ## To 2.0.11
 
 From **2.0.10** — REQ-CS-008 Igor FrankenPHP worker audit (igor-php require-dev, igor.json, make igor).
@@ -17,6 +27,7 @@ php bin/console cache:clear
 ## Table of contents
 
 
+- [To 2.0.12](#to-2012)
 - [To 2.0.10](#to-2010)
   - [Notable behavior change](#notable-behavior-change)
   - [Breaking changes](#breaking-changes)
