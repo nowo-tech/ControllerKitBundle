@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/controller-kit-bundle`  
-**Last audited**: 2026-07-28
+**Last audited**: 2026-10-13
 
 ## Bundle entry (classmap)
 
@@ -22,6 +22,7 @@
 | --- | --- | --- |
 | `Controller/RedirectToRefererTrait.php` | HTTP controller | FR-CTRL-001 |
 | `Controller/SafeForwardTrait.php` | HTTP controller | FR-CTRL-001 |
+| `Controller/RequiresValidFormTrait.php` | HTTP controller ([spec 002](../002-requires-valid-form/spec.md)) | FR-FORM-001..003 |
 | `DependencyInjection/Configuration.php` | Config tree | FR-CFG-001 |
 | `DependencyInjection/ControllerKitExtension.php` | DI extension | FR-CFG-002 |
 
@@ -30,7 +31,7 @@
 | Category | Files | Mapped |
 | --- | ---: | ---: |
 | Bundle entry | 1 | 1 |
-| PHP traits | 2 | 2 |
+| PHP traits | 3 | 3 |
 | DI | 2 | 2 |
 | Symfony config | 1 | 1 |
-| **Total production sources** | **6** | **6** |
+| **Total production sources** | **7** | **7** |

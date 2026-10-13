@@ -1,6 +1,6 @@
 {
     "name": "nowo-tech/controller-kit-bundle",
-    "description": "Controller utilities for Symfony: redirectToReferer (configurable default route) and SafeForwardTrait for safe request forwarding.",
+    "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding and RequiresValidFormTrait form guards.",
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
@@ -52,8 +52,11 @@
         "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^10.0",
         "rector/rector": "^2.0",
+        "symfony/form": "^7.0 || ^8.0",
         "symfony/framework-bundle": "^7.0 || ^8.0",
         "symfony/phpunit-bridge": "^7.0 || ^8.0",
+        "symfony/security-core": "^7.0 || ^8.0",
+        "symfony/security-csrf": "^7.0 || ^8.0",
         "symfony/yaml": "^7.0 || ^8.0"
     },
     "autoload": {
@@ -117,6 +120,8 @@
     },
     "suggest": {
         "symfony/framework-bundle": "Required in your application when using the traits with AbstractController",
-        "symfony/flex": "For automatic recipe installation"
+        "symfony/flex": "For automatic recipe installation",
+        "symfony/form": "Required when using RequiresValidFormTrait (form guard helpers)",
+        "symfony/security-core": "Required when using RequiresValidFormTrait (AbstractController::createAccessDeniedException)"
     }
 }

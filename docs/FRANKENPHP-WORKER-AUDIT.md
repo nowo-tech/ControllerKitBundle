@@ -41,6 +41,7 @@ A bundle that is safe under **B** is safe under **A** and under classic mode / P
 | *(none registered)* — `ControllerKitExtension` only sets `nowo_controller_kit.default_route` | — | — | ✅ | ✅ |
 | `Controller\RedirectToRefererTrait` | host controller | none; locals only; `getRouter()` resolves `router` from the controller container per call | ✅ | ✅ |
 | `Controller\SafeForwardTrait` | host controller | none; locals only | ✅ | ✅ |
+| `Controller\RequiresValidFormTrait` | host controller | none; locals only (form passed per call; flash goes to the request session) | ✅ | ✅ |
 
 `RouterListener` refreshes the router `RequestContext` on every main request, so `$router->match($path)` does not use a stale host/scheme across worker requests.
 

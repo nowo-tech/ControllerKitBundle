@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.1.0](#to-210)
 - [To 2.0.14](#to-2014)
 - [To 2.0.13](#to-2013)
 - [To 2.0.12](#to-2012)
@@ -52,6 +53,19 @@
   - [Breaking changes](#breaking-changes-12)
 
 ## Unreleased
+
+## To 2.1.0
+
+From **2.0.14** — new `RequiresValidFormTrait` (form guards). No breaking changes.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+# Only if you use RequiresValidFormTrait and do not have them yet:
+composer require symfony/form symfony/security-core
+```
+
+- To replace a host copy of a "require valid form" trait: `use Nowo\ControllerKitBundle\Controller\RequiresValidFormTrait;` in the controller. `requireValidForm()` and `requireValidCsrfForm()` keep the usual signatures and messages.
+- A host helper that flashed an invalid field (e.g. `acceptSubmittedRoleForm($form)`) becomes `acceptSubmittedForm($form, 'role', 'flash.your_invalid_role_key')`. The kit flashes only when **every** error comes from that field; if another field or the root form also has errors, it denies with 403. CSRF failures reported by Symfony's CSRF listener (root-level error) are detected and denied with `Invalid CSRF token.`.
 
 ## To 2.0.14
 

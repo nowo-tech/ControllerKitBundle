@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.1.0] - 2026-10-13](#210---2026-10-13)
 - [[2.0.14] - 2026-10-13](#2014---2026-10-13)
 - [[2.0.13] - 2026-10-13](#2013---2026-10-13)
 - [[2.0.12] - 2026-10-09](#2012---2026-10-09)
@@ -30,6 +31,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-06-11](#100---2026-06-11)
 
 ## [Unreleased]
+
+## [2.1.0] - 2026-10-13
+
+### Added
+
+- `Controller\RequiresValidFormTrait` for `AbstractController` subclasses (spec 002):
+  - `requireValidForm(FormInterface $form, string $message = 'Invalid form submission.')`: 403 when the form is not submitted or invalid.
+  - `requireValidCsrfForm(FormInterface $form)`: same, with the message `Invalid CSRF token.`.
+  - `acceptSubmittedForm(FormInterface $form, string $field, string $invalidFieldFlash, string $csrfField = '_token'): bool`: 403 when not submitted, on a CSRF failure or on other errors; when every error comes from `$field`, adds an `error` flash and returns `false`.
+- `composer.json` `suggest`: `symfony/form` and `symfony/security-core` (only needed by hosts that use the new trait; the bundle still installs without them).
+
+### Changed
+
+- Development: `symfony/form`, `symfony/security-core` and `symfony/security-csrf` added to `require-dev` for the trait tests.
+- `redirectToReferer()`: the temporary `GET` switch of the shared router context (restored in `finally`) is marked `// @igor-ignore`, so the Igor worker audit in `make release-check` passes again (no behaviour change).
+
+[2.1.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.1.0
 
 ## [2.0.14] - 2026-10-13
 

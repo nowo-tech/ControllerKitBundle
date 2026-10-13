@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "2036d406769149a9fb28864353eab8ead105290d"
+                "reference": "a361543df3799aee31d4a09a4e05c5677a554d29"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -31,13 +31,18 @@
                 "phpstan/phpstan-symfony": "^2.0",
                 "phpunit/phpunit": "^10.0",
                 "rector/rector": "^2.0",
+                "symfony/form": "^7.0 || ^8.0",
                 "symfony/framework-bundle": "^7.0 || ^8.0",
                 "symfony/phpunit-bridge": "^7.0 || ^8.0",
+                "symfony/security-core": "^7.0 || ^8.0",
+                "symfony/security-csrf": "^7.0 || ^8.0",
                 "symfony/yaml": "^7.0 || ^8.0"
             },
             "suggest": {
                 "symfony/flex": "For automatic recipe installation",
-                "symfony/framework-bundle": "Required in your application when using the traits with AbstractController"
+                "symfony/form": "Required when using RequiresValidFormTrait (form guard helpers)",
+                "symfony/framework-bundle": "Required in your application when using the traits with AbstractController",
+                "symfony/security-core": "Required when using RequiresValidFormTrait (AbstractController::createAccessDeniedException)"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -110,7 +115,7 @@
                     "homepage": "https://nowo.tech"
                 }
             ],
-            "description": "Controller utilities for Symfony: redirectToReferer (configurable default route) and SafeForwardTrait for safe request forwarding.",
+            "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding and RequiresValidFormTrait form guards.",
             "homepage": "https://github.com/nowo-tech/ControllerKitBundle",
             "keywords": [
                 "bundle",

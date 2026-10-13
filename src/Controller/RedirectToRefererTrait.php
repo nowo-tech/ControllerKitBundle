@@ -74,14 +74,15 @@ trait RedirectToRefererTrait
 
             // The referer is navigated with GET: match against GET even when the current request is a
             // POST (the router context is shared), and restore the original method afterwards.
+            // Igor: worker-safe, the shared context is restored in the finally block below.
             $context        = $router->getContext();
             $originalMethod = $context->getMethod();
-            $context->setMethod('GET');
+            $context->setMethod('GET'); // @igor-ignore
 
             try {
                 $routeInfo = $router->match($path);
             } finally {
-                $context->setMethod($originalMethod);
+                $context->setMethod($originalMethod); // @igor-ignore
             }
 
             // Read the route name from the match before merging the query string, and drop

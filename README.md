@@ -4,7 +4,7 @@
 
 > ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/controller-kit-bundle) · Give it a **star** on [GitHub](https://github.com/nowo-tech/ControllerKitBundle) so more developers can find it.
 
-**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
+**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding, and **RequiresValidFormTrait** form guards. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
@@ -14,6 +14,7 @@ This bundle is **FrankenPHP worker mode friendly**, including workers that do **
 
 - **RedirectToRefererTrait** — Redirect to the HTTP Referer when valid (same app, route exists), or to a configurable default route. 100% configurable via `nowo_controller_kit.default_route`.
 - **SafeForwardTrait** — Forward to another controller method with a check that the method exists (avoids runtime errors).
+- **RequiresValidFormTrait** — Form guards for `AbstractController`: `requireValidForm()` / `requireValidCsrfForm()` deny with 403 when a form is not submitted or invalid; `acceptSubmittedForm()` turns an invalid user-facing field into an error flash instead of a 403 (CSRF failures still 403). Needs `symfony/form` (suggested).
 
 ## Installation
 
@@ -37,6 +38,7 @@ return [
 - PHP `>=8.2` (<8.6); **Symfony 8.0** and **8.1** require **PHP 8.4+**
 - Symfony **7.4**, **8.0**, or **8.1** (minimum supported minors; also works on Symfony 7.0–7.3 via `composer.json` constraints)
 - For traits: `symfony/framework-bundle` in your application (AbstractController)
+- For `RequiresValidFormTrait`: `symfony/form` and `symfony/security-core`
 
 ## Configuration
 
@@ -100,6 +102,36 @@ class ApiController extends AbstractController
 ```
 
 If `OtherController::actionName` does not exist, a `BadMethodCallException` is thrown instead of a generic error.
+
+### requireValidForm / requireValidCsrfForm / acceptSubmittedForm
+
+```php
+use Nowo\ControllerKitBundle\Controller\RequiresValidFormTrait;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class MemberController extends AbstractController
+{
+  use RequiresValidFormTrait;
+
+  public function delete(Request $request): Response
+  {
+    $form = $this->createForm(DeleteMemberType::class)->handleRequest($request);
+    $this->requireValidCsrfForm($form); // 403 "Invalid CSRF token." when not submitted / invalid
+    // ...
+  }
+
+  public function changeRole(Request $request): Response
+  {
+    $form = $this->createForm(MemberRoleType::class)->handleRequest($request);
+    if (!$this->acceptSubmittedForm($form, 'role', 'flash.member_invalid_role')) {
+      return $this->redirectToRoute('members'); // only "role" was invalid: error flash already added
+    }
+    // ...
+  }
+}
+```
+
+Requires `symfony/form` and `symfony/security-core` in your application (suggested, not required, by the bundle).
 
 ## Demo
 

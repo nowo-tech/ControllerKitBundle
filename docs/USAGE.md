@@ -92,3 +92,57 @@ protected function safeForward(
 
 - If the target class has the given method, forwards the request and returns the sub-request response.
 - If the method does not exist, throws `BadMethodCallException` with a clear message.
+
+---
+
+## RequiresValidFormTrait
+
+For controllers extending `AbstractController` (uses `createAccessDeniedException()` and `addFlash()`). Requires `symfony/form` and `symfony/security-core` in your application; both are only suggested by the bundle, so hosts that do not use the trait do not need them. Call `handleRequest()` or `submit()` before the helpers.
+
+### requireValidForm
+
+```php
+protected function requireValidForm(FormInterface $form, string $message = 'Invalid form submission.'): void
+```
+
+Throws `AccessDeniedException` (HTTP 403) with `$message` when the form is not submitted or not valid.
+
+### requireValidCsrfForm
+
+```php
+protected function requireValidCsrfForm(FormInterface $form): void
+```
+
+Same as `requireValidForm()` with the message `Invalid CSRF token.`. Use it for CSRF-only action forms (delete buttons, toggles) where any error means a bad token.
+
+### acceptSubmittedForm
+
+```php
+protected function acceptSubmittedForm(
+    FormInterface $form,
+    string $field,
+    string $invalidFieldFlash,
+    string $csrfField = '_token'
+): bool
+```
+
+```php
+$form = $this->createForm(MemberRoleType::class)->handleRequest($request);
+if (!$this->acceptSubmittedForm($form, 'role', 'flash.project.member_invalid_role')) {
+    return $this->redirectToRoute('project_members', ['id' => $project->getId()]);
+}
+```
+
+**Behaviour:**
+
+| Form state | Result |
+| --- | --- |
+| Not submitted | 403 `Invalid form submission.` |
+| Valid | `true` |
+| CSRF failure | 403 `Invalid CSRF token.` |
+| Every error comes from `$field` (or its children) | `addFlash('error', $invalidFieldFlash)` and `false` |
+| Any other error (root error, another field, `$field` missing) | 403 `Invalid form submission.` |
+
+A CSRF failure is the error added by Symfony's `CsrfValidationListener` (its cause is a `CsrfToken`) or any error that comes from the `$csrfField` child. Pass `$csrfField` when your app changes `framework.form.csrf_protection.field_name` and renders the token as a real child.
+
+Use it for a field whose bad value is a user error rather than an attack (for example a tampered `ChoiceType` value): the user gets a flash and a redirect instead of a 403 page.
