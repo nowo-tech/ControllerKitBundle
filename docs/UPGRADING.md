@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## To 2.0.14
+
+From **2.0.13** — fix - redirectToReferer matches GET routes after POST, ignores _-prefixed query keys, honours base path.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+- Referer query keys starting with `_` (e.g. `_route`) are no longer passed to the generated route.
+
 ## To 2.0.13
 
 From **2.0.12** — dependency refresh and repository maintenance.
@@ -35,6 +45,7 @@ php bin/console cache:clear
 
 ## Table of contents
 
+- [To 2.0.14](#to-2014)
 - [To 2.0.13](#to-2013)
 - [To 2.0.12](#to-2012)
 - [To 2.0.10](#to-2010)

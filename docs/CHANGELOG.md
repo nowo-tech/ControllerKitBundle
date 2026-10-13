@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.14] - 2026-10-13](#2014-2026-10-13)
 - [[2.0.13] - 2026-10-13](#2013-2026-10-13)
 - [[2.0.12] - 2026-10-09](#2012-2026-10-09)
 - [[2.0.11] - 2026-09-27](#2011-2026-09-27)
@@ -58,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.14] - 2026-10-13
+
 ### Security
 
 - `redirectToReferer()`: the matched route name is read before the Referer query string is merged, and query keys starting with `_` are ignored, so a Referer such as `/page?_route=other` can no longer redirect to a different route.
@@ -66,6 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `redirectToReferer()` now matches the Referer path as a `GET` request (restoring the shared router context afterwards), so redirecting after a `POST` to a GET-only page no longer falls back to `default_route`.
 - `redirectToReferer()` strips the request base path (app served from a sub-directory) from the Referer path before matching.
+
+[2.0.14]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.14
 
 ## [2.0.13] - 2026-10-13
 
