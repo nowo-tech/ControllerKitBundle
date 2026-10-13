@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.13] - 2026-10-13](#2013-2026-10-13)
 - [[2.0.12] - 2026-10-09](#2012-2026-10-09)
 - [[2.0.11] - 2026-09-27](#2011-2026-09-27)
 - [[2.0.10] - 2026-09-24](#2010-2026-09-24)
@@ -57,9 +58,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.13] - 2026-10-13
+
 ### Changed
 
 - Development: `composer.json` pins `config.platform.php` to 8.2.0 so the committed lock stays installable on the minimum PHP; CI overrides the platform per matrix cell. Dev lock re-resolved for PHP 8.2 (Symfony 8.1 components -> 7.4 LTS).
+
+### Dependencies
+
+- `igor-php/igor-php` 0.9.7 → 0.10.1 (require-dev constraint + development lock; #20).
+
+[2.0.13]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.0.13
 
 ## [2.0.12] - 2026-10-09
 

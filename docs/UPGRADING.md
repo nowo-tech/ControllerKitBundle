@@ -1,7 +1,16 @@
 # Upgrading
 
-
 ## Unreleased
+
+## To 2.0.13
+
+From **2.0.12** — dependency refresh and repository maintenance.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+- No breaking changes. No application upgrade steps.
 
 ## To 2.0.12
 
@@ -26,7 +35,7 @@ php bin/console cache:clear
 
 ## Table of contents
 
-
+- [To 2.0.13](#to-2013)
 - [To 2.0.12](#to-2012)
 - [To 2.0.10](#to-2010)
   - [Notable behavior change](#notable-behavior-change)
