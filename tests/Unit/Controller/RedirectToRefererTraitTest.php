@@ -14,6 +14,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Loader\ClosureLoader;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -195,6 +200,89 @@ class RedirectToRefererTraitTest extends TestCase
         $this->expectExceptionMessage('must expose the "router" service');
 
         $controller->exposeGetRouter();
+    }
+
+    public function testPostRequestRedirectsToGetOnlyRefererRoute(): void
+    {
+        $request = Request::create('https://example.com/product/42/save', 'POST');
+        $request->headers->set('Referer', 'https://example.com/product/42?tab=details');
+        $router = $this->createRealRouter($request);
+
+        $response = (new RedirectToRefererTestController($router, 'homepage'))->runRedirectToReferer($request);
+
+        self::assertSame('/product/42?tab=details', $response->getTargetUrl());
+        self::assertSame('POST', $router->getContext()->getMethod(), 'Router context method is restored');
+    }
+
+    public function testRouterContextMethodIsRestoredWhenMatchFails(): void
+    {
+        $request = Request::create('https://example.com/product/42/save', 'POST');
+        $request->headers->set('Referer', 'https://example.com/does-not-exist');
+        $router = $this->createRealRouter($request);
+
+        $response = (new RedirectToRefererTestController($router, 'homepage'))->runRedirectToReferer($request);
+
+        self::assertSame('/', $response->getTargetUrl());
+        self::assertSame('POST', $router->getContext()->getMethod());
+    }
+
+    public function testRefererQueryCannotOverrideMatchedRoute(): void
+    {
+        $request = Request::create('https://example.com/current');
+        $request->headers->set('Referer', 'https://example.com/product/42?_route=admin_danger&_controller=x&tab=details');
+        $router = $this->createRealRouter($request);
+
+        $response = (new RedirectToRefererTestController($router, 'homepage'))->runRedirectToReferer($request);
+
+        self::assertSame('/product/42?tab=details', $response->getTargetUrl());
+    }
+
+    public function testRefererPathIsResolvedRelativeToBasePath(): void
+    {
+        $request = Request::create('https://example.com/sub/index.php/current', 'GET', [], [], [], [
+            'SCRIPT_FILENAME' => '/var/www/sub/index.php',
+            'SCRIPT_NAME'     => '/sub/index.php',
+            'PHP_SELF'        => '/sub/index.php/current',
+        ]);
+        $request->headers->set('Referer', 'https://example.com/sub/product/42');
+        $router = $this->createRealRouter($request);
+
+        $response = (new RedirectToRefererTestController($router, 'homepage'))->runRedirectToReferer($request);
+
+        self::assertSame('/sub', $request->getBasePath());
+        self::assertStringEndsWith('/product/42', $response->getTargetUrl());
+        self::assertStringNotContainsString('/sub/sub', $response->getTargetUrl());
+    }
+
+    public function testRefererEqualToBasePathMatchesRoot(): void
+    {
+        $request = Request::create('https://example.com/sub/index.php/current', 'GET', [], [], [], [
+            'SCRIPT_FILENAME' => '/var/www/sub/index.php',
+            'SCRIPT_NAME'     => '/sub/index.php',
+            'PHP_SELF'        => '/sub/index.php/current',
+        ]);
+        $request->headers->set('Referer', 'https://example.com/sub');
+        $router = $this->createRealRouter($request);
+
+        $response = (new RedirectToRefererTestController($router, 'fallback'))->runRedirectToReferer($request);
+
+        self::assertStringEndsWith('/', $response->getTargetUrl());
+        self::assertStringNotContainsString('fallback', $response->getTargetUrl());
+    }
+
+    private function createRealRouter(Request $request): Router
+    {
+        $routes = new RouteCollection();
+        $routes->add('homepage', new Route('/', methods: ['GET']));
+        $routes->add('fallback', new Route('/fallback', methods: ['GET']));
+        $routes->add('product_show', new Route('/product/{id}', methods: ['GET']));
+        $routes->add('product_save', new Route('/product/{id}/save', methods: ['POST']));
+        $routes->add('admin_danger', new Route('/admin/danger', methods: ['GET']));
+
+        $context = (new RequestContext())->fromRequest($request);
+        $context->setBaseUrl('');
+
+        return new Router(new ClosureLoader(), static fn (): RouteCollection => $routes, [], $context);
     }
 
     /**

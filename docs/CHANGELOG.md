@@ -58,6 +58,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- `redirectToReferer()`: the matched route name is read before the Referer query string is merged, and query keys starting with `_` are ignored, so a Referer such as `/page?_route=other` can no longer redirect to a different route.
+
+### Fixed
+
+- `redirectToReferer()` now matches the Referer path as a `GET` request (restoring the shared router context afterwards), so redirecting after a `POST` to a GET-only page no longer falls back to `default_route`.
+- `redirectToReferer()` strips the request base path (app served from a sub-directory) from the Referer path before matching.
+
 ## [2.0.13] - 2026-10-13
 
 ### Changed
