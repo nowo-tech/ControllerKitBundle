@@ -4,7 +4,7 @@
 
 > ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/controller-kit-bundle) · Give it a **star** on [GitHub](https://github.com/nowo-tech/ControllerKitBundle) so more developers can find it.
 
-**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding, and **RequiresValidFormTrait** form guards. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
+**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding, **RequiresValidFormTrait** form guards, and the **`#[MapScopedEntity]`** owner-scoped Doctrine entity argument resolver. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
@@ -15,6 +15,7 @@ This bundle is **FrankenPHP worker mode friendly**, including workers that do **
 - **RedirectToRefererTrait** — Redirect to the HTTP Referer when valid (same app, route exists), or to a configurable default route. 100% configurable via `nowo_controller_kit.default_route`.
 - **SafeForwardTrait** — Forward to another controller method with a check that the method exists (avoids runtime errors).
 - **RequiresValidFormTrait** — Form guards for `AbstractController`: `requireValidForm()` / `requireValidCsrfForm()` deny with 403 when a form is not submitted or invalid; `acceptSubmittedForm()` turns an invalid user-facing field into an error flash instead of a 403 (CSRF failures still 403). Needs `symfony/form` (suggested).
+- **`#[MapScopedEntity]`** — Controller argument attribute that loads a Doctrine entity with **one query joined on its owner** (another route attribute): another owner's entity is the same 404 as a missing one (no existence leak, no N+1, no manual `getOwner() !== $owner` checks). Nullable arguments get `null`. Needs `doctrine/orm` + `doctrine/doctrine-bundle` (suggested; the resolver is only registered when they are installed).
 
 ## Installation
 
@@ -39,6 +40,7 @@ return [
 - Symfony **7.4**, **8.0**, or **8.1** (minimum supported minors; also works on Symfony 7.0–7.3 via `composer.json` constraints)
 - For traits: `symfony/framework-bundle` in your application (AbstractController)
 - For `RequiresValidFormTrait`: `symfony/form` and `symfony/security-core`
+- For `#[MapScopedEntity]`: `doctrine/orm` (^2.17 or ^3) and `doctrine/doctrine-bundle`
 
 ## Configuration
 
@@ -132,6 +134,22 @@ class MemberController extends AbstractController
 ```
 
 Requires `symfony/form` and `symfony/security-core` in your application (suggested, not required, by the bundle).
+
+### #[MapScopedEntity]
+
+```php
+use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
+
+#[Route('/projects/{projectId}/issues/{issueId}')]
+public function show(
+  #[MapScopedEntity(parent: 'project', parentField: 'uuid', id: 'issueId', field: 'uuid')]
+  Issue $issue, // 404 when missing OR when it belongs to another project
+): Response {
+  // ...
+}
+```
+
+`parent` is the owner association on the entity, `parentId` the route attribute with the owner identifier (default `{parent}Id`), `parentField` the owner field it matches (default `id`); `id` / `field` do the same for the entity (default `id` / `id`); `objectManager` picks a named entity manager. See [docs/USAGE.md](docs/USAGE.md#mapscopedentity).
 
 ## Demo
 

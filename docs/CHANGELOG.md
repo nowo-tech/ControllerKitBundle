@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.2.0] - 2026-10-14](#220---2026-10-14)
 - [[2.1.0] - 2026-10-13](#210---2026-10-13)
 - [[2.0.14] - 2026-10-13](#2014---2026-10-13)
 - [[2.0.13] - 2026-10-13](#2013---2026-10-13)
@@ -31,6 +32,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-06-11](#100---2026-06-11)
 
 ## [Unreleased]
+
+## [2.2.0] - 2026-10-14
+
+### Added
+
+- `Attribute\MapScopedEntity` controller argument attribute + `ValueResolver\ScopedEntityValueResolver` (spec 003): loads a Doctrine ORM entity with one query joined on its owner association (another route attribute), so an entity of another owner is the same 404 as a missing one. Options `parent`, `parentId` (default `{parent}Id`), `parentField`, `id`, `field`, `objectManager`. Nullable arguments receive `null`; identifiers malformed for the column type (DBAL `ConversionException`) are a 404; mapping mistakes are `LogicException`s. The attribute is not final, so apps can preset their owner (e.g. `#[MapProjectScoped]`).
+- `DependencyInjection\Compiler\ScopedEntityValueResolverPass`: registers the resolver as a targeted value resolver only when `doctrine/orm` is installed and the `doctrine` registry (DoctrineBundle) exists; an application service with the same id is kept.
+- `composer.json` `suggest`: `doctrine/orm` and `doctrine/doctrine-bundle`.
+
+### Changed
+
+- Development: `doctrine/orm` (^3.4) and `doctrine/doctrine-bundle` (^2.13 || ^3.0) added to `require-dev` (unit tests on in-memory SQLite + a kernel test with FrameworkBundle + DoctrineBundle). CI resolves `doctrine/*` together with `symfony/*` per matrix cell (DoctrineBundle 3 for Symfony 8). Development lock refreshed (Symfony 7.4.21 patch releases).
+
+[2.2.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.2.0
 
 ## [2.1.0] - 2026-10-13
 

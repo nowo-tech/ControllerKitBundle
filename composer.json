@@ -1,6 +1,6 @@
 {
     "name": "nowo-tech/controller-kit-bundle",
-    "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding and RequiresValidFormTrait form guards.",
+    "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding, RequiresValidFormTrait form guards and the #[MapScopedEntity] owner-scoped Doctrine entity argument resolver.",
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
@@ -14,6 +14,9 @@
         "forward",
         "traits",
         "utilities",
+        "doctrine",
+        "value-resolver",
+        "multi-tenant",
         "frankenphp"
     ],
     "homepage": "https://github.com/nowo-tech/ControllerKitBundle",
@@ -44,6 +47,8 @@
         "symfony/routing": "^7.0 || ^8.0"
     },
     "require-dev": {
+        "doctrine/doctrine-bundle": "^2.13 || ^3.0",
+        "doctrine/orm": "^3.4",
         "friendsofphp/php-cs-fixer": "^3.0",
         "igor-php/igor-php": "^0.10.1",
         "nowo-tech/phpstan-frankenphp": "^1.0",
@@ -119,6 +124,8 @@
         "igor": "Run Igor FrankenPHP worker-state audit (REQ-CS-008)"
     },
     "suggest": {
+        "doctrine/doctrine-bundle": "Required (with doctrine/orm) to use the #[MapScopedEntity] argument resolver; it provides the `doctrine` registry",
+        "doctrine/orm": "Required (^2.17 || ^3.0, with doctrine/doctrine-bundle) to use the #[MapScopedEntity] owner-scoped entity argument resolver",
         "symfony/framework-bundle": "Required in your application when using the traits with AbstractController",
         "symfony/flex": "For automatic recipe installation",
         "symfony/form": "Required when using RequiresValidFormTrait (form guard helpers)",

@@ -5,6 +5,7 @@
 - PHP `>=8.2` (<8.6). Symfony **8.0** and **8.1** require **PHP 8.4+**.
 - Symfony **7.4**, **8.0**, or **8.1** (mandatory minimum minors). The bundle also supports Symfony 7.0–7.3 when constraints resolve.
 - `symfony/framework-bundle` in your application when using the controller traits with `AbstractController`.
+- `doctrine/orm` and `doctrine/doctrine-bundle` when using `#[MapScopedEntity]` (the resolver is registered only when both are present).
 
 ## Composer
 

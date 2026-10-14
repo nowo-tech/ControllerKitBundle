@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.2.0](#to-220)
 - [To 2.1.0](#to-210)
 - [To 2.0.14](#to-2014)
 - [To 2.0.13](#to-2013)
@@ -53,6 +54,18 @@
   - [Breaking changes](#breaking-changes-12)
 
 ## Unreleased
+
+## To 2.2.0
+
+From **2.1.0** — new `#[MapScopedEntity]` owner-scoped entity argument resolver. No breaking changes; nothing new is registered unless `doctrine/orm` and `doctrine/doctrine-bundle` are installed.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+- Replace `#[MapEntity]` + a manual owner check (`if ($issue->getProject() !== $project) { throw $this->createNotFoundException(); }`) with `#[MapScopedEntity(parent: 'project', parentField: 'uuid', id: 'issueId', field: 'uuid')] Issue $issue`. The owner check and the 404 move into one joined query.
+- To replace a host resolver such as `#[MapProjectScoped(id:, field:, project:)]`: either use `#[MapScopedEntity]` directly (`project:` becomes `parentId:`, and set `parent: 'project', parentField: 'uuid'`), or keep the host attribute as a subclass of `MapScopedEntity` that presets the owner and delete the host value resolver. See [USAGE.md](USAGE.md#mapscopedentity).
+- Differences from a typical host copy: route values are bound with the mapped field types; a malformed identifier is a 404 (not a DBAL error); a nullable argument receives `null`.
 
 ## To 2.1.0
 

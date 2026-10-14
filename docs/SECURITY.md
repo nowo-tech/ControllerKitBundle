@@ -18,7 +18,7 @@ Controller Kit provides reusable controller helpers and conventions for Symfony 
 
 ## Attack surface
 
-- **HTTP requests** handled by controllers using this kit (`RedirectToRefererTrait`, `SafeForwardTrait`, `RequiresValidFormTrait`).
+- **HTTP requests** handled by controllers using this kit (`RedirectToRefererTrait`, `SafeForwardTrait`, `RequiresValidFormTrait`), and route attributes read by the `#[MapScopedEntity]` resolver.
 - **Configuration** (`nowo_controller_kit.default_route`) loaded from the application.
 - No admin UI, no outbound HTTP client, no subprocesses, and no dedicated Monolog channel.
 
@@ -28,10 +28,11 @@ Controller Kit provides reusable controller helpers and conventions for Symfony 
 |--------|------------|
 | Open redirect via forged `Referer` | `RedirectToRefererTrait` accepts Referer URLs only when the **host matches** the current request host (case-insensitive) **and** the path matches a known route (the route name always comes from the path match; `_`-prefixed query keys are dropped); otherwise redirects to `nowo_controller_kit.default_route`. |
 | Forged / missing form submission or CSRF token | `RequiresValidFormTrait` denies with 403 (`AccessDeniedException`) unless the form is submitted and valid; `acceptSubmittedForm()` only flashes (no 403) when every error comes from the one named field, and always denies CSRF failures. |
+| Cross-owner object access (IDOR) / existence leak | `#[MapScopedEntity]` loads the entity in one query joined on its owner from the route; another owner's entity, a missing one and a malformed identifier all answer the same 404. Field names come from the attribute and are checked against Doctrine metadata before reaching DQL; route values are bound as typed parameters. It scopes by route owner only: authorization on the owner (voters, `#[IsGranted]`) is still the application's job. |
 | Forward to missing controller method | `SafeForwardTrait` validates `method_exists` before `forward()` and throws `BadMethodCallException`. |
 | Missing authorization in consuming apps | Applications must enforce `access_control`, voters, and roles on routes. |
 | XSS in responses | Use Twig escaping; validate user-supplied content. |
-| Request state leak under FrankenPHP worker (kernel not reset) | Traits are stateless; no package services. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md). |
+| Request state leak under FrankenPHP worker (kernel not reset) | Traits are stateless; the only service (`ScopedEntityValueResolver`) is readonly and holds the Doctrine registry only. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md). |
 
 ## Logging and observability
 

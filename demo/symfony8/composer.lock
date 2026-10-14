@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "a361543df3799aee31d4a09a4e05c5677a554d29"
+                "reference": "75fd0d8068173918165098a5954cf3c70d50ebe7"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -23,6 +23,8 @@
                 "symfony/routing": "^7.0 || ^8.0"
             },
             "require-dev": {
+                "doctrine/doctrine-bundle": "^2.13 || ^3.0",
+                "doctrine/orm": "^3.4",
                 "friendsofphp/php-cs-fixer": "^3.0",
                 "igor-php/igor-php": "^0.10.1",
                 "nowo-tech/phpstan-frankenphp": "^1.0",
@@ -39,6 +41,8 @@
                 "symfony/yaml": "^7.0 || ^8.0"
             },
             "suggest": {
+                "doctrine/doctrine-bundle": "Required (with doctrine/orm) to use the #[MapScopedEntity] argument resolver; it provides the `doctrine` registry",
+                "doctrine/orm": "Required (^2.17 || ^3.0, with doctrine/doctrine-bundle) to use the #[MapScopedEntity] owner-scoped entity argument resolver",
                 "symfony/flex": "For automatic recipe installation",
                 "symfony/form": "Required when using RequiresValidFormTrait (form guard helpers)",
                 "symfony/framework-bundle": "Required in your application when using the traits with AbstractController",
@@ -115,20 +119,23 @@
                     "homepage": "https://nowo.tech"
                 }
             ],
-            "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding and RequiresValidFormTrait form guards.",
+            "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding, RequiresValidFormTrait form guards and the #[MapScopedEntity] owner-scoped Doctrine entity argument resolver.",
             "homepage": "https://github.com/nowo-tech/ControllerKitBundle",
             "keywords": [
                 "bundle",
                 "controller",
+                "doctrine",
                 "forward",
                 "frankenphp",
+                "multi-tenant",
                 "php",
                 "redirect",
                 "referer",
                 "symfony",
                 "symfony-bundle",
                 "traits",
-                "utilities"
+                "utilities",
+                "value-resolver"
             ],
             "support": {
                 "issues": "https://github.com/nowo-tech/ControllerKitBundle/issues",

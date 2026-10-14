@@ -3,10 +3,10 @@
 | Field | Value |
 |-------|-------|
 | Package | `nowo-tech/controller-kit-bundle` (`symfony-bundle`) |
-| Audited revision | `v2.0.10` (this release) |
-| Audit date | 2026-09-24 |
+| Audited revision | `v2.2.0` (this release) |
+| Audit date | 2026-10-14 |
 | Method | Manual review of every file under `src/` plus `NowoControllerKitBundle.php`; PHPStan with `ruleset-classic` + `ruleset-worker-strict` + `ruleset-hardening` |
-| **Verdict** | ✅ **Viable** — no registered services; traits are stateless; safe under kernel **not** reset between requests |
+| **Verdict** | ✅ **Viable** — one optional readonly service (`ScopedEntityValueResolver`); traits are stateless; safe under kernel **not** reset between requests |
 
 ## Execution model assumed
 
@@ -21,12 +21,12 @@ A bundle that is safe under **B** is safe under **A** and under classic mode / P
 
 | Area | Status | Notes |
 |------|--------|-------|
-| Mutable state in shared services | ✅ N/A | The bundle registers no services; the traits declare no properties |
+| Mutable state in shared services | ✅ | One optional service (`ScopedEntityValueResolver`, readonly, Doctrine registry only); the traits declare no properties |
 | Static properties / `static` locals | ✅ | None in package source |
 | `ResetInterface` / `kernel.reset` coverage | ✅ N/A | Nothing to reset |
 | Request / user / locale captured in services | ✅ | `redirectToReferer()` receives the `Request` as an argument and reads the `Referer` header per call |
 | Superglobals, `$_ENV`, `putenv`, `ini_set`, `setlocale`, timezone | ✅ | None used; `default_route` is a compiled container parameter |
-| Doctrine / EntityManager | ✅ N/A | No persistence |
+| Doctrine / EntityManager | ✅ | `ScopedEntityValueResolver` reads through the registry per call (manager resolved per argument; no entity kept) |
 | Output, headers, `exit`, shutdown functions | ✅ | None; both helpers return `Response` objects |
 | Resources (files, sockets, cURL) held open | ✅ | None |
 | Memory growth across requests | ✅ | No caches or accumulating arrays |
@@ -38,7 +38,8 @@ A bundle that is safe under **B** is safe under **A** and under classic mode / P
 
 | Service | Shared | Mutable state | Scenario A | Scenario B |
 |---------|--------|---------------|------------|------------|
-| *(none registered)* — `ControllerKitExtension` only sets `nowo_controller_kit.default_route` | — | — | ✅ | ✅ |
+| `ControllerKitExtension` — only sets `nowo_controller_kit.default_route` | — | — | ✅ | ✅ |
+| `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver` (only with doctrine/orm + DoctrineBundle) | yes | none (`final readonly`, `ManagerRegistry` only; entity returned, never stored) | ✅ | ✅ |
 | `Controller\RedirectToRefererTrait` | host controller | none; locals only; `getRouter()` resolves `router` from the controller container per call | ✅ | ✅ |
 | `Controller\SafeForwardTrait` | host controller | none; locals only | ✅ | ✅ |
 | `Controller\RequiresValidFormTrait` | host controller | none; locals only (form passed per call; flash goes to the request session) | ✅ | ✅ |
@@ -61,4 +62,4 @@ Previously `getRouter()` was only supplied by unit-test doubles; `AbstractContro
 
 ## Re-audit triggers
 
-Re-run this audit when a change adds: a registered service, properties or caches in the traits, an event listener/subscriber, or any use of `$_SERVER` / `$_ENV` / static state at runtime.
+Re-run this audit when a change adds: another registered service (or state in `ScopedEntityValueResolver`), properties or caches in the traits, an event listener/subscriber, or any use of `$_SERVER` / `$_ENV` / static state at runtime.

@@ -146,3 +146,97 @@ if (!$this->acceptSubmittedForm($form, 'role', 'flash.project.member_invalid_rol
 A CSRF failure is the error added by Symfony's `CsrfValidationListener` (its cause is a `CsrfToken`) or any error that comes from the `$csrfField` child. Pass `$csrfField` when your app changes `framework.form.csrf_protection.field_name` and renders the token as a real child.
 
 Use it for a field whose bad value is a user error rather than an attack (for example a tampered `ChoiceType` value): the user gets a flash and a redirect instead of a 403 page.
+
+---
+
+## MapScopedEntity
+
+`Nowo\ControllerKitBundle\Attribute\MapScopedEntity` is a controller **argument** attribute. It loads a Doctrine ORM entity from a route attribute with **one query joined on its owner**, matched against another route attribute. A missing entity, an entity that belongs to another owner, and an identifier that is malformed for its column type all answer the **same 404**, so:
+
+- no existence leak across owners (tenants, projects, organizations…);
+- no extra query to load the owner and no `if ($entity->getProject() !== $project)` checks in controllers.
+
+Requires `doctrine/orm` (^2.17 or ^3) and `doctrine/doctrine-bundle` in your application (both suggested). The resolver (`Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver`) is registered automatically only when both are installed.
+
+### Signature
+
+```php
+#[MapScopedEntity(
+    string $parent,                 // owner association on the entity, e.g. 'project'
+    ?string $parentId = null,       // route attribute with the owner identifier (default "{$parent}Id")
+    string $parentField = 'id',     // owner field matched against it ('id', 'uuid', 'slug', ...)
+    string $id = 'id',              // route attribute with the entity identifier
+    string $field = 'id',           // entity field matched against it
+    ?string $objectManager = null,  // named entity manager (default: the manager of the entity class)
+)]
+```
+
+### Examples
+
+```php
+use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
+
+// /projects/{projectId}/issues/{issueId}  — both identified by UUID
+#[Route('/projects/{projectId}/issues/{issueId}', name: 'issue_show')]
+public function show(
+    #[MapScopedEntity(parent: 'project', parentField: 'uuid', id: 'issueId', field: 'uuid')]
+    Issue $issue,
+): Response {
+    // $issue->getProject() is the route project — guaranteed
+}
+
+// /staff/orgs/{orgSlug}/agendas/{agendaId}  — owner by slug, entity by primary key
+#[Route('/staff/orgs/{orgSlug}/agendas/{agendaId}')]
+public function edit(
+    #[MapScopedEntity(parent: 'organization', parentId: 'orgSlug', parentField: 'slug', id: 'agendaId')]
+    Agenda $agenda,
+): Response {
+}
+
+// Optional: a nullable argument receives null instead of a 404
+public function preview(
+    #[MapScopedEntity(parent: 'project', parentField: 'uuid', id: 'issueId', field: 'uuid')]
+    ?Issue $issue,
+): Response {
+}
+```
+
+The query is:
+
+```sql
+SELECT e FROM <argument class> e INNER JOIN e.<parent> p
+WHERE e.<field> = :id AND p.<parentField> = :parentId
+```
+
+Route values are bound with the mapped field types, so UUID columns (binary or native) accept the route string.
+
+### Behaviour
+
+| Situation | Result |
+| --- | --- |
+| Entity found under the route owner | the entity |
+| Entity missing, owned by another owner, route value missing/empty, or identifier malformed for the column type (`ConversionException`) | `NotFoundHttpException` (`"<class>" object not found by "<resolver>".`) — or `null` for a nullable argument |
+| Argument not typed with a class, no ORM manager for it, unknown `parent` association, unknown `field` / `parentField` | `LogicException` (mapping error, before any query) |
+
+It scopes the entity to the **route owner** only. Checking that the current user may act on that owner (voters, `#[IsGranted]`, a resolver for the owner itself) stays in your application.
+
+### Application shortcut attribute
+
+The attribute is not final: preset your owner once and keep short call sites.
+
+```php
+#[\Attribute(\Attribute::TARGET_PARAMETER)]
+final class MapProjectScoped extends MapScopedEntity
+{
+    public function __construct(string $id = 'id', string $field = 'uuid', string $project = 'projectId')
+    {
+        parent::__construct(parent: 'project', parentId: $project, parentField: 'uuid', id: $id, field: $field);
+    }
+}
+
+public function show(#[MapProjectScoped] Issue $issue): Response
+```
+
+### Overriding the resolver
+
+Define a service with id `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver` (tagged `controller.targeted_value_resolver`) in your application; the bundle keeps it and does not register its own.
