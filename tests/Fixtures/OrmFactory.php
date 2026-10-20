@@ -16,6 +16,8 @@ use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Owner;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Type\StrictCodeType;
 use Psr\Log\LoggerInterface;
 
+use function sys_get_temp_dir;
+
 use const PHP_VERSION_ID;
 
 /**
@@ -37,6 +39,10 @@ final class OrmFactory
         $config = ORMSetup::createAttributeMetadataConfig([__DIR__ . '/Entity'], true);
         if (PHP_VERSION_ID >= 80400) {
             $config->enableNativeLazyObjects(true);
+        } else {
+            // Without native lazy objects (PHP < 8.4) ORM 3 needs a directory and a namespace for generated proxies.
+            $config->setProxyDir(sys_get_temp_dir() . '/nowo-controller-kit-proxies');
+            $config->setProxyNamespace('NowoControllerKitTestProxies');
         }
 
         if ($sqlLogger instanceof LoggerInterface) {
