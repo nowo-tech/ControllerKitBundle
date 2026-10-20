@@ -1,5 +1,22 @@
 # Usage
 
+## Table of contents
+
+- [RedirectToRefererTrait](#redirecttoreferertrait)
+  - [redirectToReferer](#redirecttoreferer)
+- [SafeForwardTrait](#safeforwardtrait)
+  - [safeForward](#safeforward)
+- [RequiresValidFormTrait](#requiresvalidformtrait)
+  - [requireValidForm](#requirevalidform)
+  - [requireValidCsrfForm](#requirevalidcsrfform)
+  - [acceptSubmittedForm](#acceptsubmittedform)
+- [MapScopedEntity](#mapscopedentity)
+  - [Signature](#signature)
+  - [Examples](#examples)
+  - [Behaviour](#behaviour)
+  - [Application shortcut attribute](#application-shortcut-attribute)
+  - [Overriding the resolver](#overriding-the-resolver)
+
 ## RedirectToRefererTrait
 
 For controllers extending `Symfony\Bundle\FrameworkBundle\Controller\AbstractController`.

@@ -8,6 +8,16 @@
 | Method | Manual review of every file under `src/` plus `NowoControllerKitBundle.php`; PHPStan with `ruleset-classic` + `ruleset-worker-strict` + `ruleset-hardening` |
 | **Verdict** | ✅ **Viable** — one optional readonly service (`ScopedEntityValueResolver`); traits are stateless; safe under kernel **not** reset between requests |
 
+## Table of contents
+
+- [Execution model assumed](#execution-model-assumed)
+- [Summary](#summary)
+- [Services reviewed](#services-reviewed)
+- [Findings](#findings)
+  - [Fixed in this release](#fixed-in-this-release)
+- [Usage recommendations in worker mode](#usage-recommendations-in-worker-mode)
+- [Re-audit triggers](#re-audit-triggers)
+
 ## Execution model assumed
 
 FrankenPHP worker mode boots the Symfony kernel once per worker and serves many requests with the same container. This audit assumes the **strict** variant: the kernel is **not** rebooted between requests, so every shared service, static property and PHP global survives from one request to the next. Two scenarios are evaluated:
