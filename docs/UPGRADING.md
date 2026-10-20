@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.2.1](#to-221)
 - [To 2.2.0](#to-220)
 - [To 2.1.0](#to-210)
 - [To 2.0.14](#to-2014)
@@ -54,6 +55,14 @@
   - [Breaking changes](#breaking-changes-12)
 
 ## Unreleased
+
+## To 2.2.1
+
+From **2.2.0**:
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
 
 ## To 2.2.0
 

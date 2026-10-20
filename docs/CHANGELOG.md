@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.2.1] - 2026-10-21](#221---2026-10-21)
 - [[2.2.0] - 2026-10-14](#220---2026-10-14)
 - [[2.1.0] - 2026-10-13](#210---2026-10-13)
 - [[2.0.14] - 2026-10-13](#2014---2026-10-13)
@@ -33,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-10-21
+
+Dependency refresh, wave-1/wave-2 REQ compliance (PHPDoc, release-check raw-form check, demo Symfony form). See [UPGRADING](UPGRADING.md#to-221).
+
 ### Changed
 
 - Dependencies refreshed (Composer and pnpm/npm lock files of the bundle and its demos, campaign 2026-10-19).
@@ -48,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - Documentation: wave-1 REQ compliance — canonical issue templates, canonical FrankenPHP worker-mode claim in README, README documentation list order (PSR under Additional documentation), CONTRIBUTING Cursor Agent queue settings (REQ-IDE-006), tables of contents on long docs.
+
+[2.2.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.2.1
 
 ## [2.2.0] - 2026-10-14
 
