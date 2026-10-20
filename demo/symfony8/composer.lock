@@ -8,7 +8,7 @@
     "packages": [
         {
             "name": "nowo-tech/controller-kit-bundle",
-            "version": "dev-chore/req-wave2",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
