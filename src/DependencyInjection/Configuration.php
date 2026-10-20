@@ -15,6 +15,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class Configuration implements ConfigurationInterface
 {
+    /**
+     * Builds the `nowo_controller_kit` tree (`default_route`, non-empty, default `homepage`).
+     *
+     * @return TreeBuilder Configuration tree
+     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('nowo_controller_kit');

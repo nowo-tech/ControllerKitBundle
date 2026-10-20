@@ -37,6 +37,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dependencies refreshed (Composer and pnpm/npm lock files of the bundle and its demos, campaign 2026-10-19).
 - `.php-cs-fixer.dist.php`: `new ParallelConfig(2)` (REQ-CS-001).
+- PHPDoc on every public method and constant of the DI classes and the scoped entity resolver (REQ-CS-001).
+- `release-check` starts with `ensure-up` and runs the new `check-no-raw-html-form` target (REQ-MAKE-002 / REQ-TWIG-005).
+- Demo: the RedirectToRefererTrait button is a Symfony form (`symfony/form` added to the demo) instead of a raw `<form>` (REQ-DEMO-001 / REQ-TWIG-005).
+
+### Fixed
+
+- `.scripts/check-no-cursor-coauthor.sh` also runs inside git worktrees (`.git` file instead of directory).
 
 ### Documentation
 

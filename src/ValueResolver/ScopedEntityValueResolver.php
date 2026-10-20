@@ -32,13 +32,21 @@ use function sprintf;
  */
 final readonly class ScopedEntityValueResolver implements ValueResolverInterface
 {
+    /**
+     * @param ManagerRegistry $registry Doctrine registry used to pick the entity manager
+     */
     public function __construct(
         private ManagerRegistry $registry,
     ) {
     }
 
     /**
-     * @return iterable<object|null>
+     * Resolves a `#[MapScopedEntity]` argument with one owner-scoped query.
+     *
+     * @param Request $request Current request (route attributes hold both identifiers)
+     * @param ArgumentMetadata $argument Controller argument metadata
+     *
+     * @return iterable<object|null> The entity, `null` for a nullable argument, or nothing when the attribute is absent
      */
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {

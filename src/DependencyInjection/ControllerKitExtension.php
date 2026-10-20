@@ -17,6 +17,12 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
  */
 final class ControllerKitExtension extends Extension
 {
+    /**
+     * Processes the configuration and exposes `nowo_controller_kit.default_route` as a container parameter.
+     *
+     * @param array<int, array<string, mixed>> $configs Raw configuration blocks
+     * @param ContainerBuilder $container Service container being built
+     */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $processor     = new Processor();
@@ -26,6 +32,11 @@ final class ControllerKitExtension extends Extension
         $container->setParameter('nowo_controller_kit.default_route', $config['default_route']);
     }
 
+    /**
+     * Returns the configuration alias.
+     *
+     * @return string `nowo_controller_kit`
+     */
     public function getAlias(): string
     {
         return 'nowo_controller_kit';

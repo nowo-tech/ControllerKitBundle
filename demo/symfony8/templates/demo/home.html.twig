@@ -8,8 +8,10 @@
 <body>
 <h1>Controller Kit Demo (Symfony 8)</h1>
 <p><a href="{{ path('demo_forward') }}">Test SafeForwardTrait</a></p>
-<form method="post" action="{{ path('demo_back') }}">
-    <button type="submit">Test RedirectToRefererTrait</button>
-</form>
+{{ form_start(back_form) }}
+    {% for child in back_form %}
+        {{ form_widget(child) }}
+    {% endfor %}
+{{ form_end(back_form) }}
 </body>
 </html>

@@ -7,6 +7,7 @@ namespace App\Controller;
 use Nowo\ControllerKitBundle\Controller\RedirectToRefererTrait;
 use Nowo\ControllerKitBundle\Controller\SafeForwardTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,15 @@ final class DemoController extends AbstractController
     #[Route(path: '/', name: 'homepage', methods: ['GET'])]
     public function home(): Response
     {
-        return $this->render('demo/home.html.twig');
+        // A Symfony form (not raw HTML) posts to the RedirectToRefererTrait demo (REQ-TWIG-005).
+        $backForm = $this->createFormBuilder(null, [
+            'action' => $this->generateUrl('demo_back'),
+            'method' => 'POST',
+        ])
+            ->add('submit', SubmitType::class, ['label' => 'Test RedirectToRefererTrait'])
+            ->getForm();
+
+        return $this->render('demo/home.html.twig', ['back_form' => $backForm->createView()]);
     }
 
     #[Route(path: '/forward', name: 'demo_forward', methods: ['GET'])]

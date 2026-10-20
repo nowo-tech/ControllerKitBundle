@@ -22,8 +22,16 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class ScopedEntityValueResolverPass implements CompilerPassInterface
 {
+    /**
+     * Compiler pass priority (runs before FrameworkBundle's ControllerArgumentValueResolverPass).
+     */
     public const PRIORITY = 8;
 
+    /**
+     * Registers the targeted value resolver when doctrine/orm and the `doctrine` registry exist.
+     *
+     * @param ContainerBuilder $container Service container being compiled
+     */
     public function process(ContainerBuilder $container): void
     {
         if (!interface_exists(EntityManagerInterface::class) || !$container->has('doctrine') || $container->has(ScopedEntityValueResolver::class)) {
