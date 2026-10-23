@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c179278077cc9c4f9350b63c4b8c9a1",
+    "content-hash": "07fe6bf892adeb0e0b4e7496a768199a",
     "packages": [
         {
             "name": "nowo-tech/controller-kit-bundle",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "2223c8e4c7aa2f750f0ea68e77527a4cac28d3e4"
+                "reference": "8fefe2966961614703a7f821a88beb725e7bd280"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -3853,16 +3853,16 @@
         },
         {
             "name": "nowo-tech/hot-reload-bundle",
-            "version": "v1.6.1",
+            "version": "v1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/HotReloadBundle.git",
-                "reference": "6d3117328bd9d7f55a70743567d04ee25d6bc366"
+                "reference": "cf84e69a6f93f95f06876638337f9f792b2bcb0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/HotReloadBundle/zipball/6d3117328bd9d7f55a70743567d04ee25d6bc366",
-                "reference": "6d3117328bd9d7f55a70743567d04ee25d6bc366",
+                "url": "https://api.github.com/repos/nowo-tech/HotReloadBundle/zipball/cf84e69a6f93f95f06876638337f9f792b2bcb0a",
+                "reference": "cf84e69a6f93f95f06876638337f9f792b2bcb0a",
                 "shasum": ""
             },
             "require": {
@@ -3940,7 +3940,7 @@
                 "issues": "https://github.com/nowo-tech/HotReloadBundle/issues",
                 "source": "https://github.com/nowo-tech/HotReloadBundle"
             },
-            "time": "2026-10-13T10:57:34+00:00"
+            "time": "2026-10-21T05:26:17+00:00"
         },
         {
             "name": "nowo-tech/twig-inspector-bundle",
@@ -5193,28 +5193,28 @@
         },
         {
             "name": "sebastian/git-state",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/git-state.git",
-                "reference": "792a952e0eba55b6960a48aeceb9f371aad1f76b"
+                "reference": "31a565f463686f0eefa85f899549256bf5805985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git-state/zipball/792a952e0eba55b6960a48aeceb9f371aad1f76b",
-                "reference": "792a952e0eba55b6960a48aeceb9f371aad1f76b",
+                "url": "https://api.github.com/repos/sebastianbergmann/git-state/zipball/31a565f463686f0eefa85f899549256bf5805985",
+                "reference": "31a565f463686f0eefa85f899549256bf5805985",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.4.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.0-dev"
+                    "dev-main": "1.1-dev"
                 }
             },
             "autoload": {
@@ -5238,7 +5238,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/git-state/issues",
                 "security": "https://github.com/sebastianbergmann/git-state/security/policy",
-                "source": "https://github.com/sebastianbergmann/git-state/tree/1.0.0"
+                "source": "https://github.com/sebastianbergmann/git-state/tree/1.1.0"
             },
             "funding": [
                 {
@@ -5258,7 +5258,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-21T12:54:28+00:00"
+            "time": "2026-10-21T05:59:52+00:00"
         },
         {
             "name": "sebastian/global-state",
