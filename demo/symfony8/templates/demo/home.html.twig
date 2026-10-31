@@ -8,6 +8,7 @@
 <body>
 <h1>Controller Kit Demo (Symfony 8)</h1>
 <p><a href="{{ path('demo_forward') }}">Test SafeForwardTrait</a></p>
+<p>DownloadResponseTrait: <a href="{{ path('demo_download_csv') }}">formula-safe CSV</a> · <a href="{{ path('demo_download_json') }}">JSON attachment (no-store)</a></p>
 {{ form_start(back_form) }}
     {% for child in back_form %}
         {{ form_widget(child) }}

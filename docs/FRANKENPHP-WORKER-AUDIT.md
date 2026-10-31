@@ -32,12 +32,12 @@ A bundle that is safe under **B** is safe under **A** and under classic mode / P
 | Area | Status | Notes |
 |------|--------|-------|
 | Mutable state in shared services | ✅ | One optional service (`ScopedEntityValueResolver`, readonly, Doctrine registry only); the traits declare no properties |
-| Static properties / `static` locals | ✅ | None in package source |
+| Static properties / `static` locals | ✅ | None in package source (the `Http\*` download helpers only have static methods and constants) |
 | `ResetInterface` / `kernel.reset` coverage | ✅ N/A | Nothing to reset |
 | Request / user / locale captured in services | ✅ | `redirectToReferer()` receives the `Request` as an argument and reads the `Referer` header per call |
 | Superglobals, `$_ENV`, `putenv`, `ini_set`, `setlocale`, timezone | ✅ | None used; `default_route` is a compiled container parameter |
 | Doctrine / EntityManager | ✅ | `ScopedEntityValueResolver` reads through the registry per call (manager resolved per argument; no entity kept) |
-| Output, headers, `exit`, shutdown functions | ✅ | None; both helpers return `Response` objects |
+| Output, headers, `exit`, shutdown functions | ✅ | None; the helpers return `Response` objects (`CsvStreamedResponse` writes to `php://output` only inside its own streamed callback, which captures its constructor arguments and nothing else) |
 | Resources (files, sockets, cURL) held open | ✅ | None |
 | Memory growth across requests | ✅ | No caches or accumulating arrays |
 | Blocking I/O and timeouts | ✅ N/A | No I/O; `forward()` is an in-process sub-request |
