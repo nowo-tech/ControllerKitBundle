@@ -30,6 +30,9 @@ final class ControllerKitExtension extends Extension
         $config        = $processor->processConfiguration($configuration, $configs);
 
         $container->setParameter('nowo_controller_kit.default_route', $config['default_route']);
+        $container->setParameter('nowo_controller_kit.downloads.no_store', $config['downloads']['no_store']);
+        $container->setParameter('nowo_controller_kit.downloads.csv_delimiter', $config['downloads']['csv']['delimiter']);
+        $container->setParameter('nowo_controller_kit.downloads.csv_bom', $config['downloads']['csv']['bom']);
     }
 
     /**

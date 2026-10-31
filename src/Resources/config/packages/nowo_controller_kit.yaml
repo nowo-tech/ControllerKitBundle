@@ -3,3 +3,8 @@
 #
 # nowo_controller_kit:
 #     default_route: homepage   # Route when redirectToReferer has no valid Referer
+#     downloads:          # Defaults of csvDownload() / jsonDownload()
+#         no_store: false # Cache-Control: no-store, private
+#         csv:
+#             delimiter: ','
+#             bom: true

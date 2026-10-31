@@ -34,6 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `DownloadResponseTrait` with `csvDownload()` (formula-injection-safe CSV streamed row by row from an iterable or a generator closure; delimiter, UTF-8 BOM and `no-store` options) and `jsonDownload()` (pretty JSON attachment, optional `no-store`).
+- `Http\CsvSafeWriter` (OWASP CSV / formula injection guard: a text cell starting with `=`, `+`, `-`, `@`, tab or CR gets a leading `'`; numbers unchanged; optional `keepNumericStrings`), `Http\CsvStreamedResponse`, `Http\JsonAttachmentResponse` and `Http\AttachmentDisposition` (safe `Content-Disposition` with an ASCII fallback; path separators and control characters replaced).
+- Configuration `nowo_controller_kit.downloads` (`no_store: false`, `csv.delimiter: ','`, `csv.bom: true`); the defaults keep existing behaviour (nothing changes for hosts that do not use the new helpers).
+- Demo: CSV and JSON download links on the home page.
+
 ## [2.2.1] - 2026-10-21
 
 Dependency refresh, wave-1/wave-2 REQ compliance (PHPDoc, release-check raw-form check, demo Symfony form). See [UPGRADING](UPGRADING.md#to-221).

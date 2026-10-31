@@ -10,6 +10,10 @@
   - [requireValidForm](#requirevalidform)
   - [requireValidCsrfForm](#requirevalidcsrfform)
   - [acceptSubmittedForm](#acceptsubmittedform)
+- [DownloadResponseTrait](#downloadresponsetrait)
+  - [csvDownload](#csvdownload)
+  - [jsonDownload](#jsondownload)
+  - [Building blocks](#building-blocks)
 - [MapScopedEntity](#mapscopedentity)
   - [Signature](#signature)
   - [Examples](#examples)
@@ -163,6 +167,69 @@ if (!$this->acceptSubmittedForm($form, 'role', 'flash.project.member_invalid_rol
 A CSRF failure is the error added by Symfony's `CsrfValidationListener` (its cause is a `CsrfToken`) or any error that comes from the `$csrfField` child. Pass `$csrfField` when your app changes `framework.form.csrf_protection.field_name` and renders the token as a real child.
 
 Use it for a field whose bad value is a user error rather than an attack (for example a tampered `ChoiceType` value): the user gets a flash and a redirect instead of a 403 page.
+
+---
+
+## DownloadResponseTrait
+
+File downloads for controllers. Works best with `AbstractController` (defaults read from `nowo_controller_kit.downloads`, see [CONFIGURATION.md](CONFIGURATION.md#downloads)); any other class gets the built-in defaults. Stateless (FrankenPHP worker-safe).
+
+### csvDownload
+
+```php
+protected function csvDownload(
+    string $filename,
+    iterable|\Closure $rows,
+    array $header = [],
+    ?bool $noStore = null,        // null: downloads.no_store
+    ?string $delimiter = null,    // null: downloads.csv.delimiter
+    ?bool $bom = null,            // null: downloads.csv.bom
+    bool $keepNumericStrings = false
+): CsvStreamedResponse
+```
+
+```php
+return $this->csvDownload('remittance-'.$id.'.csv', static function () use ($rows): iterable {
+    foreach ($rows as $row) {
+        yield [$row->reference, $row->accountName, $row->amount];
+    }
+}, ['reference', 'account', 'amount'], keepNumericStrings: true);
+```
+
+**Behaviour:**
+
+- `Content-Type: text/csv; charset=UTF-8`, `Content-Disposition: attachment` (see [AttachmentDisposition](#building-blocks)), status 200.
+- The body is streamed: a closure is only called while the response is sent, so a generator can read the database in batches.
+- **Formula injection (OWASP):** every text cell starting with `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading `'`; `int` / `float` values are written as they are (a number is never a formula); `null` is an empty cell; `Stringable` values are guarded like strings.
+- `keepNumericStrings: true` leaves plain decimal strings (`-12.50`, `3`) unguarded, for amount columns that must stay numbers; anything else that starts with `-` / `+` (`-1+2`, `+12`) is still guarded.
+- Quoting is RFC 4180 (`"` doubled, no escape character).
+- An invalid delimiter (not one byte, `"`, CR, LF) throws `InvalidArgumentException` before anything is sent.
+
+### jsonDownload
+
+```php
+protected function jsonDownload(array|\JsonSerializable $payload, string $filename, ?bool $noStore = null): JsonAttachmentResponse
+```
+
+Pretty-printed JSON (`JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES`, trailing newline), `Content-Type: application/json; charset=UTF-8`, `Content-Disposition: attachment`. A payload that cannot be encoded throws `JsonException`. Pass `noStore: true` for exports that carry secrets or personal data.
+
+### Building blocks
+
+| Class | Use |
+| --- | --- |
+| `Nowo\ControllerKitBundle\Http\CsvSafeWriter` | `cell($value, $keepNumericStrings)`, `row($row)`, `write($handle, $row, $delimiter)` and the `BOM` constant, for CSV written to a file, a ZIP entry or `php://temp` |
+| `Nowo\ControllerKitBundle\Http\CsvStreamedResponse` | The response `csvDownload()` returns (`new CsvStreamedResponse($filename, $rows, $header, bom: …, delimiter: …, noStore: …)`) |
+| `Nowo\ControllerKitBundle\Http\JsonAttachmentResponse` | The response `jsonDownload()` returns; also takes `encodingOptions` and extra `headers` |
+| `Nowo\ControllerKitBundle\Http\AttachmentDisposition` | `attachment($filename)` / `inline($filename)` header values for any other download (PDF, XLSX, ZIP) |
+
+`AttachmentDisposition` uses `HeaderUtils::makeDisposition()`: a non-ASCII or quoted name keeps its UTF-8 form in `filename*` and gets an ASCII `filename` fallback (non-printable ASCII, `"`, `%`, `/`, `\` → `_`). Control characters, `/` and `\` are replaced in the UTF-8 name too, so a user-controlled name never makes the header throw; an empty or invalid UTF-8 name becomes `download`.
+
+```php
+return new Response($pdf, 200, [
+    'Content-Type'        => 'application/pdf',
+    'Content-Disposition' => AttachmentDisposition::attachment($report->filename.'.pdf'),
+]);
+```
 
 ---
 

@@ -4,7 +4,7 @@
 
 > ⭐ **Found this useful?** [Install from Packagist](https://packagist.org/packages/nowo-tech/controller-kit-bundle) · Give it a **star** on [GitHub](https://github.com/nowo-tech/ControllerKitBundle) so more developers can find it.
 
-**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding, **RequiresValidFormTrait** form guards, and the **`#[MapScopedEntity]`** owner-scoped Doctrine entity argument resolver. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
+**Controller Kit Bundle** — Utilities for Symfony controllers: **redirectToReferer** (configurable default route) and **SafeForwardTrait** for safe request forwarding, **RequiresValidFormTrait** form guards, **DownloadResponseTrait** (formula-injection-safe CSV and JSON downloads), and the **`#[MapScopedEntity]`** owner-scoped Doctrine entity argument resolver. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 7.0–7.3) · PHP 8.2+ (Symfony 8.x requires PHP 8.4+).
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
@@ -17,6 +17,7 @@ Workers that do **not** reset the kernel between requests are supported too (no 
 - **RedirectToRefererTrait** — Redirect to the HTTP Referer when valid (same app, route exists), or to a configurable default route. 100% configurable via `nowo_controller_kit.default_route`.
 - **SafeForwardTrait** — Forward to another controller method with a check that the method exists (avoids runtime errors).
 - **RequiresValidFormTrait** — Form guards for `AbstractController`: `requireValidForm()` / `requireValidCsrfForm()` deny with 403 when a form is not submitted or invalid; `acceptSubmittedForm()` turns an invalid user-facing field into an error flash instead of a 403 (CSRF failures still 403). Needs `symfony/form` (suggested).
+- **DownloadResponseTrait** — `csvDownload()` streams a CSV attachment that is safe against **formula / CSV injection** (OWASP: a text cell starting with `=`, `+`, `-`, `@`, tab or CR gets a leading `'`), row by row from an iterable or a generator closure, with configurable delimiter and UTF-8 BOM; `jsonDownload()` returns a pretty JSON attachment. Both build a safe `Content-Disposition` (ASCII fallback, no path separators) and can send `Cache-Control: no-store, private`. The building blocks are public: `Http\CsvSafeWriter`, `Http\CsvStreamedResponse`, `Http\JsonAttachmentResponse`, `Http\AttachmentDisposition`.
 - **`#[MapScopedEntity]`** — Controller argument attribute that loads a Doctrine entity with **one query joined on its owner** (another route attribute): another owner's entity is the same 404 as a missing one (no existence leak, no N+1, no manual `getOwner() !== $owner` checks). Nullable arguments get `null`. Needs `doctrine/orm` + `doctrine/doctrine-bundle` (suggested; the resolver is only registered when they are installed).
 
 ## Installation
@@ -51,6 +52,11 @@ In `config/packages/nowo_controller_kit.yaml`:
 ```yaml
 nowo_controller_kit:
   default_route: homepage  # Route used when redirectToReferer has no valid Referer
+  downloads:               # Defaults of csvDownload() / jsonDownload()
+    no_store: false        # Cache-Control: no-store, private on every download
+    csv:
+      delimiter: ','       # One byte: ',', ';' or a tab
+      bom: true            # UTF-8 byte order mark (Excel)
 ```
 
 Use your own route name (e.g. `app_home`, `dashboard`).
@@ -137,6 +143,35 @@ class MemberController extends AbstractController
 
 Requires `symfony/form` and `symfony/security-core` in your application (suggested, not required, by the bundle).
 
+### csvDownload / jsonDownload
+
+```php
+use Nowo\ControllerKitBundle\Controller\DownloadResponseTrait;
+
+class ExportController extends AbstractController
+{
+    use DownloadResponseTrait;
+
+    #[Route('/issues/export.csv')]
+    public function csv(IssueRepository $issues): Response
+    {
+        return $this->csvDownload('issues.csv', static function () use ($issues): iterable {
+            foreach ($issues->iterateAll() as $issue) {
+                yield [$issue->getTitle(), $issue->getCount()]; // "=HYPERLINK(...)" is written as "'=HYPERLINK(...)"
+            }
+        }, ['title', 'count']);
+    }
+
+    #[Route('/account/export.json')]
+    public function json(): Response
+    {
+        return $this->jsonDownload($this->exporter->export($this->getUser()), 'account.json', noStore: true);
+    }
+}
+```
+
+Outside controllers use `CsvSafeWriter::write($handle, $row)` / `CsvSafeWriter::cell($value)` and `AttachmentDisposition::attachment($filename)` directly. See [docs/USAGE.md](docs/USAGE.md#downloadresponsetrait).
+
 ### #[MapScopedEntity]
 
 ```php
@@ -199,6 +234,10 @@ make release-check
 
 - Tests: PHPUnit (PHP)
 - PHP: 100%
+- TS/JS: N/A
+- Python: N/A
+
+The only coverage exclusion is the unreachable `fopen('php://output')` failure branch in `CsvStreamedResponse` (`@codeCoverageIgnore`).
 
 ## License and author
 

@@ -1,6 +1,6 @@
 {
     "name": "nowo-tech/controller-kit-bundle",
-    "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding, RequiresValidFormTrait form guards and the #[MapScopedEntity] owner-scoped Doctrine entity argument resolver.",
+    "description": "Controller utilities for Symfony: redirectToReferer (configurable default route), SafeForwardTrait for safe request forwarding, RequiresValidFormTrait form guards, formula-injection-safe CSV and JSON download responses and the #[MapScopedEntity] owner-scoped Doctrine entity argument resolver.",
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
@@ -17,6 +17,9 @@
         "doctrine",
         "value-resolver",
         "multi-tenant",
+        "csv",
+        "csv-injection",
+        "download",
         "frankenphp"
     ],
     "homepage": "https://github.com/nowo-tech/ControllerKitBundle",

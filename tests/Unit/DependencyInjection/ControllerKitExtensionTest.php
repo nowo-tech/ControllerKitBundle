@@ -37,4 +37,24 @@ final class ControllerKitExtensionTest extends TestCase
 
         self::assertSame('app_landing', $container->getParameter('nowo_controller_kit.default_route'));
     }
+
+    public function testLoadSetsDownloadParameters(): void
+    {
+        $container = new ContainerBuilder();
+        (new ControllerKitExtension())->load([['downloads' => ['no_store' => true, 'csv' => ['delimiter' => ';', 'bom' => false]]]], $container);
+
+        self::assertTrue($container->getParameter('nowo_controller_kit.downloads.no_store'));
+        self::assertSame(';', $container->getParameter('nowo_controller_kit.downloads.csv_delimiter'));
+        self::assertFalse($container->getParameter('nowo_controller_kit.downloads.csv_bom'));
+    }
+
+    public function testLoadSetsDefaultDownloadParameters(): void
+    {
+        $container = new ContainerBuilder();
+        (new ControllerKitExtension())->load([], $container);
+
+        self::assertFalse($container->getParameter('nowo_controller_kit.downloads.no_store'));
+        self::assertSame(',', $container->getParameter('nowo_controller_kit.downloads.csv_delimiter'));
+        self::assertTrue($container->getParameter('nowo_controller_kit.downloads.csv_bom'));
+    }
 }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Nowo\ControllerKitBundle\Controller\DownloadResponseTrait;
 use Nowo\ControllerKitBundle\Controller\RedirectToRefererTrait;
 use Nowo\ControllerKitBundle\Controller\SafeForwardTrait;
+use Nowo\ControllerKitBundle\Http\CsvStreamedResponse;
+use Nowo\ControllerKitBundle\Http\JsonAttachmentResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,6 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DemoController extends AbstractController
 {
+    use DownloadResponseTrait;
     use RedirectToRefererTrait;
     use SafeForwardTrait;
 
@@ -48,5 +52,23 @@ final class DemoController extends AbstractController
     public function back(Request $request): RedirectResponse
     {
         return $this->redirectToReferer($request, ['from_demo' => 1], 303);
+    }
+
+    /** DownloadResponseTrait: the formula cells come out prefixed with a quote (open the file in a spreadsheet). */
+    #[Route(path: '/download.csv', name: 'demo_download_csv', methods: ['GET'])]
+    public function downloadCsv(): CsvStreamedResponse
+    {
+        return $this->csvDownload('demo export.csv', static function (): iterable {
+            yield ['Plain text', 'safe', 42];
+            yield ['Formula', '=1+1', -3];
+            yield ['DDE payload', "=cmd|' /C calc'!A0", 1.5];
+            yield ['Mention', '@everyone', null];
+        }, ['label', 'value', 'number']);
+    }
+
+    #[Route(path: '/download.json', name: 'demo_download_json', methods: ['GET'])]
+    public function downloadJson(): JsonAttachmentResponse
+    {
+        return $this->jsonDownload(['bundle' => 'nowo-tech/controller-kit-bundle', 'items' => [1, 2, 3]], 'demo-export.json', noStore: true);
     }
 }
