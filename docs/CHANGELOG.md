@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.3.0] - 2026-10-31](#230---2026-10-31)
 - [[2.2.1] - 2026-10-21](#221---2026-10-21)
 - [[2.2.0] - 2026-10-14](#220---2026-10-14)
 - [[2.1.0] - 2026-10-13](#210---2026-10-13)
@@ -34,12 +35,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-10-31
+
+Formula-injection-safe CSV writer and streamed CSV response, JSON attachment response, safe Content-Disposition helper, DownloadResponseTrait. See [UPGRADING](UPGRADING.md#to-230).
+
 ### Added
 
 - `DownloadResponseTrait` with `csvDownload()` (formula-injection-safe CSV streamed row by row from an iterable or a generator closure; delimiter, UTF-8 BOM and `no-store` options) and `jsonDownload()` (pretty JSON attachment, optional `no-store`).
 - `Http\CsvSafeWriter` (OWASP CSV / formula injection guard: a text cell starting with `=`, `+`, `-`, `@`, tab or CR gets a leading `'`; numbers unchanged; optional `keepNumericStrings`), `Http\CsvStreamedResponse`, `Http\JsonAttachmentResponse` and `Http\AttachmentDisposition` (safe `Content-Disposition` with an ASCII fallback; path separators and control characters replaced).
 - Configuration `nowo_controller_kit.downloads` (`no_store: false`, `csv.delimiter: ','`, `csv.bom: true`); the defaults keep existing behaviour (nothing changes for hosts that do not use the new helpers).
 - Demo: CSV and JSON download links on the home page.
+
+[2.3.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.3.0
 
 ## [2.2.1] - 2026-10-21
 
