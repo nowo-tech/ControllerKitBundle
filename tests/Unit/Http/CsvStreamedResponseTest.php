@@ -21,6 +21,7 @@ final class CsvStreamedResponseTest extends TestCase
 
         self::assertSame(200, $response->getStatusCode());
         self::assertSame('text/csv; charset=UTF-8', $response->headers->get('Content-Type'));
+        self::assertSame('nosniff', $response->headers->get('X-Content-Type-Options'));
         self::assertSame('attachment; filename=issues.csv', $response->headers->get('Content-Disposition'));
         self::assertStringNotContainsString('no-store', (string) $response->headers->get('Cache-Control'));
         self::assertSame(CsvSafeWriter::BOM . "title,count\n'=1+1,ok\n'@x,3\n", $this->body($response));

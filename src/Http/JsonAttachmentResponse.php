@@ -18,6 +18,7 @@ use const JSON_UNESCAPED_SLASHES;
  * JSON served as a file download (config / data / account exports).
  *
  * The body is pretty-printed JSON ending with a newline, `Content-Type: application/json; charset=UTF-8`,
+ * `X-Content-Type-Options: nosniff`,
  * and a safe `Content-Disposition: attachment` header built by {@see AttachmentDisposition}. With `$noStore`
  * the response is `Cache-Control: no-store, private`, so exports carrying secrets or personal data are never
  * kept by a browser or proxy cache.
@@ -55,7 +56,7 @@ final class JsonAttachmentResponse extends Response
         parent::__construct(
             json_encode($payload, $encodingOptions | JSON_THROW_ON_ERROR) . "\n",
             self::HTTP_OK,
-            ['Content-Type' => 'application/json; charset=UTF-8'] + $headers,
+            ['Content-Type' => 'application/json; charset=UTF-8', 'X-Content-Type-Options' => 'nosniff'] + $headers,
         );
     }
 
