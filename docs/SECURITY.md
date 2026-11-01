@@ -78,7 +78,8 @@ Record confirmation in the release PR or tag notes.
 | Field | Value |
 |-------|--------|
 | **Overall risk** | **Low** (after same-host Referer hardening; residual Medium only if the host misconfigures authorization) |
-| **Last review** | 2026-07-27 (Cursor Security Review / standards pass) |
+| **Last review** | 2026-11-01 — delta review of the 2.3.x download helpers (`DownloadResponseTrait`, `CsvSafeWriter`, `CsvStreamedResponse`, `JsonAttachmentResponse`, `AttachmentDisposition`) in the MailKitBundle CSV export delta (CA+): Pass (good) / Low. Previous full review 2026-07-27 (Cursor Security Review / standards pass). |
+| **Delta findings** | **D1** (Low): a formula trigger after an embedded `;` list separator was not neutralised (Excel in `;` list-separator locales splits the cell) — fixed in **2.3.1** (`CsvSafeWriter::SEPARATOR_FORMULA_PATTERN`, regression tests). **I-D1** (Info): `X-Content-Type-Options: nosniff` on CSV / JSON attachments — added in 2.3.1. RFC 6266 filename handling and `no-store` held. |
 | **Open Critical/High** | None |
 | **Residual** | Host apps remain responsible for route authorization and Twig escaping; traits do not replace firewall rules. |
 

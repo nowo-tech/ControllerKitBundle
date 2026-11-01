@@ -36,6 +36,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Dev lock refreshed within the constraints (28 packages): doctrine-bundle 2.19.3, ORM 3.7.6, PHPStan 2.3.4,
+  Rector 2.8.3, Symfony 7.4.22, phpunit-bridge 8.1.10. No runtime constraint changed.
+
+### Documentation
+
+- Spec Kit baseline: `code-inventory.md` maps the 2.3.x download helpers (`DownloadResponseTrait`,
+  `AttachmentDisposition`, `CsvSafeWriter`, `CsvStreamedResponse`, `JsonAttachmentResponse`) under a new "HTTP downloads"
+  category (FR-DL-001..006); total 15 production sources, Last audited 2026-11-01. `spec.md` gains US-4 and the FR-DL
+  requirements.
+- SECURITY.md § AI security audit: last review is the 2026-11-01 delta review (MailKit CA+), D1 fixed in 2.3.1.
+
 ## [2.3.1] - 2026-11-01
 
 CSV formula guard after embedded separators; nosniff on CSV/JSON attachments See [UPGRADING](UPGRADING.md#to-231).
