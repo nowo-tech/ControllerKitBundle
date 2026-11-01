@@ -198,9 +198,9 @@ return $this->csvDownload('remittance-'.$id.'.csv', static function () use ($row
 
 **Behaviour:**
 
-- `Content-Type: text/csv; charset=UTF-8`, `Content-Disposition: attachment` (see [AttachmentDisposition](#building-blocks)), status 200.
+- `Content-Type: text/csv; charset=UTF-8`, `X-Content-Type-Options: nosniff`, `Content-Disposition: attachment` (see [AttachmentDisposition](#building-blocks)), status 200.
 - The body is streamed: a closure is only called while the response is sent, so a generator can read the database in batches.
-- **Formula injection (OWASP):** every text cell starting with `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading `'`; `int` / `float` values are written as they are (a number is never a formula); `null` is an empty cell; `Stringable` values are guarded like strings.
+- **Formula injection (OWASP):** every text cell starting with `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading `'`, and a trigger that follows a `;`, `,`, tab, `|` or line break inside the cell gets a space before it (Excel in `;` list-separator locales splits cells there); `int` / `float` values are written as they are (a number is never a formula); `null` is an empty cell; `Stringable` values are guarded like strings.
 - `keepNumericStrings: true` leaves plain decimal strings (`-12.50`, `3`) unguarded, for amount columns that must stay numbers; anything else that starts with `-` / `+` (`-1+2`, `+12`) is still guarded.
 - Quoting is RFC 4180 (`"` doubled, no escape character).
 - An invalid delimiter (not one byte, `"`, CR, LF) throws `InvalidArgumentException` before anything is sent.

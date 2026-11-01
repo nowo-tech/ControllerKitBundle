@@ -20,6 +20,7 @@ final class JsonAttachmentResponseTest extends TestCase
         self::assertSame(200, $response->getStatusCode());
         self::assertSame("{\n    \"url\": \"https://x/y\",\n    \"n\": 1\n}\n", $response->getContent());
         self::assertSame('application/json; charset=UTF-8', $response->headers->get('Content-Type'));
+        self::assertSame('nosniff', $response->headers->get('X-Content-Type-Options'));
         self::assertSame('attachment; filename=project-demo.json', $response->headers->get('Content-Disposition'));
         self::assertStringNotContainsString('no-store', (string) $response->headers->get('Cache-Control'));
     }

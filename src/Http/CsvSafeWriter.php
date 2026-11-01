@@ -12,6 +12,7 @@ use function array_values;
 use function fputcsv;
 use function is_string;
 use function preg_match;
+use function preg_replace;
 use function sprintf;
 use function strlen;
 
@@ -20,6 +21,10 @@ use function strlen;
  *
  * A text cell starting with `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading `'`, so Excel,
  * LibreOffice or Google Sheets never evaluate it as a formula (`=HYPERLINK(…)`, `=cmd|' /C calc'!A0`, …).
+ * A formula trigger that follows a likely list separator inside the cell (`;`, `,`, tab, `|`, CR or LF) gets a
+ * space before it: Excel opens a double-clicked `.csv` with the system list separator (`;` in most non-English
+ * locales) and ignores the RFC 4180 quoting in that mode, so `Hi;=cmd|…` would otherwise split into a second
+ * cell that is evaluated. A cell starting with a space is plain text in every spreadsheet.
  * Numbers (`int` / `float`) are written as they are: a number is never a formula. Numeric strings
  * (`-12.50`) are guarded too unless `$keepNumericStrings` is set (amount columns that must stay numbers).
  *
@@ -36,6 +41,12 @@ final class CsvSafeWriter
     /** First characters a spreadsheet may evaluate as a formula (OWASP CSV injection). */
     public const FORMULA_PREFIX_PATTERN = '/^[=+\-@\t\r]/';
 
+    /**
+     * A likely list separator (`;`, `,`, tab, `|`) or line break followed by a formula trigger; the separator is
+     * captured and a space is inserted after it, so no cell split out of this one starts with a trigger.
+     */
+    public const SEPARATOR_FORMULA_PATTERN = '/([;,\t|\r\n])(?=[=+\-@\t\r])/';
+
     /** A plain decimal number written as text (`12`, `-3`, `12.50`); kept as-is with `$keepNumericStrings`. */
     public const NUMERIC_STRING_PATTERN = '/^-?\d+(\.\d+)?$/';
 
@@ -45,7 +56,8 @@ final class CsvSafeWriter
      * @param float|int|string|Stringable|null $value Cell value
      * @param bool $keepNumericStrings Leave plain decimal strings (`-12.50`) unguarded
      *
-     * @return string The cell text, prefixed with `'` when it could be read as a formula
+     * @return string The cell text, prefixed with `'` when it could be read as a formula, with a space after
+     *                any separator followed by a formula trigger
      */
     public static function cell(int|float|string|Stringable|null $value, bool $keepNumericStrings = false): string
     {
@@ -57,14 +69,16 @@ final class CsvSafeWriter
         }
 
         $text = (string) $value;
-        if ($text === '' || preg_match(self::FORMULA_PREFIX_PATTERN, $text) !== 1) {
+        if ($text === '') {
             return $text;
         }
         if ($keepNumericStrings && preg_match(self::NUMERIC_STRING_PATTERN, $text) === 1) {
             return $text;
         }
 
-        return "'" . $text;
+        $guarded = (string) preg_replace(self::SEPARATOR_FORMULA_PATTERN, '$1 ', $text);
+
+        return preg_match(self::FORMULA_PREFIX_PATTERN, $guarded) === 1 ? "'" . $guarded : $guarded;
     }
 
     /**

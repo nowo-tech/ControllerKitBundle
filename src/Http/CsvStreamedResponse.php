@@ -18,7 +18,8 @@ use function fwrite;
  *
  * Every cell goes through {@see CsvSafeWriter}. The rows are an iterable or a closure returning one (a generator
  * reading the database in batches is evaluated only while the body is sent). Optional UTF-8 BOM (Excel), field
- * delimiter, `Cache-Control: no-store, private`, and a safe `Content-Disposition: attachment` header.
+ * delimiter, `Cache-Control: no-store, private`, `X-Content-Type-Options: nosniff`, and a safe
+ * `Content-Disposition: attachment` header.
  *
  * The callback captures only its constructor arguments: nothing outlives the response (FrankenPHP worker-safe).
  *
@@ -73,7 +74,7 @@ final class CsvStreamedResponse extends StreamedResponse
                 fclose($out);
             },
             self::HTTP_OK,
-            ['Content-Type' => 'text/csv; charset=UTF-8'] + $headers,
+            ['Content-Type' => 'text/csv; charset=UTF-8', 'X-Content-Type-Options' => 'nosniff'] + $headers,
         );
     }
 }
