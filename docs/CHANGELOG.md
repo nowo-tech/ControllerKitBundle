@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.3.2] - 2026-11-01](#232---2026-11-01)
 - [[2.3.1] - 2026-11-01](#231---2026-11-01)
 - [[2.3.0] - 2026-10-31](#230---2026-10-31)
 - [[2.2.1] - 2026-10-21](#221---2026-10-21)
@@ -36,6 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.2] - 2026-11-01
+
+Spec Kit inventory for HTTP downloads, SECURITY review date, dev lock refresh See [UPGRADING](UPGRADING.md#to-232).
+
 ### Changed
 
 - Dev lock refreshed within the constraints (28 packages): doctrine-bundle 2.19.3, ORM 3.7.6, PHPStan 2.3.4,
@@ -48,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   category (FR-DL-001..006); total 15 production sources, Last audited 2026-11-01. `spec.md` gains US-4 and the FR-DL
   requirements.
 - SECURITY.md § AI security audit: last review is the 2026-11-01 delta review (MailKit CA+), D1 fixed in 2.3.1.
+
+[2.3.2]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.3.2
 
 ## [2.3.1] - 2026-11-01
 
