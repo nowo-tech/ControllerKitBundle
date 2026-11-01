@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.3.1](#to-231)
 - [To 2.3.0](#to-230)
 - [To 2.2.1](#to-221)
 - [To 2.2.0](#to-220)
@@ -56,6 +57,14 @@
   - [Breaking changes](#breaking-changes-12)
 
 ## Unreleased
+
+## To 2.3.1
+
+From **2.3.0**:
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
 
 No configuration or API change. `CsvSafeWriter::cell()` now inserts a space after a `;`, `,`, tab, `|`, CR or LF that is followed by a formula trigger inside a cell (`Hi;=x` is written `Hi; =x`), and a cell starting with a tab or CR reads `'\t =…` / `'\r =…`. Tests that compare exported CSV byte for byte may need their fixtures updated. CSV and JSON download responses now also send `X-Content-Type-Options: nosniff`.
 

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.3.1] - 2026-11-01](#231---2026-11-01)
 - [[2.3.0] - 2026-10-31](#230---2026-10-31)
 - [[2.2.1] - 2026-10-21](#221---2026-10-21)
 - [[2.2.0] - 2026-10-14](#220---2026-10-14)
@@ -35,11 +36,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-11-01
+
+CSV formula guard after embedded separators; nosniff on CSV/JSON attachments See [UPGRADING](UPGRADING.md#to-231).
+
 ### Security
 
 - `CsvSafeWriter::cell()`: a formula trigger (`=`, `+`, `-`, `@`, tab, CR) that follows a `;`, `,`, tab, `|`, CR or LF inside a cell now gets a space before it. Excel opens a double-clicked `.csv` with the system list separator (`;` in most non-English locales) and ignores RFC 4180 quoting in that mode, so `Hi;=cmd|…` used to become a second cell evaluated as a formula (formula injection through an embedded separator, Low). Cells starting with a tab or CR now read `'\t =…` / `'\r =…`. New `CsvSafeWriter::SEPARATOR_FORMULA_PATTERN` constant; regression tests parse the output with `,`, `;` and tab.
 - `CsvStreamedResponse` and `JsonAttachmentResponse` send `X-Content-Type-Options: nosniff` (defence in depth; fixed like `Content-Type`).
 - `docs/SECURITY.md`: the CSV guarantee is described as a best-effort guard for common spreadsheets, not for every CSV consumer.
+
+[2.3.1]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.3.1
 
 ## [2.3.0] - 2026-10-31
 
