@@ -20,6 +20,7 @@
   - [Behaviour](#behaviour)
   - [Application shortcut attribute](#application-shortcut-attribute)
   - [Overriding the resolver](#overriding-the-resolver)
+- [Using it from a DDD / hexagonal application](#using-it-from-a-ddd--hexagonal-application)
 
 ## RedirectToRefererTrait
 
@@ -324,3 +325,34 @@ public function show(#[MapProjectScoped] Issue $issue): Response
 ### Overriding the resolver
 
 Define a service with id `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver` (tagged `controller.targeted_value_resolver`) in your application; the bundle keeps it and does not register its own.
+
+## Using it from a DDD / hexagonal application
+
+**Layer:** presentation. The traits (`RedirectToRefererTrait`, `SafeForwardTrait`, `RequiresValidFormTrait`,
+`DownloadResponseTrait`) and response helpers (`CsvStreamedResponse`, `JsonAttachmentResponse`, `CsvSafeWriter`,
+`AttachmentDisposition`) belong in your controllers. They depend only on Symfony HTTP and form types, never on
+your entities. The bundle dispatches no events and stores nothing.
+
+**Keeping the domain clean**
+
+- Feed `csvDownload()` / `jsonDownload()` from read models or query DTOs (iterables of scalar rows,
+  `JsonSerializable` views) rather than from entities.
+- `#[MapScopedEntity]` is an optional Doctrine ORM adapter. It loads an entity owned by the route owner in one
+  query and returns 404 otherwise. Use it only where controllers are allowed to receive Doctrine entities. In a
+  strict hexagonal controller, take the route ids as scalars and call your application query instead:
+
+```php
+#[Route('/projects/{projectId}/issues/{issueId}')]
+public function show(string $projectId, string $issueId, IssueQueries $issues): Response
+{
+    $issue = $issues->findInProject(ProjectId::fromString($projectId), IssueId::fromString($issueId))
+        ?? throw $this->createNotFoundException();
+    // ...
+}
+```
+
+**Known limitations**
+
+- `#[MapScopedEntity]` needs the owner to be a Doctrine **association** on the entity; an owner id stored as a
+  plain field is not supported yet. It has no repository SPI. To change its behaviour, register your own service
+  under the `ScopedEntityValueResolver` id (see "Overriding the resolver").
