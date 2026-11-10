@@ -7,6 +7,7 @@ namespace Nowo\ControllerKitBundle\Tests\Fixtures\Controller;
 use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Attribute\MapOwnerScoped;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ItemController
@@ -28,5 +29,15 @@ final class ItemController
         ?Item $item,
     ): Response {
         return new Response($item?->getCode() ?? 'none');
+    }
+
+    /**
+     * Owner referenced by a plain field (2.4+): `Note::$ownerSlug` holds the owner id value.
+     */
+    public function note(
+        #[MapScopedEntity(parent: 'ownerSlug', parentId: 'ownerSlug', id: 'code', field: 'code')]
+        Note $note,
+    ): Response {
+        return new Response($note->getCode());
     }
 }

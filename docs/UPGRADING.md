@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.4.0](#to-240)
 - [To 2.3.2](#to-232)
 - [To 2.3.1](#to-231)
 - [To 2.3.0](#to-230)
@@ -58,6 +59,25 @@
   - [Breaking changes](#breaking-changes-12)
 
 ## Unreleased
+
+## To 2.4.0
+
+From **2.3.2** (target **2.4.0**, not yet released):
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+Nothing to change. Existing `#[MapScopedEntity]` arguments (owner = association) run the same query and give the
+same answers and error messages.
+
+- `parent` may now name a plain mapped field holding the owner id. Before, that was a `LogicException`
+  (`has no association`); now the entity is matched on `e.<parent> = :parentId` and `parentField` is ignored.
+- Optional SPI `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface`: a service under that id
+  replaces the Doctrine query for **every** `#[MapScopedEntity]` argument. If you mix Doctrine and other sources,
+  dispatch on `$class` inside your finder.
+- If you construct `ScopedEntityValueResolver` yourself (an override under its service id), the constructor is
+  unchanged for the Doctrine case; the registry may now be null when you pass a finder.
 
 ## To 2.3.2
 

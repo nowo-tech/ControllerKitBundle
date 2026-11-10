@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Owner;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Type\StrictCodeType;
 use Psr\Log\LoggerInterface;
@@ -63,6 +64,7 @@ final class OrmFactory
         $schemaTool->createSchema([
             $manager->getClassMetadata(Owner::class),
             $manager->getClassMetadata(Item::class),
+            $manager->getClassMetadata(Note::class),
         ]);
     }
 
@@ -85,5 +87,16 @@ final class OrmFactory
         $manager->clear();
 
         return ['acme' => $acme, 'globex' => $globex, 'acmeItem' => $acmeItem, 'globexItem' => $globexItem];
+    }
+
+    /**
+     * Two notes owned by id value: `NOTE-1` (owner slug `acme`) and `NOTE-2` (`globex`).
+     */
+    public static function seedNotes(EntityManagerInterface $manager): void
+    {
+        $manager->persist(new Note('acme', 'NOTE-1'));
+        $manager->persist(new Note('globex', 'NOTE-2'));
+        $manager->flush();
+        $manager->clear();
     }
 }

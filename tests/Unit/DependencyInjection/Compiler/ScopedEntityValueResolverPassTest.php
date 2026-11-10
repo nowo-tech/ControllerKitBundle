@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\ControllerKitBundle\Tests\Unit\DependencyInjection\Compiler;
 
 use Nowo\ControllerKitBundle\DependencyInjection\Compiler\ScopedEntityValueResolverPass;
+use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface;
 use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -35,6 +36,33 @@ final class ScopedEntityValueResolverPassTest extends TestCase
         (new ScopedEntityValueResolverPass())->process($container);
 
         self::assertFalse($container->hasDefinition(ScopedEntityValueResolver::class));
+    }
+
+    public function testPassesTheApplicationFinderWithDoctrine(): void
+    {
+        $container = new ContainerBuilder();
+        $container->register('doctrine', stdClass::class);
+        $container->register(ScopedEntityFinderInterface::class, stdClass::class);
+
+        (new ScopedEntityValueResolverPass())->process($container);
+
+        self::assertEquals(
+            [new Reference('doctrine'), new Reference(ScopedEntityFinderInterface::class)],
+            $container->getDefinition(ScopedEntityValueResolver::class)->getArguments(),
+        );
+    }
+
+    public function testRegistersTheResolverWithAFinderAndNoDoctrine(): void
+    {
+        $container = new ContainerBuilder();
+        $container->register('app.finder', stdClass::class);
+        $container->setAlias(ScopedEntityFinderInterface::class, 'app.finder');
+
+        (new ScopedEntityValueResolverPass())->process($container);
+
+        $definition = $container->getDefinition(ScopedEntityValueResolver::class);
+        self::assertEquals([null, new Reference(ScopedEntityFinderInterface::class)], $definition->getArguments());
+        self::assertSame([['name' => ScopedEntityValueResolver::class]], $definition->getTag('controller.targeted_value_resolver'));
     }
 
     public function testKeepsAnApplicationOverride(): void

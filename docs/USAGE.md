@@ -19,6 +19,8 @@
   - [Examples](#examples)
   - [Behaviour](#behaviour)
   - [Application shortcut attribute](#application-shortcut-attribute)
+  - [Owner by plain field](#owner-by-plain-field)
+  - [Custom finder (SPI)](#custom-finder-spi)
   - [Overriding the resolver](#overriding-the-resolver)
 - [Using it from a DDD / hexagonal application](#using-it-from-a-ddd--hexagonal-application)
 
@@ -241,15 +243,15 @@ return new Response($pdf, 200, [
 - no existence leak across owners (tenants, projects, organizations…);
 - no extra query to load the owner and no `if ($entity->getProject() !== $project)` checks in controllers.
 
-Requires `doctrine/orm` (^2.17 or ^3) and `doctrine/doctrine-bundle` in your application (both suggested). The resolver (`Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver`) is registered automatically only when both are installed.
+Requires `doctrine/orm` (^2.17 or ^3) and `doctrine/doctrine-bundle` in your application (both suggested). The resolver (`Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver`) is registered automatically when both are installed, or (2.4+) when you register a [custom finder](#custom-finder-spi).
 
 ### Signature
 
 ```php
 #[MapScopedEntity(
-    string $parent,                 // owner association on the entity, e.g. 'project'
+    string $parent,                 // owner association on the entity, e.g. 'project' (2.4+: or a field holding the owner id)
     ?string $parentId = null,       // route attribute with the owner identifier (default "{$parent}Id")
-    string $parentField = 'id',     // owner field matched against it ('id', 'uuid', 'slug', ...)
+    string $parentField = 'id',     // owner field matched against it ('id', 'uuid', 'slug', ...); unused for a field owner
     string $id = 'id',              // route attribute with the entity identifier
     string $field = 'id',           // entity field matched against it
     ?string $objectManager = null,  // named entity manager (default: the manager of the entity class)
@@ -301,7 +303,8 @@ Route values are bound with the mapped field types, so UUID columns (binary or n
 | --- | --- |
 | Entity found under the route owner | the entity |
 | Entity missing, owned by another owner, route value missing/empty, or identifier malformed for the column type (`ConversionException`) | `NotFoundHttpException` (`"<class>" object not found by "<resolver>".`) — or `null` for a nullable argument |
-| Argument not typed with a class, no ORM manager for it, unknown `parent` association, unknown `field` / `parentField` | `LogicException` (mapping error, before any query) |
+| Argument not typed with a class, no ORM manager for it, `parent` neither an association nor a field, unknown `field` / `parentField` | `LogicException` (mapping error, before any query) |
+| Neither Doctrine nor a `ScopedEntityFinderInterface` service (resolver registered by hand) | `LogicException` |
 
 It scopes the entity to the **route owner** only. Checking that the current user may act on that owner (voters, `#[IsGranted]`, a resolver for the owner itself) stays in your application.
 
@@ -322,6 +325,61 @@ final class MapProjectScoped extends MapScopedEntity
 public function show(#[MapProjectScoped] Issue $issue): Response
 ```
 
+### Owner by plain field
+
+Since 2.4. When the entity keeps its owner as an id **value** (a plain column, no association), name that field as
+`parent`. The resolver matches it directly, without a join, and ignores `parentField`:
+
+```php
+// Issue::$projectId is a string column holding the project UUID
+#[Route('/projects/{projectId}/issues/{issueId}')]
+public function show(
+    #[MapScopedEntity(parent: 'projectId', parentId: 'projectId', id: 'issueId', field: 'uuid')]
+    Issue $issue,
+): Response {
+}
+```
+
+```sql
+SELECT e FROM <argument class> e WHERE e.<field> = :id AND e.<parent> = :parentId
+```
+
+Both values are bound with the entity's mapped field types. If `parent` is both an association and a field name, the
+association wins (the 2.3 behaviour).
+
+### Custom finder (SPI)
+
+Since 2.4. To load the argument from something other than a Doctrine query (a repository port, a read model, an API),
+implement `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface` and register it under that id:
+
+```php
+use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
+use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface;
+
+final class IssueFinder implements ScopedEntityFinderInterface
+{
+    public function __construct(private IssueQueries $issues) {}
+
+    public function findScoped(string $class, int|string $id, int|string $ownerId, MapScopedEntity $attribute): ?object
+    {
+        return match ($class) {
+            IssueView::class => $this->issues->findInProject((string) $ownerId, (string) $id),
+            default          => null,
+        };
+    }
+}
+```
+
+```yaml
+# config/services.yaml
+Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface: '@App\Infrastructure\Http\IssueFinder'
+```
+
+The finder then serves **every** `#[MapScopedEntity]` argument (the Doctrine query is not used), so dispatch on
+`$class`. It is called only with non-empty string or int route values. Return `null` for a missing object, an object
+of another owner and a malformed id alike: the resolver answers the same 404 (or `null` for a nullable argument).
+Doctrine is not needed: without it the resolver is registered as soon as the finder service exists.
+
 ### Overriding the resolver
 
 Define a service with id `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver` (tagged `controller.targeted_value_resolver`) in your application; the bundle keeps it and does not register its own.
@@ -338,8 +396,10 @@ your entities. The bundle dispatches no events and stores nothing.
 - Feed `csvDownload()` / `jsonDownload()` from read models or query DTOs (iterables of scalar rows,
   `JsonSerializable` views) rather than from entities.
 - `#[MapScopedEntity]` is an optional Doctrine ORM adapter. It loads an entity owned by the route owner in one
-  query and returns 404 otherwise. Use it only where controllers are allowed to receive Doctrine entities. In a
-  strict hexagonal controller, take the route ids as scalars and call your application query instead:
+  query and returns 404 otherwise. The owner can be an association or (2.4+) a plain field holding the owner id,
+  as in a model that references aggregates by id. To load read models or objects from a non-Doctrine repository,
+  implement the [`ScopedEntityFinderInterface`](#custom-finder-spi) SPI. Or, in a strict hexagonal controller,
+  take the route ids as scalars and call your application query instead:
 
 ```php
 #[Route('/projects/{projectId}/issues/{issueId}')]
@@ -353,6 +413,5 @@ public function show(string $projectId, string $issueId, IssueQueries $issues): 
 
 **Known limitations**
 
-- `#[MapScopedEntity]` needs the owner to be a Doctrine **association** on the entity; an owner id stored as a
-  plain field is not supported yet. It has no repository SPI. To change its behaviour, register your own service
-  under the `ScopedEntityValueResolver` id (see "Overriding the resolver").
+- A `ScopedEntityFinderInterface` replaces the Doctrine query for every `#[MapScopedEntity]` argument; there is no
+  per-attribute finder, so a finder that serves only some classes must dispatch on `$class`.

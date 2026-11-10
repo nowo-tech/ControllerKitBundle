@@ -6,6 +6,7 @@ namespace Nowo\ControllerKitBundle\Tests\Integration\ValueResolver;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Owner;
 use Nowo\ControllerKitBundle\Tests\Fixtures\OrmFactory;
 use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver;
@@ -40,6 +41,7 @@ final class ScopedEntityValueResolverKernelTest extends TestCase
         self::assertInstanceOf(EntityManagerInterface::class, $manager);
         OrmFactory::createSchema($manager);
         $this->rows = OrmFactory::seed($manager);
+        OrmFactory::seedNotes($manager);
     }
 
     protected function tearDown(): void
@@ -75,6 +77,20 @@ final class ScopedEntityValueResolverKernelTest extends TestCase
                 self::fail('Expected 404 for ' . $path);
             } catch (NotFoundHttpException $exception) {
                 self::assertSame(sprintf('"%s" object not found by "%s".', Item::class, ScopedEntityValueResolver::class), $exception->getMessage(), $path);
+            }
+        }
+    }
+
+    public function testResolvesAnOwnerReferencedByAPlainField(): void
+    {
+        self::assertSame('NOTE-2', $this->get('/n/globex/notes/NOTE-2')->getContent());
+
+        foreach (['/n/acme/notes/NOTE-2', '/n/acme/notes/NOTE-404', '/n/acme/notes/malformed'] as $path) {
+            try {
+                $this->get($path);
+                self::fail('Expected 404 for ' . $path);
+            } catch (NotFoundHttpException $exception) {
+                self::assertSame(sprintf('"%s" object not found by "%s".', Note::class, ScopedEntityValueResolver::class), $exception->getMessage(), $path);
             }
         }
     }

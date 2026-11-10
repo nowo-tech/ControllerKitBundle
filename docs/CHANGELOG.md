@@ -37,7 +37,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Target: **2.4.0** (new minor). Additive; existing `#[MapScopedEntity]` arguments run the same query. See [UPGRADING](UPGRADING.md#to-240).
+
+### Added
+
+- **`#[MapScopedEntity]` owner by plain field** (DDD P2): when `parent` names a mapped **field** instead of an association (an owner id stored as a value, e.g. `Issue::$projectId`), the resolver compares `e.<parent> = :parentId` directly, without a join; `parentField` is not used then. Associations keep the joined query unchanged and win when a name is both.
+- **`ScopedEntityFinderInterface`** (SPI): `findScoped(string $class, int|string $id, int|string $ownerId, MapScopedEntity $attribute): ?object`. Register a service under this interface and `ScopedEntityValueResolver` delegates every `#[MapScopedEntity]` argument to it instead of the Doctrine query (non-Doctrine repositories, read models). `null` gives the same 404 (or `null` for a nullable argument). Without Doctrine, the resolver is registered as soon as the finder service exists.
+- `ScopedEntityValueResolver::__construct(?ManagerRegistry $registry, ?ScopedEntityFinderInterface $finder = null)`: the registry may be null (finder only).
+
 ### Documentation
+
+- USAGE "MapScopedEntity": owner by plain field, "Custom finder (SPI)"; the DDD section's known limitations updated.
 
 - USAGE: new section "Using it from a DDD / hexagonal application" (where the bundle sits in a hexagonal host, the ports, events and DTOs to build an anti-corruption layer on, and the known limitations).
 

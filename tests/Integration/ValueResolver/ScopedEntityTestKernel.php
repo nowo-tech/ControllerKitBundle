@@ -91,6 +91,7 @@ final class ScopedEntityTestKernel extends Kernel
     {
         $routes->add('item_by_id', '/owners/{ownerId}/items/{itemId}')->controller([ItemController::class, 'showById']);
         $routes->add('item_by_code', '/o/{ownerSlug}/items/{code}')->controller([ItemController::class, 'showByCode']);
+        $routes->add('note_by_code', '/n/{ownerSlug}/notes/{code}')->controller([ItemController::class, 'note']);
         $routes->add('item_optional', '/o/{ownerSlug}/optional/{code}')->controller([ItemController::class, 'optional']);
     }
 }
