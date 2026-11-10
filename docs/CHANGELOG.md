@@ -37,7 +37,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Target: **2.4.0** (new minor). Additive; existing `#[MapScopedEntity]` arguments run the same query. See [UPGRADING](UPGRADING.md#to-240).
+
+### Added
+
+- **`#[MapScopedEntity]` owner by plain field** (DDD P2): when `parent` names a mapped **field** instead of an association (an owner id stored as a value, e.g. `Issue::$projectId`), the resolver compares `e.<parent> = :parentId` directly, without a join; `parentField` is not used then. Associations keep the joined query unchanged and win when a name is both. Configurations that scope nothing are a `LogicException`: `parent` is the identifier, `parent` equals `field`, or owner and entity read the same route attribute; embeddables are refused (audit KM-C-L1).
+- **`ScopedEntityFinderInterface`** (SPI): `supports(string $class, MapScopedEntity $attribute): bool` and `findScoped(string $class, int|string $id, int|string $ownerId, MapScopedEntity $attribute): ?object`. Finders are services tagged `nowo_controller_kit.scoped_entity_finder` (autoconfigured, `priority` honoured); for each argument the first that supports the class decides, otherwise the built-in Doctrine query runs. A finder result of another class is a `LogicException`. Without Doctrine, the resolver is registered as soon as a finder is tagged (audit KM-C-M1).
+- **`DoctrineScopedEntityFinder`**: the built-in owner-scoped query as a public service (registered with Doctrine, not tagged) that host finders can delegate to. A direct `findScoped()` call with an empty id or owner id returns null without a query (audit KM-C-L2).
+- `ScopedEntityValueResolver::__construct(?ManagerRegistry $registry, iterable $finders = [])`: the registry may be null (finders only).
+
 ### Documentation
+
+- USAGE "MapScopedEntity": owner by plain field, "Custom finder (SPI)"; the DDD section's known limitations updated.
 
 - USAGE: new section "Using it from a DDD / hexagonal application" (where the bundle sits in a hexagonal host, the ports, events and DTOs to build an anti-corruption layer on, and the known limitations).
 

@@ -6,8 +6,10 @@ namespace Nowo\ControllerKitBundle\Tests\Integration\ValueResolver;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Owner;
 use Nowo\ControllerKitBundle\Tests\Fixtures\OrmFactory;
+use Nowo\ControllerKitBundle\Tests\Fixtures\ReadModel\ItemView;
 use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -40,6 +42,7 @@ final class ScopedEntityValueResolverKernelTest extends TestCase
         self::assertInstanceOf(EntityManagerInterface::class, $manager);
         OrmFactory::createSchema($manager);
         $this->rows = OrmFactory::seed($manager);
+        OrmFactory::seedNotes($manager);
     }
 
     protected function tearDown(): void
@@ -75,6 +78,36 @@ final class ScopedEntityValueResolverKernelTest extends TestCase
                 self::fail('Expected 404 for ' . $path);
             } catch (NotFoundHttpException $exception) {
                 self::assertSame(sprintf('"%s" object not found by "%s".', Item::class, ScopedEntityValueResolver::class), $exception->getMessage(), $path);
+            }
+        }
+    }
+
+    public function testResolvesAnOwnerReferencedByAPlainField(): void
+    {
+        self::assertSame('NOTE-2', $this->get('/n/globex/notes/NOTE-2')->getContent());
+
+        foreach (['/n/acme/notes/NOTE-2', '/n/acme/notes/NOTE-404', '/n/acme/notes/malformed'] as $path) {
+            try {
+                $this->get($path);
+                self::fail('Expected 404 for ' . $path);
+            } catch (NotFoundHttpException $exception) {
+                self::assertSame(sprintf('"%s" object not found by "%s".', Note::class, ScopedEntityValueResolver::class), $exception->getMessage(), $path);
+            }
+        }
+    }
+
+    public function testTaggedFinderLoadsAReadModelNextToDoctrineEntities(): void
+    {
+        self::assertSame('globex/GLOBEX-1', $this->get('/v/globex/items/GLOBEX-1')->getContent());
+        // Doctrine entities still go through the built-in query.
+        self::assertSame('GLOBEX-1', $this->get('/o/globex/items/GLOBEX-1')->getContent());
+
+        foreach (['/v/acme/items/GLOBEX-1', '/v/acme/items/ACME-404', '/v/acme/items/malformed'] as $path) {
+            try {
+                $this->get($path);
+                self::fail('Expected 404 for ' . $path);
+            } catch (NotFoundHttpException $exception) {
+                self::assertSame(sprintf('"%s" object not found by "%s".', ItemView::class, ScopedEntityValueResolver::class), $exception->getMessage(), $path);
             }
         }
     }

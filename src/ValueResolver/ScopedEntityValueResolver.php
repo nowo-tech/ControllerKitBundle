@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Nowo\ControllerKitBundle\ValueResolver;
 
-use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use LogicException;
 use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
@@ -14,34 +12,41 @@ use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use function is_int;
+use function get_debug_type;
 use function is_object;
-use function is_string;
 use function sprintf;
 
 /**
- * Resolves {@see MapScopedEntity} arguments with one Doctrine ORM query joined on the owner
- * association (spec 003): a missing entity, an entity of another owner and a malformed identifier
- * are the same 404 (or `null` for a nullable argument).
+ * Resolves {@see MapScopedEntity} arguments scoped to the route owner (spec 003): a missing entity, an entity of
+ * another owner and a malformed identifier are the same 404 (or `null` for a nullable argument).
  *
- * Registered as a targeted value resolver only when doctrine/orm and the `doctrine` registry
- * (DoctrineBundle) are available. Stateless and FrankenPHP worker-safe.
+ * For each argument the tagged {@see ScopedEntityFinderInterface} finders (2.4+) are asked in priority order; the
+ * first that supports the class loads it. Otherwise the built-in {@see DoctrineScopedEntityFinder} runs one Doctrine
+ * ORM query, joined on the owner association or (2.4+) matched on a plain owner field.
+ *
+ * Registered as a targeted value resolver when doctrine/orm and the `doctrine` registry (DoctrineBundle) are
+ * available, or when at least one finder is tagged. Stateless and FrankenPHP worker-safe.
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
 final readonly class ScopedEntityValueResolver implements ValueResolverInterface
 {
+    private ?DoctrineScopedEntityFinder $doctrine;
+
     /**
-     * @param ManagerRegistry $registry Doctrine registry used to pick the entity manager
+     * @param ManagerRegistry|null $registry Doctrine registry for the built-in query (null without Doctrine)
+     * @param iterable<ScopedEntityFinderInterface> $finders application finders, highest priority first (2.4+)
      */
     public function __construct(
-        private ManagerRegistry $registry,
+        ?ManagerRegistry $registry,
+        private iterable $finders = [],
     ) {
+        $this->doctrine = $registry instanceof ManagerRegistry ? new DoctrineScopedEntityFinder($registry) : null;
     }
 
     /**
-     * Resolves a `#[MapScopedEntity]` argument with one owner-scoped query.
+     * Resolves a `#[MapScopedEntity]` argument with one owner-scoped lookup.
      *
      * @param Request $request Current request (route attributes hold both identifiers)
      * @param ArgumentMetadata $argument Controller argument metadata
@@ -60,47 +65,31 @@ final readonly class ScopedEntityValueResolver implements ValueResolverInterface
             throw new LogicException(sprintf('#[MapScopedEntity] needs an entity-typed argument ("$%s").', $argument->getName()));
         }
 
-        $manager = $attribute->objectManager === null
-            ? $this->registry->getManagerForClass($class)
-            : $this->registry->getManager($attribute->objectManager);
-        if (!$manager instanceof EntityManagerInterface) {
-            throw new LogicException(sprintf('#[MapScopedEntity] needs a Doctrine ORM entity manager for "%s" ("$%s").', $class, $argument->getName()));
-        }
-
-        $metadata = $manager->getClassMetadata($class);
-        if (!$metadata->hasAssociation($attribute->parent)) {
-            throw new LogicException(sprintf('#[MapScopedEntity] "%s" has no association "%s" ("$%s").', $class, $attribute->parent, $argument->getName()));
-        }
-
-        if (!$metadata->hasField($attribute->field)) {
-            throw new LogicException(sprintf('#[MapScopedEntity] "%s" has no field "%s" ("$%s").', $class, $attribute->field, $argument->getName()));
-        }
-
-        $parentMetadata = $manager->getClassMetadata($metadata->getAssociationTargetClass($attribute->parent));
-        if (!$parentMetadata->hasField($attribute->parentField)) {
-            throw new LogicException(sprintf('#[MapScopedEntity] "%s" has no field "%s" ("$%s").', $parentMetadata->getName(), $attribute->parentField, $argument->getName()));
+        $finder = null;
+        foreach ($this->finders as $candidate) {
+            if ($candidate->supports($class, $attribute)) {
+                $finder = $candidate;
+                break;
+            }
         }
 
         $id       = $request->attributes->get($attribute->id);
         $parentId = $request->attributes->get($attribute->getParentRouteAttribute());
 
-        $entity = null;
-        if ($this->isIdentifier($id) && $this->isIdentifier($parentId)) {
-            try {
-                $entity = $manager->createQueryBuilder()
-                    ->select('e')
-                    ->from($class, 'e')
-                    ->innerJoin('e.' . $attribute->parent, 'p')
-                    ->andWhere(sprintf('e.%s = :id', $attribute->field))
-                    ->andWhere(sprintf('p.%s = :parentId', $attribute->parentField))
-                    ->setParameter('id', $id, $metadata->getTypeOfField($attribute->field))
-                    ->setParameter('parentId', $parentId, $parentMetadata->getTypeOfField($attribute->parentField))
-                    ->getQuery()
-                    ->getOneOrNullResult();
-            } catch (ConversionException) {
-                // Malformed identifier for the column type (e.g. not a UUID): same answer as "not found".
-                $entity = null;
-            }
+        if ($finder instanceof ScopedEntityFinderInterface) {
+            $entity = DoctrineScopedEntityFinder::isIdentifier($id) && DoctrineScopedEntityFinder::isIdentifier($parentId)
+                ? $finder->findScoped($class, $id, $parentId, $attribute)
+                : null;
+        } elseif ($this->doctrine instanceof DoctrineScopedEntityFinder) {
+            // Mapping errors surface before any route value is read, as in 2.3.
+            $finder = $this->doctrine;
+            $entity = $finder->findForRoute($class, $id, $parentId, $attribute, $argument->getName());
+        } else {
+            throw new LogicException(sprintf('#[MapScopedEntity] needs Doctrine ORM or a %s that supports "%s" ("$%s").', ScopedEntityFinderInterface::class, $class, $argument->getName()));
+        }
+
+        if (is_object($entity) && !$entity instanceof $class) {
+            throw new LogicException(sprintf('#[MapScopedEntity] finder "%s" returned "%s", expected "%s" ("$%s").', get_debug_type($finder), get_debug_type($entity), $class, $argument->getName()));
         }
 
         if (!is_object($entity) && !$argument->isNullable()) {
@@ -108,10 +97,5 @@ final readonly class ScopedEntityValueResolver implements ValueResolverInterface
         }
 
         return [is_object($entity) ? $entity : null];
-    }
-
-    private function isIdentifier(mixed $value): bool
-    {
-        return is_int($value) || (is_string($value) && $value !== '');
     }
 }

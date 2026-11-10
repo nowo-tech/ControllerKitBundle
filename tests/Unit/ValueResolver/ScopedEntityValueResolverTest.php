@@ -11,16 +11,20 @@ use LogicException;
 use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Attribute\MapOwnerScoped;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Owner;
 use Nowo\ControllerKitBundle\Tests\Fixtures\OrmFactory;
 use Nowo\ControllerKitBundle\Tests\Fixtures\SqlLogger;
+use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface;
 use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityValueResolver;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function preg_quote;
 use function sprintf;
 
 final class ScopedEntityValueResolverTest extends TestCase
@@ -208,6 +212,189 @@ final class ScopedEntityValueResolverTest extends TestCase
         self::assertStringContainsString('JOIN test_owner', $this->sqlLogger->sql[0]);
     }
 
+    public function testResolvesAnOwnerReferencedByAPlainField(): void
+    {
+        OrmFactory::seedNotes($this->manager);
+        $this->sqlLogger->reset();
+
+        $note = $this->resolveOne(
+            new MapScopedEntity(parent: 'ownerSlug', id: 'code', field: 'code'),
+            ['ownerSlugId' => 'globex', 'code' => 'NOTE-2'],
+            Note::class,
+        );
+
+        self::assertInstanceOf(Note::class, $note);
+        self::assertSame('globex', $note->getOwnerSlug());
+        self::assertCount(1, $this->sqlLogger->sql);
+        self::assertStringNotContainsString('JOIN', $this->sqlLogger->sql[0]);
+    }
+
+    public function testPlainFieldOwnerOfAnotherOwnerIs404(): void
+    {
+        OrmFactory::seedNotes($this->manager);
+
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->resolveOne(
+            new MapScopedEntity(parent: 'ownerSlug', parentId: 'owner', id: 'code', field: 'code'),
+            ['owner' => 'acme', 'code' => 'NOTE-2'],
+            Note::class,
+        );
+    }
+
+    public function testPlainFieldOwnerWithAMalformedIdentifierIs404(): void
+    {
+        OrmFactory::seedNotes($this->manager);
+
+        $values = $this->resolve(
+            new MapScopedEntity(parent: 'ownerSlug', parentId: 'owner', id: 'code', field: 'code'),
+            ['owner' => 'acme', 'code' => 'not a code'],
+            nullable: true,
+            type: Note::class,
+        );
+
+        self::assertSame([null], $values);
+    }
+
+    public function testSupportingFinderIsUsedInsteadOfDoctrine(): void
+    {
+        $found  = new Item(new Owner('x'), 'X-1');
+        $finder = $this->createMock(ScopedEntityFinderInterface::class);
+        $finder->method('supports')->willReturn(true);
+        $finder->expects(self::once())
+            ->method('findScoped')
+            ->with(Item::class, 'ACME-1', 'acme', self::isInstanceOf(MapOwnerScoped::class))
+            ->willReturn($found);
+
+        $registry = $this->createMock(ManagerRegistry::class);
+        $registry->expects(self::never())->method('getManagerForClass');
+
+        $resolver = new ScopedEntityValueResolver($registry, [$finder]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, false, [new MapOwnerScoped()]);
+
+        self::assertSame([$found], [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => 'ACME-1']), $argument)]);
+    }
+
+    public function testFinderThatDoesNotSupportTheClassLeavesTheDoctrinePath(): void
+    {
+        $other = $this->createMock(ScopedEntityFinderInterface::class);
+        $other->method('supports')->willReturnCallback(static fn (string $class): bool => $class === stdClass::class);
+        $other->expects(self::never())->method('findScoped');
+
+        $resolver = new ScopedEntityValueResolver($this->registry(), [$other]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, false, [new MapOwnerScoped()]);
+        $item     = [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => 'ACME-1']), $argument)][0];
+
+        self::assertInstanceOf(Item::class, $item);
+        self::assertSame('ACME-1', $item->getCode());
+    }
+
+    public function testFirstSupportingFinderDecides(): void
+    {
+        $first = $this->createMock(ScopedEntityFinderInterface::class);
+        $first->method('supports')->willReturn(true);
+        $first->method('findScoped')->willReturn(null);
+        $second = $this->createMock(ScopedEntityFinderInterface::class);
+        $second->expects(self::never())->method('supports');
+
+        $resolver = new ScopedEntityValueResolver($this->registry(), [$first, $second]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, true, [new MapOwnerScoped()]);
+
+        self::assertSame([null], [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => 'ACME-1']), $argument)]);
+    }
+
+    public function testFinderWithoutDoctrine(): void
+    {
+        $finder = new class implements ScopedEntityFinderInterface {
+            public function supports(string $class, MapScopedEntity $attribute): bool
+            {
+                return true;
+            }
+
+            public function findScoped(string $class, int|string $id, int|string $ownerId, MapScopedEntity $attribute): ?object
+            {
+                return $ownerId === 'acme' && $id === 7 ? new Item(new Owner('acme'), 'ACME-7') : null;
+            }
+        };
+        $resolver = new ScopedEntityValueResolver(null, [$finder]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, true, [new MapOwnerScoped()]);
+
+        self::assertInstanceOf(Item::class, [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => 7]), $argument)][0]);
+        self::assertSame([null], [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'globex', 'code' => 7]), $argument)]);
+    }
+
+    public function testFinderNullIs404(): void
+    {
+        $finder = $this->createMock(ScopedEntityFinderInterface::class);
+        $finder->method('supports')->willReturn(true);
+        $finder->method('findScoped')->willReturn(null);
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->expectExceptionMessage(sprintf('"%s" object not found by "%s".', Item::class, ScopedEntityValueResolver::class));
+
+        $resolver = new ScopedEntityValueResolver(null, [$finder]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, false, [new MapOwnerScoped()]);
+        [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => 'ACME-1']), $argument)];
+    }
+
+    public function testFinderReturningAnotherClassIsALogicError(): void
+    {
+        $finder = $this->createMock(ScopedEntityFinderInterface::class);
+        $finder->method('supports')->willReturn(true);
+        $finder->method('findScoped')->willReturn(new stdClass());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessageMatches('/finder ".+" returned "stdClass", expected "' . preg_quote(Item::class, '/') . '" \("\$item"\)\.$/');
+
+        $resolver = new ScopedEntityValueResolver(null, [$finder]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, false, [new MapOwnerScoped()]);
+        [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => 'ACME-1']), $argument)];
+    }
+
+    public function testFinderIsNotCalledWithMissingRouteValues(): void
+    {
+        $finder = $this->createMock(ScopedEntityFinderInterface::class);
+        $finder->method('supports')->willReturn(true);
+        $finder->expects(self::never())->method('findScoped');
+
+        $resolver = new ScopedEntityValueResolver(null, [$finder]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, true, [new MapOwnerScoped()]);
+
+        self::assertSame([null], [...$resolver->resolve(new Request([], [], ['ownerSlug' => 'acme', 'code' => '']), $argument)]);
+    }
+
+    public function testNoDoctrineAndNoSupportingFinderIsALogicError(): void
+    {
+        $finder = $this->createMock(ScopedEntityFinderInterface::class);
+        $finder->method('supports')->willReturn(false);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(sprintf('#[MapScopedEntity] needs Doctrine ORM or a %s that supports "%s" ("$item").', ScopedEntityFinderInterface::class, Item::class));
+
+        $resolver = new ScopedEntityValueResolver(null, [$finder]);
+        $argument = new ArgumentMetadata('item', Item::class, false, false, null, false, [new MapOwnerScoped()]);
+        [...$resolver->resolve(new Request(), $argument)];
+    }
+
+    /**
+     * @return iterable<string, array{MapScopedEntity, string}>
+     */
+    public static function unsafeFieldOwners(): iterable
+    {
+        yield 'identifier as owner' => [new MapScopedEntity(parent: 'id', parentId: 'owner', id: 'code', field: 'code'), 'owner field "id" of "%s" is its identifier, which scopes nothing ("$item").'];
+        yield 'owner field is the lookup field' => [new MapScopedEntity(parent: 'code', parentId: 'owner', id: 'code', field: 'code'), 'owner field "code" of "%s" is also the lookup field ("$item").'];
+        yield 'same route attribute' => [new MapScopedEntity(parent: 'ownerSlug', parentId: 'code', id: 'code', field: 'code'), 'owner and entity of "%s" read the same route attribute "code" ("$item").'];
+    }
+
+    #[DataProvider('unsafeFieldOwners')]
+    public function testUnsafeFieldOwnersAreLogicErrors(MapScopedEntity $attribute, string $message): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('#[MapScopedEntity] ' . sprintf($message, Note::class));
+
+        $this->resolve($attribute, ['owner' => 'acme', 'code' => 'NOTE-1'], type: Note::class);
+    }
+
     private function registry(): ManagerRegistry
     {
         $registry = $this->createMock(ManagerRegistry::class);
@@ -219,9 +406,9 @@ final class ScopedEntityValueResolverTest extends TestCase
     /**
      * @param array<string, mixed> $attributes
      */
-    private function resolveOne(MapScopedEntity $attribute, array $attributes): ?object
+    private function resolveOne(MapScopedEntity $attribute, array $attributes, string $type = Item::class): ?object
     {
-        return $this->resolve($attribute, $attributes)[0] ?? null;
+        return $this->resolve($attribute, $attributes, type: $type)[0] ?? null;
     }
 
     /**
