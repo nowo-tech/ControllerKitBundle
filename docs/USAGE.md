@@ -328,7 +328,9 @@ public function show(#[MapProjectScoped] Issue $issue): Response
 ### Owner by plain field
 
 Since 2.4. When the entity keeps its owner as an id **value** (a plain column, no association), name that field as
-`parent`. The resolver matches it directly, without a join, and ignores `parentField`:
+`parent`. The resolver matches it directly, without a join, and ignores `parentField`. Set `parentId` to the route
+attribute that holds the owner id: the default is `{$parent}Id`, so `parent: 'projectId'` alone would read a
+`projectIdId` route attribute and answer 404 every time.
 
 ```php
 // Issue::$projectId is a string column holding the project UUID
