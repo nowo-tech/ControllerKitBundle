@@ -14,7 +14,9 @@ use Nowo\ControllerKitBundle\Tests\Fixtures\Attribute\MapOwnerScoped;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
 use Nowo\ControllerKitBundle\Tests\Fixtures\OrmFactory;
+use Nowo\ControllerKitBundle\Tests\Fixtures\SqlLogger;
 use Nowo\ControllerKitBundle\ValueResolver\DoctrineScopedEntityFinder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -72,6 +74,37 @@ final class DoctrineScopedEntityFinderTest extends TestCase
         $field = new MapScopedEntity(parent: 'ownerSlug', parentId: 'owner', id: 'code', field: 'code');
         self::assertInstanceOf(Note::class, $finder->findScoped(Note::class, 'NOTE-1', 'acme', $field));
         self::assertNull($finder->findScoped(Note::class, 'NOTE-1', 'globex', $field));
+    }
+
+    /**
+     * @return iterable<string, array{int|string, int|string}>
+     */
+    public static function emptyIds(): iterable
+    {
+        yield 'empty owner' => ['NOTE-9', ''];
+        yield 'empty id' => ['', 'acme'];
+        yield 'both empty' => ['', ''];
+    }
+
+    /**
+     * Audit KM-C-L2: a direct call with an empty owner id must not match a row whose owner column is ''.
+     */
+    #[DataProvider('emptyIds')]
+    public function testEmptyIdsMatchNothingWithoutAQuery(int|string $id, int|string $ownerId): void
+    {
+        $logger  = new SqlLogger();
+        $manager = OrmFactory::createEntityManager($logger);
+        $manager->persist(new Note('', 'NOTE-9'));
+        $manager->flush();
+        $manager->clear();
+        $logger->reset();
+
+        $registry = $this->createMock(ManagerRegistry::class);
+        $registry->method('getManagerForClass')->willReturn($manager);
+
+        $field = new MapScopedEntity(parent: 'ownerSlug', parentId: 'owner', id: 'code', field: 'code');
+        self::assertNull((new DoctrineScopedEntityFinder($registry))->findScoped(Note::class, $id, $ownerId, $field));
+        self::assertSame([], $logger->sql);
     }
 
     public function testMappingErrorsHaveNoArgumentSuffixWhenCalledDirectly(): void

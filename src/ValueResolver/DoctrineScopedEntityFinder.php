@@ -63,7 +63,8 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
     }
 
     /**
-     * Runs the owner-scoped query; null when not found, owned by another owner or malformed for the column type.
+     * Runs the owner-scoped query; null when not found, owned by another owner or malformed for the column type, and
+     * without any query when `$id` or `$ownerId` is an empty string.
      *
      * @param class-string $class argument type of the controller parameter
      * @param int|string $id route value named by `MapScopedEntity::$id`
@@ -74,6 +75,12 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
      */
     public function findScoped(string $class, int|string $id, int|string $ownerId, MapScopedEntity $attribute): ?object
     {
+        // Same rule as the resolver (isIdentifier()): an empty id or owner id never matches, so a row whose owner
+        // column is '' is not served to a direct caller.
+        if ($id === '' || $ownerId === '') {
+            return null;
+        }
+
         return $this->query($class, $id, $ownerId, $attribute, $this->plan($class, $attribute, null));
     }
 
