@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.4.0] - 2026-11-10](#240---2026-11-10)
 - [[2.3.2] - 2026-11-01](#232---2026-11-01)
 - [[2.3.1] - 2026-11-01](#231---2026-11-01)
 - [[2.3.0] - 2026-10-31](#230---2026-10-31)
@@ -37,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-10
+
 Target: **2.4.0** (new minor). Additive; existing `#[MapScopedEntity]` arguments run the same query. See [UPGRADING](UPGRADING.md#to-240).
 
 ### Added
@@ -51,6 +54,8 @@ Target: **2.4.0** (new minor). Additive; existing `#[MapScopedEntity]` arguments
 - USAGE "MapScopedEntity": owner by plain field, "Custom finder (SPI)"; the DDD section's known limitations updated.
 
 - USAGE: new section "Using it from a DDD / hexagonal application" (where the bundle sits in a hexagonal host, the ports, events and DTOs to build an anti-corruption layer on, and the known limitations).
+
+[2.4.0]: https://github.com/nowo-tech/ControllerKitBundle/releases/tag/v2.4.0
 
 ## [2.3.2] - 2026-11-01
 
