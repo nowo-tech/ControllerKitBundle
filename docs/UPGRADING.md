@@ -72,12 +72,14 @@ Nothing to change. Existing `#[MapScopedEntity]` arguments (owner = association)
 same answers and error messages.
 
 - `parent` may now name a plain mapped field holding the owner id. Before, that was a `LogicException`
-  (`has no association`); now the entity is matched on `e.<parent> = :parentId` and `parentField` is ignored.
-- Optional SPI `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface`: a service under that id
-  replaces the Doctrine query for **every** `#[MapScopedEntity]` argument. If you mix Doctrine and other sources,
-  dispatch on `$class` inside your finder.
+  (`has no association`); now the entity is matched on `e.<parent> = :parentId` and `parentField` is ignored. The
+  identifier, the lookup field and an embeddable are still refused, as is the same route attribute for both ids.
+- Optional SPI `Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface` (`supports()` + `findScoped()`):
+  tagged services (autoconfigured) asked in priority order; the first that supports the argument class decides,
+  otherwise the built-in Doctrine query runs. **Your finder is the owner check**: filter by the owner id in the same
+  lookup. It can delegate to `DoctrineScopedEntityFinder`.
 - If you construct `ScopedEntityValueResolver` yourself (an override under its service id), the constructor is
-  unchanged for the Doctrine case; the registry may now be null when you pass a finder.
+  unchanged for the Doctrine case; the second argument is now the iterable of finders.
 
 ## To 2.3.2
 

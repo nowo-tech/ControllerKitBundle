@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\ControllerKitBundle\Tests\Unit\DependencyInjection;
 
 use Nowo\ControllerKitBundle\DependencyInjection\ControllerKitExtension;
+use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -56,5 +57,15 @@ final class ControllerKitExtensionTest extends TestCase
         self::assertFalse($container->getParameter('nowo_controller_kit.downloads.no_store'));
         self::assertSame(',', $container->getParameter('nowo_controller_kit.downloads.csv_delimiter'));
         self::assertTrue($container->getParameter('nowo_controller_kit.downloads.csv_bom'));
+    }
+
+    public function testFindersAreAutoconfigured(): void
+    {
+        $container = new ContainerBuilder();
+        (new ControllerKitExtension())->load([], $container);
+
+        $instanceof = $container->getAutoconfiguredInstanceof();
+        self::assertArrayHasKey(ScopedEntityFinderInterface::class, $instanceof);
+        self::assertSame([[]], $instanceof[ScopedEntityFinderInterface::class]->getTag(ScopedEntityFinderInterface::TAG));
     }
 }

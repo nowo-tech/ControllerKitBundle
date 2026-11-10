@@ -7,6 +7,7 @@ namespace Nowo\ControllerKitBundle\Tests\Integration\ValueResolver;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Nowo\ControllerKitBundle\NowoControllerKitBundle;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Controller\ItemController;
+use Nowo\ControllerKitBundle\Tests\Fixtures\ReadModel\ItemViewFinder;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Type\StrictCodeType;
 use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -82,6 +83,7 @@ final class ScopedEntityTestKernel extends Kernel
 
         $services = $container->services();
         $services->set('logger', NullLogger::class);
+        $services->set(ItemViewFinder::class)->autowire()->autoconfigure();
         $services->set(ItemController::class)
             ->public()
             ->tag('controller.service_arguments');
@@ -91,6 +93,7 @@ final class ScopedEntityTestKernel extends Kernel
     {
         $routes->add('item_by_id', '/owners/{ownerId}/items/{itemId}')->controller([ItemController::class, 'showById']);
         $routes->add('item_by_code', '/o/{ownerSlug}/items/{code}')->controller([ItemController::class, 'showByCode']);
+        $routes->add('item_view', '/v/{ownerSlug}/items/{code}')->controller([ItemController::class, 'view']);
         $routes->add('note_by_code', '/n/{ownerSlug}/notes/{code}')->controller([ItemController::class, 'note']);
         $routes->add('item_optional', '/o/{ownerSlug}/optional/{code}')->controller([ItemController::class, 'optional']);
     }

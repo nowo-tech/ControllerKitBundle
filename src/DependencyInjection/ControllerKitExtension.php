@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\ControllerKitBundle\DependencyInjection;
 
+use Nowo\ControllerKitBundle\ValueResolver\ScopedEntityFinderInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -33,6 +34,10 @@ final class ControllerKitExtension extends Extension
         $container->setParameter('nowo_controller_kit.downloads.no_store', $config['downloads']['no_store']);
         $container->setParameter('nowo_controller_kit.downloads.csv_delimiter', $config['downloads']['csv']['delimiter']);
         $container->setParameter('nowo_controller_kit.downloads.csv_bom', $config['downloads']['csv']['bom']);
+
+        // 2.4+: host finders for #[MapScopedEntity] (ScopedEntityValueResolverPass collects the tag).
+        $container->registerForAutoconfiguration(ScopedEntityFinderInterface::class)
+            ->addTag(ScopedEntityFinderInterface::TAG);
     }
 
     /**
