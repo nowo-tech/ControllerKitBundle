@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Form\BackForm;
 use Nowo\ControllerKitBundle\Controller\DownloadResponseTrait;
 use Nowo\ControllerKitBundle\Controller\RedirectToRefererTrait;
 use Nowo\ControllerKitBundle\Controller\SafeForwardTrait;
 use Nowo\ControllerKitBundle\Http\CsvStreamedResponse;
 use Nowo\ControllerKitBundle\Http\JsonAttachmentResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,12 +26,10 @@ final class DemoController extends AbstractController
     public function home(): Response
     {
         // A Symfony form (not raw HTML) posts to the RedirectToRefererTrait demo (REQ-TWIG-005).
-        $backForm = $this->createFormBuilder(null, [
+        $backForm = $this->createForm(BackForm::class, null, [
             'action' => $this->generateUrl('demo_back'),
             'method' => 'POST',
-        ])
-            ->add('submit', SubmitType::class, ['label' => 'Test RedirectToRefererTrait'])
-            ->getForm();
+        ]);
 
         return $this->render('demo/home.html.twig', ['back_form' => $backForm->createView()]);
     }

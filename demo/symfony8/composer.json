@@ -4,10 +4,12 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "nowo-tech/controller-kit-bundle": "@dev",
+        "nowo-tech/form-kit-bundle": "^2.22",
+        "nowo-tech/ui-kit-bundle": "^2.49",
+        "php": ">=8.5",
         "symfony/console": "8.1.*",
         "symfony/dotenv": "8.1.*",
         "symfony/flex": "^2.11",
@@ -71,14 +73,16 @@
             "require": "8.1.*"
         }
     },
-    "repositories": [{
-        "name": "controller-kit",
-        "type": "path",
-        "url": "/var/controller-kit-bundle",
-        "options": {
-            "symlink": true
+    "repositories": [
+        {
+            "name": "controller-kit",
+            "type": "path",
+            "url": "/var/controller-kit-bundle",
+            "options": {
+                "symlink": true
+            }
         }
-    }],
+    ],
     "require-dev": {
         "nowo-tech/hot-reload-bundle": "^1.6.1",
         "nowo-tech/twig-inspector-bundle": "@dev",
