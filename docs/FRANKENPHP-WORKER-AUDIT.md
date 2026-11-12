@@ -3,8 +3,8 @@
 | Field | Value |
 |-------|-------|
 | Package | `nowo-tech/controller-kit-bundle` (`symfony-bundle`) |
-| Audited revision | `v2.2.0` (this release) |
-| Audit date | 2026-10-14 |
+| Audited revision | `v2.4.0` (kept-alive test added 2026-11-12; earlier review kept below) |
+| Audit date | 2026-11-12 (earlier audit dates kept in the history) |
 | Method | Manual review of every file under `src/` plus `NowoControllerKitBundle.php`; PHPStan with `ruleset-classic` + `ruleset-worker-strict` + `ruleset-hardening` |
 | **Verdict** | ✅ **Viable** — one optional readonly service (`ScopedEntityValueResolver`); traits are stateless; safe under kernel **not** reset between requests |
 
@@ -15,6 +15,7 @@
 - [Services reviewed](#services-reviewed)
 - [Findings](#findings)
   - [Fixed in this release](#fixed-in-this-release)
+- [Kept-alive test (REQ-RUNTIME-002)](#kept-alive-test-req-runtime-002)
 - [Usage recommendations in worker mode](#usage-recommendations-in-worker-mode)
 - [Re-audit triggers](#re-audit-triggers)
 
@@ -63,6 +64,14 @@ No worker-mode findings under scenario **B** (kernel not reset).
 ### Fixed in this release
 
 Previously `getRouter()` was only supplied by unit-test doubles; `AbstractController` does not define it, so production controllers fell through `catch (Throwable)` to `default_route`. The trait now resolves the `router` service from the controller container (override `getRouter()` if you do not use `AbstractController`).
+
+## Kept-alive test (REQ-RUNTIME-002)
+
+Test: `Nowo\ControllerKitBundle\Tests\Integration\Worker\WorkerKeptAliveKernelTest` (`tests/Integration/Worker/WorkerKeptAliveKernelTest.php`). It uses one booted kernel (`ScopedEntityTestKernel`: FrameworkBundle, DoctrineBundle on in-memory SQLite and the bundle) and drives `http_kernel` `handle()` + `terminate()`; `#[MapScopedEntity]` must resolve each request to the entity of its own owner (a request for the other owner's entity stays a 404). `services_resetter` / `kernel.reset` is **never** called. It runs 1,200 iterations alternating two users, asserts every response contains only its own data (nothing of the other user or of the previous iteration), and that memory growth after a 100-iteration warm-up stays below 4 MiB.
+
+Result: no state is carried between requests, so the bundle is **safe with kernel reset false**.
+
+Rule 7: the resolver only reads through the registry (`ManagerRegistry`) and never flushes or clears the host's default EntityManager.
 
 ## Usage recommendations in worker mode
 
