@@ -42,6 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Demo uses the UiKit base style and FormKit forms (REQ-DEMO-014/015)
 
+### Fixed
+
+- Demo forms render a CSRF token
+
 ### Tests
 
 - Tests: kept-alive worker test `WorkerKeptAliveKernelTest` (one kernel or container, never reset, 1,200 alternating iterations, memory bound) and `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed for v2.4.0; no runtime change.

@@ -11,7 +11,6 @@ use Nowo\ControllerKitBundle\Controller\SafeForwardTrait;
 use Nowo\ControllerKitBundle\Http\CsvStreamedResponse;
 use Nowo\ControllerKitBundle\Http\JsonAttachmentResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,8 +46,15 @@ final class DemoController extends AbstractController
     }
 
     #[Route(path: '/back', name: 'demo_back', methods: ['POST'])]
-    public function back(Request $request): RedirectResponse
+    public function back(Request $request): Response
     {
+        // The form carries a CSRF token: a missing/bad token or a foreign Origin is rejected before the redirect.
+        $form = $this->createForm(BackForm::class, null, ['method' => 'POST']);
+        $form->handleRequest($request);
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return new Response('Invalid form submission (CSRF).', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         return $this->redirectToReferer($request, ['from_demo' => 1], 303);
     }
 
