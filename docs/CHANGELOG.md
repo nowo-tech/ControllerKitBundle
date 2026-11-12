@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Tests
+
+- Tests: kept-alive worker test `WorkerKeptAliveKernelTest` (one kernel or container, never reset, 1,200 alternating iterations, memory bound) and `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed for v2.4.0; no runtime change.
+
 ## [2.4.0] - 2026-11-10
 
 Target: **2.4.0** (new minor). Additive; existing `#[MapScopedEntity]` arguments run the same query. See [UPGRADING](UPGRADING.md#to-240).
