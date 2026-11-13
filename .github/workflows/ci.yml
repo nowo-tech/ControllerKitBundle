@@ -199,7 +199,7 @@ jobs:
       - name: Run tests with coverage
         env:
           SYMFONY_DEPRECATIONS_HELPER: max[direct]=0
-        run: composer test-coverage
+        run: composer test-coverage-100
 
       - name: Validate coverage file
         run: |
