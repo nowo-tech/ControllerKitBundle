@@ -49,10 +49,12 @@ Next patch: 2.4.1. REQ-SEC-006 (look-alike ids) for `#[MapScopedEntity]`. See [U
   - The loaded entity's `field` and owner value (the `parent` field, or `parentField` of the joined owner) are now
     re-checked against the route values with `===` when they are strings. A mismatch is "not found" (404, or `null`
     for a nullable argument).
-  - A `guid` column still accepts the other letter case of the same hexadecimal UUID. Int, UUID object and other
-    non-string values are unchanged.
-  - The owner of an association is fetch-joined so it can be re-checked without a lazy load. Look-alike rows no
-    longer make the lookup fail as non-unique; two exact matches still throw `NonUniqueResultException`.
+  - For a `guid` column the re-check accepts the other letter case of the same hexadecimal UUID (SQL finds it on
+    PostgreSQL `uuid` columns and case-insensitive collations). Int, UUID object and other non-string values are
+    unchanged.
+  - A single owner association is fetch-joined so it can be re-checked without a lazy load; a collection-valued
+    `parent` matches when any of its owners holds the route value exactly. Look-alike rows no longer make the lookup
+    fail as non-unique; two exact matches still throw `NonUniqueResultException`.
   - The columns belong to the host, so the bundle sets no collation. USAGE and UPGRADING recommend a binary NO PAD
     collation for string id and owner columns.
 

@@ -11,8 +11,10 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\ManagerRegistry;
 use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Attribute\MapOwnerScoped;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Board;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Item;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Note;
+use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Owner;
 use Nowo\ControllerKitBundle\Tests\Fixtures\Entity\Ticket;
 use Nowo\ControllerKitBundle\Tests\Fixtures\LookalikeCollation;
 use Nowo\ControllerKitBundle\Tests\Fixtures\OrmFactory;
@@ -39,12 +41,13 @@ final class ScopedEntityLookalikeTest extends TestCase
     {
         $this->manager    = OrmFactory::createEntityManager();
         $this->connection = $this->manager->getConnection();
-        (new SchemaTool($this->manager))->createSchema([$this->manager->getClassMetadata(Ticket::class)]);
+        (new SchemaTool($this->manager))->createSchema([$this->manager->getClassMetadata(Ticket::class), $this->manager->getClassMetadata(Board::class)]);
         LookalikeCollation::register($this->connection);
         LookalikeCollation::recreate($this->connection, 'test_owner', ['slug']);
         LookalikeCollation::recreate($this->connection, 'test_item', ['code']);
         LookalikeCollation::recreate($this->connection, 'test_note', ['ownerSlug', 'code']);
         LookalikeCollation::recreate($this->connection, 'test_ticket', ['ownerSlug', 'uuid']);
+        LookalikeCollation::recreate($this->connection, 'test_board', ['code']);
         OrmFactory::seed($this->manager);   // owners acme / globex, items ACME-1 / GLOBEX-1
         OrmFactory::seedNotes($this->manager); // NOTE-1 of acme, NOTE-2 of globex
 
@@ -124,6 +127,25 @@ final class ScopedEntityLookalikeTest extends TestCase
         self::assertNull($this->finder->findScoped(Ticket::class, $uuid . ' ', 'acme', $field));
         self::assertNull($this->finder->findScoped(Ticket::class, $uuid . "\u{200B}", 'acme', $field));
         self::assertNull($this->finder->findScoped(Ticket::class, $uuid, 'Acme', $field));
+    }
+
+    public function testACollectionOfOwnersIsCheckedOwnerByOwner(): void
+    {
+        $acme   = $this->manager->getRepository(Owner::class)->findOneBy(['slug' => 'acme']);
+        $globex = $this->manager->getRepository(Owner::class)->findOneBy(['slug' => 'globex']);
+        self::assertInstanceOf(Owner::class, $acme);
+        self::assertInstanceOf(Owner::class, $globex);
+        $this->manager->persist(new Board([$acme, $globex], 'BOARD-1'));
+        $this->manager->flush();
+        $this->manager->clear();
+        $shared = new MapScopedEntity(parent: 'owners', parentId: 'owner', parentField: 'slug', id: 'code', field: 'code');
+
+        $board = $this->finder->findScoped(Board::class, 'BOARD-1', 'globex', $shared);
+        self::assertInstanceOf(Board::class, $board);
+        self::assertCount(2, $board->getOwners(), 'the owner collection is not hydrated partially');
+        self::assertInstanceOf(Board::class, $this->finder->findScoped(Board::class, 'BOARD-1', 'acme', $shared));
+        self::assertNull($this->finder->findScoped(Board::class, 'BOARD-1', 'Acme', $shared));
+        self::assertNull($this->finder->findScoped(Board::class, 'board-1', 'acme', $shared));
     }
 
     private function noteByOwnerSlug(): MapScopedEntity

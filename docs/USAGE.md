@@ -314,8 +314,9 @@ It scopes the entity to the **route owner** only. Checking that the current user
 
 Since 2.4.1 the built-in lookup re-checks the loaded entity with `===`. When its `field` or its owner value is a
 string, it must equal the route value byte for byte, so `Acme`, `acmé`, `acme ` or `acme` followed by a zero-width
-space never resolve to the entity of `acme`. A mismatch is "not found". A `guid` column also accepts the other letter
-case of the same UUID.
+space never resolve to the entity of `acme`. A mismatch is "not found". For a `guid` column the re-check does not
+reject the other letter case of the same UUID; whether SQL finds it depends on the column (PostgreSQL `uuid` and
+case-insensitive collations do, binary collations and SQLite do not).
 
 The columns are yours, so the bundle sets no collation. On MySQL / MariaDB, give string id and owner columns
 (slugs, tenant keys, external ids) a binary NO PAD collation:

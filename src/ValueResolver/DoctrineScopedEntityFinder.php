@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\ControllerKitBundle\ValueResolver;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
@@ -148,12 +149,15 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
                     ->andWhere(sprintf('e.%s = :parentId', $attribute->parent))
                     ->setParameter('parentId', $ownerId, $metadata->getTypeOfField($attribute->parent));
             } else {
-                // The owner is fetch-joined so its field can be re-checked without a lazy load.
                 $query
                     ->innerJoin('e.' . $attribute->parent, 'p')
-                    ->addSelect('p')
                     ->andWhere(sprintf('p.%s = :parentId', $attribute->parentField))
                     ->setParameter('parentId', $ownerId, $parentMetadata->getTypeOfField($attribute->parentField));
+                if (!$metadata->isCollectionValuedAssociation($attribute->parent)) {
+                    // A single owner is fetch-joined so its field is re-checked without a lazy load. A collection is
+                    // not: a filtered fetch join would hydrate it with the matching owners only.
+                    $query->addSelect('p');
+                }
             }
 
             $candidates = $query->getQuery()->getResult();
@@ -169,11 +173,10 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
             if (!is_object($entity) || !self::matches($metadata->getFieldValue($entity, $attribute->field), $id, $metadata->getTypeOfField($attribute->field))) {
                 continue;
             }
-            $owner = $parentMetadata instanceof ClassMetadata
-                ? self::ownerField($parentMetadata, $metadata->getFieldValue($entity, $attribute->parent), $attribute->parentField)
-                : $metadata->getFieldValue($entity, $attribute->parent);
-            $ownerType = $parentMetadata instanceof ClassMetadata ? $parentMetadata->getTypeOfField($attribute->parentField) : $metadata->getTypeOfField($attribute->parent);
-            if (!self::matches($owner, $ownerId, $ownerType)) {
+            $owned = $parentMetadata instanceof ClassMetadata
+                ? self::ownedBy($parentMetadata, $metadata->getFieldValue($entity, $attribute->parent), $attribute->parentField, $ownerId)
+                : self::matches($metadata->getFieldValue($entity, $attribute->parent), $ownerId, $metadata->getTypeOfField($attribute->parent));
+            if (!$owned) {
                 continue;
             }
             if ($found !== null) {
@@ -187,7 +190,7 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
 
     /**
      * Whether a loaded value equals the requested route value exactly (REQ-SEC-006). Strings are compared byte for byte
-     * (`===`); a `guid` column also accepts the other letter case of the same hexadecimal UUID. Other values (ints,
+     * (`===`); for a `guid` column the other letter case of the same hexadecimal UUID is not refused. Other values (ints,
      * UUID / enum objects, ...) went through the column type and are equal by construction.
      */
     private static function matches(mixed $stored, int|string $requested, ?string $type): bool
@@ -205,11 +208,20 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
     }
 
     /**
+     * Whether the owner association (one owner, or any owner of a collection) holds `$ownerId` exactly in its field.
+     *
      * @param ClassMetadata<object> $parentMetadata
      */
-    private static function ownerField(ClassMetadata $parentMetadata, mixed $owner, string $field): mixed
+    private static function ownedBy(ClassMetadata $parentMetadata, mixed $owners, string $field, int|string $ownerId): bool
     {
-        return is_object($owner) ? $parentMetadata->getFieldValue($owner, $field) : null;
+        $type = $parentMetadata->getTypeOfField($field);
+        foreach ($owners instanceof Collection ? $owners : [$owners] as $owner) {
+            if (is_object($owner) && self::matches($parentMetadata->getFieldValue($owner, $field), $ownerId, $type)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
