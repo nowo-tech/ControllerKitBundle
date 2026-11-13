@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.4.1](#to-241)
 - [To 2.4.0](#to-240)
 - [To 2.4.0](#to-240-1)
 - [To 2.3.2](#to-232)
@@ -60,6 +61,14 @@
   - [Breaking changes](#breaking-changes-12)
 
 ## Unreleased
+
+## To 2.4.1
+
+From **2.4.0**:
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
 
 Target **2.4.1** (patch), from **2.4.0**.
 
