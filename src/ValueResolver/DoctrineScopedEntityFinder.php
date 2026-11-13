@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Nowo\ControllerKitBundle\ValueResolver;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 use LogicException;
@@ -14,9 +17,12 @@ use Nowo\ControllerKitBundle\Attribute\MapScopedEntity;
 
 use function class_exists;
 use function is_int;
+use function is_iterable;
 use function is_object;
 use function is_string;
+use function preg_match;
 use function sprintf;
+use function strtolower;
 
 /**
  * The built-in `#[MapScopedEntity]` lookup (spec 003): one Doctrine ORM query scoped to the owner (2.4+ public so a
@@ -25,6 +31,12 @@ use function sprintf;
  * The owner (`parent`) is either an association, joined in the query, or (2.4+) a plain mapped field holding the
  * owner id, compared directly. Mapping errors are `LogicException`s raised before any query. Not tagged as a finder:
  * the resolver runs it when no tagged finder supports the class.
+ *
+ * Since 2.4.1 (REQ-SEC-006, look-alike ids) the loaded entity's id field and owner field are re-checked against the
+ * route values with `===` (string columns), so a folding host collation (`Bob` = `bob` = `bób`, `bob ` = `bob` on
+ * MySQL / MariaDB) never serves another owner's row: a mismatch is "not found". The columns belong to the host; give
+ * string id / owner columns a binary NO PAD collation (`utf8mb4_0900_bin` on MySQL 8.0.17+, `utf8mb4_nopad_bin` on
+ * MariaDB), see docs/USAGE.md.
  *
  * Stateless and FrankenPHP worker-safe.
  *
@@ -141,15 +153,75 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
                     ->innerJoin('e.' . $attribute->parent, 'p')
                     ->andWhere(sprintf('p.%s = :parentId', $attribute->parentField))
                     ->setParameter('parentId', $ownerId, $parentMetadata->getTypeOfField($attribute->parentField));
+                if (!$metadata->isCollectionValuedAssociation($attribute->parent)) {
+                    // A single owner is fetch-joined so its field is re-checked without a lazy load. A collection is
+                    // not: a filtered fetch join would hydrate it with the matching owners only.
+                    $query->addSelect('p');
+                }
             }
 
-            $entity = $query->getQuery()->getOneOrNullResult();
+            $candidates = $query->getQuery()->getResult();
         } catch (ConversionException) {
             // Malformed identifier for the column type (e.g. not a UUID): same answer as "not found".
             return null;
         }
 
-        return is_object($entity) ? $entity : null;
+        // REQ-SEC-006 (look-alike ids): SQL compares with the host column collation, which on MySQL / MariaDB folds
+        // case, accents and (PAD SPACE) trailing spaces. Keep only the rows whose id and owner match byte for byte.
+        $found = null;
+        foreach (is_iterable($candidates) ? $candidates : [] as $entity) {
+            if (!is_object($entity) || !self::matches($metadata->getFieldValue($entity, $attribute->field), $id, $metadata->getTypeOfField($attribute->field))) {
+                continue;
+            }
+            $owned = $parentMetadata instanceof ClassMetadata
+                ? self::ownedBy($parentMetadata, $metadata->getFieldValue($entity, $attribute->parent), $attribute->parentField, $ownerId)
+                : self::matches($metadata->getFieldValue($entity, $attribute->parent), $ownerId, $metadata->getTypeOfField($attribute->parent));
+            if (!$owned) {
+                continue;
+            }
+            if ($found !== null) {
+                throw new NonUniqueResultException(sprintf('#[MapScopedEntity] found more than one "%s" for that id and owner.', $class));
+            }
+            $found = $entity;
+        }
+
+        return $found;
+    }
+
+    /**
+     * Whether a loaded value equals the requested route value exactly (REQ-SEC-006). Strings are compared byte for byte
+     * (`===`); for a `guid` column the other letter case of the same hexadecimal UUID is not refused. Other values (ints,
+     * UUID / enum objects, ...) went through the column type and are equal by construction.
+     */
+    private static function matches(mixed $stored, int|string $requested, ?string $type): bool
+    {
+        if (!is_string($stored)) {
+            return $stored !== null;
+        }
+
+        $requested = (string) $requested;
+        if ($type === Types::GUID) {
+            return strtolower($stored) === strtolower($requested) && preg_match('/\A[0-9a-f-]+\z/Di', $requested) === 1;
+        }
+
+        return $stored === $requested;
+    }
+
+    /**
+     * Whether the owner association (one owner, or any owner of a collection) holds `$ownerId` exactly in its field.
+     *
+     * @param ClassMetadata<object> $parentMetadata
+     */
+    private static function ownedBy(ClassMetadata $parentMetadata, mixed $owners, string $field, int|string $ownerId): bool
+    {
+        $type = $parentMetadata->getTypeOfField($field);
+        foreach ($owners instanceof Collection ? $owners : [$owners] as $owner) {
+            if (is_object($owner) && self::matches($parentMetadata->getFieldValue($owner, $field), $ownerId, $type)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

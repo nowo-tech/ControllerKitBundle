@@ -61,6 +61,35 @@
 
 ## Unreleased
 
+Target **2.4.1** (patch), from **2.4.0**.
+
+```bash
+composer update nowo-tech/controller-kit-bundle
+```
+
+**What changes (REQ-SEC-006, look-alike ids).** `#[MapScopedEntity]` re-checks the loaded entity: a string `field` or
+owner value must equal the route value byte for byte. A route that relied on the database folding case, accents or
+trailing spaces (`/acme/items/abc-1` finding `ACME`'s `ABC-1`) now answers 404. Links built from the stored values
+are not affected. For a `guid` column the re-check accepts either letter case; SQL finds the other case only on
+PostgreSQL `uuid` columns and case-insensitive collations.
+
+**Recommended for MySQL / MariaDB hosts.** The bundle sets no collation on your columns. Give string id and owner
+columns a binary NO PAD collation (see [USAGE](USAGE.md#exact-matching-look-alike-ids)). Before the `ALTER`, look
+for values that collide under the current collation; a unique key on such a column fails the `ALTER` until they are
+resolved:
+
+```sql
+-- values that fold together but differ in bytes (replace project / slug with your table and column)
+SELECT slug, COUNT(DISTINCT HEX(slug)) AS variants, COUNT(*) AS row_count
+FROM project GROUP BY slug HAVING COUNT(DISTINCT HEX(slug)) > 1;
+
+-- MySQL 8.0.17+ (MariaDB: utf8mb4_nopad_bin). MODIFY redefines the column: restate every existing attribute
+-- (length, nullability, DEFAULT, COMMENT ...)
+ALTER TABLE project MODIFY slug VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_bin NOT NULL;
+```
+
+Do not compare with `TRIM`, `LOWER` alone, `DISTINCT` or `COLLATE …_ai_ci`: they fold too.
+
 ## To 2.4.0
 
 From **2.3.2**:
