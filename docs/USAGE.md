@@ -316,7 +316,7 @@ Since 2.4.1 the built-in lookup re-checks the loaded entity with `===`. When its
 string, it must equal the route value byte for byte, so `Acme`, `acmé`, `acme ` or `acme` followed by a zero-width
 space never resolve to the entity of `acme`. A mismatch is "not found". For a `guid` column the re-check does not
 reject the other letter case of the same UUID; whether SQL finds it depends on the column (PostgreSQL `uuid` and
-case-insensitive collations do, binary collations and SQLite do not).
+case-insensitive collations do, binary collations and the default SQLite `BINARY` collation do not).
 
 The columns are yours, so the bundle sets no collation. On MySQL / MariaDB, give string id and owner columns
 (slugs, tenant keys, external ids) a binary NO PAD collation:
