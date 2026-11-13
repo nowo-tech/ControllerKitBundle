@@ -18,6 +18,7 @@
   - [Signature](#signature)
   - [Examples](#examples)
   - [Behaviour](#behaviour)
+  - [Exact matching (look-alike ids)](#exact-matching-look-alike-ids)
   - [Application shortcut attribute](#application-shortcut-attribute)
   - [Owner by plain field](#owner-by-plain-field)
   - [Custom finder (SPI)](#custom-finder-spi)
@@ -308,6 +309,29 @@ Route values are bound with the mapped field types, so UUID columns (binary or n
 | A finder returns an object of another class | `LogicException` |
 
 It scopes the entity to the **route owner** only. Checking that the current user may act on that owner (voters, `#[IsGranted]`, a resolver for the owner itself) stays in your application.
+
+### Exact matching (look-alike ids)
+
+Since 2.4.1 the built-in lookup re-checks the loaded entity with `===`. When its `field` or its owner value is a
+string, it must equal the route value byte for byte, so `Acme`, `acmé`, `acme ` or `acme` followed by a zero-width
+space never resolve to the entity of `acme`. A mismatch is "not found". A `guid` column also accepts the other letter
+case of the same UUID.
+
+The columns are yours, so the bundle sets no collation. On MySQL / MariaDB, give string id and owner columns
+(slugs, tenant keys, external ids) a binary NO PAD collation:
+
+- `utf8mb4_0900_bin` on MySQL 8.0.17+ (configure the full `server_version`, e.g. `8.4.3`);
+- `utf8mb4_nopad_bin` on MariaDB;
+- `utf8mb4_bin` on MySQL 5.7 (PAD SPACE: trailing spaces still fold in SQL; the re-check covers it).
+
+```php
+#[ORM\Column(length: 64, unique: true, options: ['collation' => 'utf8mb4_0900_bin'])]
+private string $slug;
+```
+
+With a folding collation, the lookup stays correct but a unique key treats look-alikes as duplicates. PostgreSQL and
+SQLite compare exactly by default. A custom finder ([SPI](#custom-finder-spi)) must return exactly the requested
+entity, too.
 
 ### Application shortcut attribute
 

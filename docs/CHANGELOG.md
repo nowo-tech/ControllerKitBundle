@@ -38,6 +38,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Next patch: 2.4.1. REQ-SEC-006 (look-alike ids) for `#[MapScopedEntity]`. See [UPGRADING](UPGRADING.md#unreleased).
+
+### Security
+
+- **`#[MapScopedEntity]` matches the id and the owner byte for byte.** The built-in Doctrine lookup
+  (`DoctrineScopedEntityFinder`) relied on SQL equality only. On the default MySQL / MariaDB collations a route owner
+  `Acme`, `acmé` or `acme ` matched the rows of `acme` (and the same for the id field). A host with look-alike owner
+  values could serve one owner's entity under another owner's route.
+  - The loaded entity's `field` and owner value (the `parent` field, or `parentField` of the joined owner) are now
+    re-checked against the route values with `===` when they are strings. A mismatch is "not found" (404, or `null`
+    for a nullable argument).
+  - A `guid` column still accepts the other letter case of the same hexadecimal UUID. Int, UUID object and other
+    non-string values are unchanged.
+  - The owner of an association is fetch-joined so it can be re-checked without a lazy load. Look-alike rows no
+    longer make the lookup fail as non-unique; two exact matches still throw `NonUniqueResultException`.
+  - The columns belong to the host, so the bundle sets no collation. USAGE and UPGRADING recommend a binary NO PAD
+    collation for string id and owner columns.
+
 ### Changed
 
 - Demo uses the UiKit base style and FormKit forms (REQ-DEMO-014/015)
