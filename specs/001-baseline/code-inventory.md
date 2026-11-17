@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/controller-kit-bundle`  
-**Last audited**: 2026-11-01
+**Last audited**: 2026-11-17
 
 ## Bundle entry (classmap)
 
@@ -25,6 +25,8 @@
 | `Controller/RequiresValidFormTrait.php` | HTTP controller ([spec 002](../002-requires-valid-form/spec.md)) | FR-FORM-001..003 |
 | `Attribute/MapScopedEntity.php` | Controller argument attribute ([spec 003](../003-map-scoped-entity/spec.md)) | FR-SCOPE-001 |
 | `ValueResolver/ScopedEntityValueResolver.php` | Targeted value resolver ([spec 003](../003-map-scoped-entity/spec.md)) | FR-SCOPE-002..005, FR-SCOPE-007 |
+| `ValueResolver/ScopedEntityFinderInterface.php` | Finder SPI for other classes, tagged `nowo_controller_kit.scoped_entity_finder` ([spec 003](../003-map-scoped-entity/spec.md)) | FR-SCOPE-009 |
+| `ValueResolver/DoctrineScopedEntityFinder.php` | Built-in Doctrine lookup, one scoped query + exact (`===`) re-check of the id and owner values ([spec 003](../003-map-scoped-entity/spec.md)) | FR-SCOPE-002, FR-SCOPE-008, FR-SCOPE-010 |
 | `DependencyInjection/Compiler/ScopedEntityValueResolverPass.php` | Conditional registration ([spec 003](../003-map-scoped-entity/spec.md)) | FR-SCOPE-006 |
 | `DependencyInjection/Configuration.php` | Config tree (`default_route`, `downloads.*`) | FR-CFG-001, FR-DL-006 |
 | `DependencyInjection/ControllerKitExtension.php` | DI extension | FR-CFG-002 |
@@ -45,10 +47,10 @@
 | --- | ---: | ---: |
 | Bundle entry | 1 | 1 |
 | PHP traits (redirect, forward, form) | 3 | 3 |
-| Attribute / value resolver | 2 | 2 |
+| Attribute / value resolver / finders | 4 | 4 |
 | DI | 3 | 3 |
 | HTTP downloads (trait + `Http/`) | 5 | 5 |
 | Symfony config | 1 | 1 |
-| **Total production sources** | **15** | **15** |
+| **Total production sources** | **17** | **17** |
 
-Audit command: `git ls-files src | wc -l` (14) + root `NowoControllerKitBundle.php` (1) = 15.
+Audit command: `git ls-files src | wc -l` (16) + root `NowoControllerKitBundle.php` (1) = 17.

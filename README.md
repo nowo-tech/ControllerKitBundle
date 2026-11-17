@@ -12,6 +12,8 @@ This bundle is **FrankenPHP worker mode friendly**.
 
 Workers that do **not** reset the kernel between requests are supported too (no mutable package state). See [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
 
+![Controller Kit demo: safe forward, formula-safe downloads and the redirect-to-referer form](docs/images/demo/overview.webp)
+
 ## Features
 
 - **RedirectToRefererTrait** — Redirect to the HTTP Referer when valid (same app, route exists), or to a configurable default route. 100% configurable via `nowo_controller_kit.default_route`.
@@ -195,6 +197,8 @@ public function show(
 The demo runs **FrankenPHP + Caddy** in Docker with **`APP_ENV=dev`**. Runtime mode is **`FRANKENPHP_MODE`** (`worker` default, or `classic` for per-request PHP) — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
 
 Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
+
+Playwright e2e and the README screenshots (REQ-DEMO-013): `make -C demo/symfony8 test-e2e` and `make -C demo/symfony8 demo-screenshots`.
 
 ## Development
 

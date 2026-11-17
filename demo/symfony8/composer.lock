@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "87e98b176553aa24632f69c585a1af86",
+    "content-hash": "77ad561d17542df001c7632ebefbb830",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -144,11 +144,11 @@
         },
         {
             "name": "nowo-tech/controller-kit-bundle",
-            "version": "dev-main",
+            "version": "dev-chore/phase-c-req",
             "dist": {
                 "type": "path",
                 "url": "/var/controller-kit-bundle",
-                "reference": "408aa67dce5e8adde684122e8942b60222316a8e"
+                "reference": "d9ba1092150b4321ac2566abbaa250504cea3792"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -210,6 +210,10 @@
                 ],
                 "test-coverage": [
                     "phpunit --color=always --coverage-html coverage --coverage-clover coverage.xml --coverage-text"
+                ],
+                "test-coverage-100": [
+                    "@test-coverage",
+                    "php .scripts/check-coverage.php coverage.xml --min-percent=100"
                 ],
                 "cs-check": [
                     "php-cs-fixer fix --dry-run --diff"
@@ -289,16 +293,16 @@
         },
         {
             "name": "nowo-tech/form-kit-bundle",
-            "version": "v2.22.0",
+            "version": "v2.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/FormKitBundle.git",
-                "reference": "3571edc853fc0a40f0c345c5c57bae309d283d4b"
+                "reference": "1a95181865f6f7f2dd076fb6b1e32c0a41e23634"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/FormKitBundle/zipball/3571edc853fc0a40f0c345c5c57bae309d283d4b",
-                "reference": "3571edc853fc0a40f0c345c5c57bae309d283d4b",
+                "url": "https://api.github.com/repos/nowo-tech/FormKitBundle/zipball/1a95181865f6f7f2dd076fb6b1e32c0a41e23634",
+                "reference": "1a95181865f6f7f2dd076fb6b1e32c0a41e23634",
                 "shasum": ""
             },
             "require": {
@@ -402,21 +406,21 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-11T15:54:34+00:00",
-            "published-time": "2026-11-11T15:56:04+00:00"
+            "time": "2026-11-13T18:29:32+00:00",
+            "published-time": "2026-11-13T18:32:22+00:00"
         },
         {
             "name": "nowo-tech/ui-kit-bundle",
-            "version": "v2.49.0",
+            "version": "v2.53.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/UiKitBundle.git",
-                "reference": "38f5a1e26f360bda0fe7e1f88a5182c47081b8ce"
+                "reference": "73e4d4095e43208b2d2f2d818814faa2449d7e6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/38f5a1e26f360bda0fe7e1f88a5182c47081b8ce",
-                "reference": "38f5a1e26f360bda0fe7e1f88a5182c47081b8ce",
+                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/73e4d4095e43208b2d2f2d818814faa2449d7e6e",
+                "reference": "73e4d4095e43208b2d2f2d818814faa2449d7e6e",
                 "shasum": ""
             },
             "require": {
@@ -505,8 +509,8 @@
                 "issues": "https://github.com/nowo-tech/UiKitBundle/issues",
                 "source": "https://github.com/nowo-tech/UiKitBundle"
             },
-            "time": "2026-11-11T22:37:57+00:00",
-            "published-time": "2026-11-11T22:41:16+00:00"
+            "time": "2026-11-16T22:25:43+00:00",
+            "published-time": "2026-11-16T22:27:58+00:00"
         },
         {
             "name": "psr/cache",
@@ -2842,16 +2846,16 @@
         },
         {
             "name": "symfony/polyfill-php85",
-            "version": "v1.43.0",
+            "version": "v1.44.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php85.git",
-                "reference": "86a42cbcc07adc331481a5ab310a4024bfc227f6"
+                "reference": "94c794cb5ba51784bc259f11e9f128593297d8dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/86a42cbcc07adc331481a5ab310a4024bfc227f6",
-                "reference": "86a42cbcc07adc331481a5ab310a4024bfc227f6",
+                "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/94c794cb5ba51784bc259f11e9f128593297d8dc",
+                "reference": "94c794cb5ba51784bc259f11e9f128593297d8dc",
                 "shasum": ""
             },
             "require": {
@@ -2898,7 +2902,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php85/tree/v1.43.0"
+                "source": "https://github.com/symfony/polyfill-php85/tree/v1.44.0"
             },
             "funding": [
                 {
@@ -2918,8 +2922,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-25T15:46:47+00:00",
-            "published-time": "2026-09-30T10:23:32+00:00"
+            "time": "2026-10-30T15:20:09+00:00",
+            "published-time": "2026-11-15T14:20:22+00:00"
         },
         {
             "name": "symfony/polyfill-php86",

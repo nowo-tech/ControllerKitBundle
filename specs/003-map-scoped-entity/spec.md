@@ -2,7 +2,7 @@
 
 **Feature Branch**: `003-map-scoped-entity`  
 **Created**: 2026-10-14  
-**Status**: Implemented (v2.2.0)  
+**Status**: Implemented (v2.2.0; finder SPI v2.4.0; exact re-check v2.4.1)  
 
 **Package**: `nowo-tech/controller-kit-bundle`  
 **Origin**: Symfony Beacon `docs/ops/KIT-EXTRACTION.md` row #22 — extraction of the host `App\Project\Http\MapProjectScoped` + `ProjectScopedEntityValueResolver` (Beacon spec 136, DUP-SCOPE).  
@@ -46,6 +46,7 @@ Add a controller argument attribute `Attribute\MapScopedEntity` and its targeted
 - **FR-SCOPE-006**: `doctrine/orm` and `doctrine/doctrine-bundle` are `suggest` only. `DependencyInjection\Compiler\ScopedEntityValueResolverPass` registers the resolver (private, tag `controller.targeted_value_resolver`) only when `Doctrine\ORM\EntityManagerInterface` exists and the container has the `doctrine` registry; it runs before FrameworkBundle's `ControllerArgumentValueResolverPass` and keeps an application-defined service with the same id.
 - **FR-SCOPE-008** (2.4, DDD P2): when `$parent` is not an association but a key of the entity's `fieldMappings`, the query is `SELECT e FROM <type> e WHERE e.<field> = :id AND e.<parent> = :parentId` (both typed from the entity's field types; `$parentField` unused). An association with that name keeps FR-SCOPE-002. `LogicException` when `$parent` is an identifier field, equals `$field`, or `getParentRouteAttribute() === $id` (audit KM-C-L1).
 - **FR-SCOPE-009** (2.4, DDD P2): `ScopedEntityFinderInterface` (`supports()`, `findScoped()`) services tagged `nowo_controller_kit.scoped_entity_finder` (autoconfigured) are passed to the resolver as a priority-ordered tagged iterator; the resolver is registered with them even without Doctrine (null registry). Per argument the first finder whose `supports()` is true decides; `findScoped()` is called only for non-empty string / int route values and FR-SCOPE-003 applies to a null result; a result that is not an instance of the argument class is a `LogicException`. When none supports the class, `DoctrineScopedEntityFinder` (the built-in query, public, registered with Doctrine, not tagged) runs with the FR-SCOPE-004 checks first; without Doctrine that is a `LogicException` (audit KM-C-M1).
+- **FR-SCOPE-010** (2.4.1, REQ-SEC-006): the built-in `DoctrineScopedEntityFinder` does not trust SQL equality alone. After the query it re-checks the loaded entity's `field` and the owner value (the `parent` field, or `parentField` of the joined owner; any owner of a collection) against the route values with `===` when they are strings, so on a folding collation (`Acme`, `acmé`, `acme ` all equal `acme`) a look-alike route value is "not found" (404, or `null` for a nullable argument). For a `guid` column the other letter case of the same hexadecimal UUID is accepted; int, UUID-object and other non-string values are not re-checked.
 - **FR-SCOPE-007**: The resolver is stateless (readonly, registry and optional finder only) and FrankenPHP worker-safe with the kernel not reset.
 
 ---
