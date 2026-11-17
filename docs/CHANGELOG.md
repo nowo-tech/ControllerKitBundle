@@ -39,6 +39,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Demo
+
+- REQ-DEMO-013: `demo/symfony8/e2e/` (Playwright: shell, RedirectToRefererTrait form, SafeForwardTrait, CSV / JSON downloads), `make test-e2e` / `make demo-screenshots` in the demo Makefile, and a WebP screenshot in the README.
+
+### Docs
+
+- Spec Kit: `code-inventory.md` maps all 17 production sources (the 2.4.0 finder SPI and `DoctrineScopedEntityFinder` were missing) and spec 003 gains FR-SCOPE-010 (the 2.4.1 exact re-check).
+
 ### Tests
 
 - CI: the coverage run is now `composer test-coverage-100` (new script, `.scripts/check-coverage.php`), so a pull request that drops statement or element coverage below **100%** fails the build; before, nothing in CI checked a threshold. The suite is already at 100%.

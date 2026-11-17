@@ -18,7 +18,8 @@ This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDU
 1. Clone the repository.
 2. Start the dev container: `make up` then `make install`.
 3. Run tests: `make test`, `make cs-check`, `make phpstan`, `make igor`.
-4. Pre-release: `make release-check`.
+4. Demo e2e (REQ-DEMO-013): `make -C demo/symfony8 test-e2e`; refresh the README screenshots with `make -C demo/symfony8 demo-screenshots`.
+5. Pre-release: `make release-check`.
 
 ## Code style
 
