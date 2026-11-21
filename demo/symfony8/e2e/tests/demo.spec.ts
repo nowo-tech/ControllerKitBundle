@@ -8,7 +8,7 @@ test.describe('ControllerKit demo', () => {
   test('home renders the UiKit shell and the traits', async ({ page }) => {
     const response = await page.goto('/');
     expect(response?.ok()).toBeTruthy();
-    await expect(page.locator('[data-testid="demo-masthead"]')).toBeVisible();
+    await expect(page.locator('[data-testid="demo-platform"]')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Test SafeForwardTrait' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'formula-safe CSV' })).toBeVisible();
   });
@@ -17,7 +17,7 @@ test.describe('ControllerKit demo', () => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Test RedirectToRefererTrait' }).click();
     await expect(page).toHaveURL(/from_demo=1/);
-    await expect(page.locator('[data-testid="demo-masthead"]')).toBeVisible();
+    await expect(page.locator('[data-testid="demo-platform"]')).toBeVisible();
   });
 
   test('SafeForwardTrait reaches the forwarded action', async ({ page }) => {

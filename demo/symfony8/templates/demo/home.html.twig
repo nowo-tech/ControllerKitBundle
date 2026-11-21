@@ -3,19 +3,32 @@
 {% block title %}Controller Kit Demo{% endblock %}
 
 {% block nowo_ui_page_header %}
-    {{ include(nowo_ui_partial('page_header'), { title: 'Controller Kit Demo (Symfony 8)' }) }}
+    {{ include(nowo_ui_partial('page_header'), {
+        title: 'Controller Kit Demo (Symfony 8)',
+        intro: 'Controller traits from nowo-tech/controller-kit-bundle: a safe forward, formula-safe downloads and a redirect back to the referer.',
+    }) }}
 {% endblock %}
 
 {% block body %}
-    <section class="nowo-ui-card">
-        <div class="nowo-ui-card__body">
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'SafeForwardTrait', kind: 'content'} %}
+        {% block section_body %}
             <p><a class="nowo-ui-link" href="{{ path('demo_forward') }}">Test SafeForwardTrait</a></p>
-            <p>DownloadResponseTrait: <a class="nowo-ui-link" href="{{ path('demo_download_csv') }}">formula-safe CSV</a> · <a class="nowo-ui-link" href="{{ path('demo_download_json') }}">JSON attachment (no-store)</a></p>
+        {% endblock %}
+    {% endembed %}
+
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'DownloadResponseTrait', kind: 'content'} %}
+        {% block section_body %}
+            <p><a class="nowo-ui-link" href="{{ path('demo_download_csv') }}">formula-safe CSV</a> · <a class="nowo-ui-link" href="{{ path('demo_download_json') }}">JSON attachment (no-store)</a></p>
+        {% endblock %}
+    {% endembed %}
+
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'RedirectToRefererTrait', kind: 'form'} %}
+        {% block section_body %}
             {{ form_start(back_form) }}
                 {% for child in back_form %}
                     {{ form_row(child) }}
                 {% endfor %}
             {{ form_end(back_form) }}
-        </div>
-    </section>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
