@@ -1,23 +1,16 @@
-{#- REQ-DEMO-014: the demo shell is UiKit's admin layout with UiKit's default theme (nowo-ui.css from the bundle's own
-    asset package, no CSS framework, no CDN). -#}
-{% extends '@NowoUiKit/layout/admin.html.twig' %}
-
+{#- REQ-DEMO-014: the demo runs inside UiKit's shared demo platform shell. This file only declares the demo. -#}
+{% extends '@NowoUiKit/demo_platform/layout.html.twig' %}
+{% set nowo_ui_demo_platform = {
+    bundle: 'Controller Kit',
+    version: 'Symfony 8.1',
+    home_route: 'homepage',
+    repository: 'https://github.com/nowo-tech/ControllerKitBundle',
+    translation_domain: false,
+    nav: [
+        {label: 'Overview', route: 'homepage', section: 'Demo'},
+        {label: 'SafeForwardTrait', route: 'demo_forward', section: 'Traits', active: []},
+        {label: 'CSV download', route: 'demo_download_csv', section: 'Traits', active: []},
+        {label: 'JSON download', route: 'demo_download_json', section: 'Traits', active: []},
+    ],
+} %}
 {% block nowo_ui_document_title %}{% block title %}Controller Kit Demo{% endblock %}{% endblock %}
-
-{% block nowo_ui_navigation %}
-    <header class="nowo-ui-header" data-testid="demo-masthead">
-        <a class="nowo-ui-brand" href="{{ path('homepage') }}">Controller Kit Bundle · Symfony 8.1</a>
-        <nav class="nowo-ui-menu" aria-label="Demo">
-            {% for item in [
-                {route: 'homepage', label: 'Overview'},
-                {route: 'demo_forward', label: 'SafeForwardTrait'},
-                {route: 'demo_download_csv', label: 'CSV download'},
-                {route: 'demo_download_json', label: 'JSON download'},
-            ] %}
-                <a class="nowo-ui-link" href="{{ path(item.route) }}"{% if app.request.attributes.get('_route') == item.route %} aria-current="page"{% endif %}>{{ item.label }}</a>
-            {% endfor %}
-        </nav>
-    </header>
-{% endblock %}
-
-{% block nowo_ui_content %}{% block body %}{% endblock %}{% endblock %}

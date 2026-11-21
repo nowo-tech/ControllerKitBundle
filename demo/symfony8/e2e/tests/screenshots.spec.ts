@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { frameShot } from './frame';
 
 /**
- * REQ-DEMO-013 — full demo frame (UiKit masthead + ControllerKit demo page + WebProfiler toolbar), captured as a
+ * REQ-DEMO-013 — full demo frame (demo platform shell + ControllerKit demo page, no WebProfiler toolbar), captured as a
  * padded union clip with a tall viewport (see frame.ts).
  */
 const outDir = process.env.SCREENSHOT_DIR
