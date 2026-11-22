@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- CI: new `release-gates` job in `.github/workflows/ci.yml` runs the `make release-check` gates (`rector-dry`, `validate-phpdoc`, `validate-translations`, `check-twig-extra`) on every full-mode push and PR, so they no longer fail only at release time. CI only, no bundle change.
+- `DoctrineScopedEntityFinder::matches()` and `ownedBy()` (both private) are instance methods now (Rector `LocallyCalledStaticMethodToNonStaticRector`) so `make rector-dry` passes. No behaviour change.
 - Demo: runs in UiKit's demo platform shell (`nowo-tech/ui-kit-bundle` ^2.60); the demo's own header is gone and the pages use the shell page headers and section cards. Demo only, no bundle change.
 
 ### Demo
