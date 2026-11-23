@@ -170,12 +170,12 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
         // case, accents and (PAD SPACE) trailing spaces. Keep only the rows whose id and owner match byte for byte.
         $found = null;
         foreach (is_iterable($candidates) ? $candidates : [] as $entity) {
-            if (!is_object($entity) || !self::matches($metadata->getFieldValue($entity, $attribute->field), $id, $metadata->getTypeOfField($attribute->field))) {
+            if (!is_object($entity) || !$this->matches($metadata->getFieldValue($entity, $attribute->field), $id, $metadata->getTypeOfField($attribute->field))) {
                 continue;
             }
             $owned = $parentMetadata instanceof ClassMetadata
-                ? self::ownedBy($parentMetadata, $metadata->getFieldValue($entity, $attribute->parent), $attribute->parentField, $ownerId)
-                : self::matches($metadata->getFieldValue($entity, $attribute->parent), $ownerId, $metadata->getTypeOfField($attribute->parent));
+                ? $this->ownedBy($parentMetadata, $metadata->getFieldValue($entity, $attribute->parent), $attribute->parentField, $ownerId)
+                : $this->matches($metadata->getFieldValue($entity, $attribute->parent), $ownerId, $metadata->getTypeOfField($attribute->parent));
             if (!$owned) {
                 continue;
             }
@@ -193,7 +193,7 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
      * (`===`); for a `guid` column the other letter case of the same hexadecimal UUID is not refused. Other values (ints,
      * UUID / enum objects, ...) went through the column type and are equal by construction.
      */
-    private static function matches(mixed $stored, int|string $requested, ?string $type): bool
+    private function matches(mixed $stored, int|string $requested, ?string $type): bool
     {
         if (!is_string($stored)) {
             return $stored !== null;
@@ -212,11 +212,11 @@ final readonly class DoctrineScopedEntityFinder implements ScopedEntityFinderInt
      *
      * @param ClassMetadata<object> $parentMetadata
      */
-    private static function ownedBy(ClassMetadata $parentMetadata, mixed $owners, string $field, int|string $ownerId): bool
+    private function ownedBy(ClassMetadata $parentMetadata, mixed $owners, string $field, int|string $ownerId): bool
     {
         $type = $parentMetadata->getTypeOfField($field);
         foreach ($owners instanceof Collection ? $owners : [$owners] as $owner) {
-            if (is_object($owner) && self::matches($parentMetadata->getFieldValue($owner, $field), $ownerId, $type)) {
+            if (is_object($owner) && $this->matches($parentMetadata->getFieldValue($owner, $field), $ownerId, $type)) {
                 return true;
             }
         }
